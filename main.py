@@ -1,7 +1,12 @@
 from flask import Flask, render_template, redirect, request
-from googleapiclient.discovery import build
-import os
+from datetime import datetime
 
-API_KEY = os.environ['YT_API_KEY']
-service = build('youtube', 'v3', developerKey=API_KEY)
-service.close()
+app = Flask('__main__')
+
+@app.route('/')
+def index():
+      copyright_year = datetime.now().year
+      return render_template('index.html', year=copyright_year)
+
+if '__name__' == '__main__':
+      app.run(debug=True)
