@@ -1,0 +1,18 @@
+{% extends "base.html" %} {% block title %}
+<title>Byte Picks - Home</title>
+{% endblock %} {% block header %}
+<header id="alt_header">
+   <a href="{{ url_for('home') }}">
+      <img src="{{ url_for('static', filename='Assets/BytePicks.svg') }}" style="filter: invert(90%)" alt="brand logo" />
+   </a>
+   <div>
+      <a href="{{ url_for('api') }}">Api Docs</a>
+      <a href="{{ url_for('email') }}">Inbox Mail</a>
+      <a href="{{ url_for('sms') }}" style="padding-right: 15px">Message</a>
+   </div>
+</header>
+{% endblock %} {% block content %}
+<main>
+   <img src="{{ url_for('static', filename='Assets/welcome.png') }}" alt="Background Image" id="welcome" />
+</main>
+{% endblock %}
