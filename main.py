@@ -8,6 +8,10 @@ copyright_year = datetime.now().year
 def home():
       return render_template('home.html', year=copyright_year)
 
+@app.route('/Dashboard')
+def dashboard():
+      return render_template('api.html', year=copyright_year)
+
 @app.route('/Api')
 def api():
       return render_template('api.html', year=copyright_year)

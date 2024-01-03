@@ -36,6 +36,7 @@ header {
    justify-content: space-between;
    align-items: center;
    background-color: rgb(220, 240, 240);
+   z-index: 1;
 }
 
 header img {
@@ -109,4 +110,34 @@ footer p {
 
 #welcome {
    width: 100%;
+   position: relative;
+}
+
+.text-container {
+   position: absolute;
+   top: 35%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   display: flex;
+   align-items: center;
+   color: rgb(220, 240, 240);
+   font-size: 50px;
+}
+
+.prefix {
+   margin-right: 10px;
+}
+
+.cursor {
+   animation: blink 0.75s infinite;
+}
+
+@keyframes blink {
+   0%,
+   100% {
+      opacity: 1;
+   }
+   50% {
+      opacity: 0;
+   }
 }
