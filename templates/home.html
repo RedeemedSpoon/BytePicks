@@ -6,6 +6,7 @@
       <img src="{{ url_for('static', filename='Assets/BytePicks.svg') }}" style="filter: invert(90%)" alt="brand logo" />
    </a>
    <div>
+      <a href="{{ url_for('dashboard') }}">DashBoard</a>
       <a href="{{ url_for('api') }}">Api Docs</a>
       <a href="{{ url_for('email') }}">Inbox Mail</a>
       <a href="{{ url_for('sms') }}" style="padding-right: 15px">Message</a>
@@ -14,5 +15,48 @@
 {% endblock %} {% block content %}
 <main>
    <img src="{{ url_for('static', filename='Assets/welcome.png') }}" alt="Background Image" id="welcome" />
+   <div class="text-container">
+      <span class="prefix">></span>
+      <span id="welcome_text"></span>
+      <span class="cursor">_</span>
+   </div>
+   <div id="slider">
+      <p>Latest Videos</p>
+      {% for video in videos %}
+      <img class="yt_thumbnail" alt="YT Thumbnail" src="{{ yt_thumbnail }}" />
+      <img class="yt_channel" alt="YT Channel" src="{{ yt_channel }}" />
+      <p class="yt_title">{{ yt_title }}</p>
+      {% endfor %}
+   </div>
+   <h1>BytePicks</h1>
+   <h3>No more endless scrolling; only the best tech picks for you.</h3>
+   <h2>We've cracked the code!</h2>
+   <h3>Dive straight into tech's finest, no fluff or fuss.</h3>
+   <section id="welcome_reason">
+      <img src="{{ url_for('static', filename='Assets/lead.jpg') }}" alt="Best Product" />
+      <title>Unparalleled Excellence</title>
+      <p>
+         Forget the noise. We're here to curate, filter, and serve up the finest tech content from YouTube. Think of us as your trusty guide, ensuring you're only a click away from videos that truly matter. After all, we're not just a service, we're
+         a community fueled by a passion for quality.
+      </p>
+   </section>
+   <section id="welcome_email_sms">
+      <img src="{{ url_for('static', filename='Assets/means.jpg') }}" alt="Email & SMS" />
+      <title>Stay Connected, Anytime, Anywhere</title>
+      <p>Whether you're on the move or relaxing at home, we've got you covered. Subscribe to our newsletter for curated updates or opt for SMS notifications. Our goal? Making quality tech easily accessible wherever you are.</p>
+   </section>
+   <section id="welcome_api">
+      <img src="{{ url_for('static', filename='Assets/develop.jpg') }}" alt="Api request" />
+      <title>Seamless Integration for Developers</title>
+      <p>Developers, take note! Our API is designed for easy integration, ensuring you can harness the power of BytePicks within your own applications. It's all about making tech discovery effortless and enjoyable.</p>
+   </section>
+   <section id="welcome_share">
+      <img src="{{ url_for('static', filename='Assets/creator.jpg') }}" alt="Share" />
+      <title>Got a Recommendation? Let's Hear It!</title>
+      <p>Stumbled upon a fantastic creator we're yet to feature? Share your hidden gems with us. We're all ears and always on the lookout for fresh, top-tier content to elevate our community's experience.</p>
+   </section>
+   <h1>Enough Waiting Around!</h1>
+   <h3>We're free, friendly, and fiercely focused on quality.</h3>
+   <h2>Ready to <a href="{{ url_for('dashboard') }}">Dive In?</a></h2>
 </main>
 {% endblock %}
