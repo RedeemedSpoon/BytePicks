@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, request
 from datetime import datetime
 
 app = Flask('__main__')
@@ -35,6 +35,14 @@ def privacy_policy():
 @app.route('/About-Me')
 def about_me():
       return render_template('about-me.html', year=copyright_year)
+
+@app.route('/Contact')
+def contact():
+      return render_template('contact.html', year=copyright_year)
+
+def submit():
+      if request.method == 'POST':
+            return render_template('success.html', year=copyright_year)
 
 
 if __name__ == '__main__':

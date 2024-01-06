@@ -1,6 +1,9 @@
 {% extends "base.html" %} {% block title %}
 <title>Byte Picks - Inbox Mail</title>
 {% endblock %} {% block content %}
-<h1>Byte Picks</h1>
-<p>Find The Best Picks In The Tech World</p>
+<h1>Get the Best Tech Updates Delivered Straight to Your Inbox</h1>
+<p>Stay ahead of the curve with Byte Picks' curated tech content sent directly to your email. Receive the latest trends, in-depth analyses, and must-watch YouTube videos related to technology.</p>
+<button>Subscribe Via Email</button>
+<p>Alternatively, you can opt for <a href="{{ url_for('sms') }}">SMS notifications</a> or just visit <a href="{{ url_for('dashboard') }}">our dashboard.</a></p>
+<p>Experience convenience with Byte Picks' email subscriptions. Get timely updates without having to search for the best content. It's all delivered right to your inbox!</p>
 {% endblock %}

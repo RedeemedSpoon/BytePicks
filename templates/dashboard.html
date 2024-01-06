@@ -1,6 +1,18 @@
 {% extends "base.html" %} {% block title %}
 <title>Byte Picks - DashBoard</title>
 {% endblock %} {% block content %}
-<h1>Byte Picks</h1>
-<p>Find The Best Picks In The Tech World</p>
-{% endblock %}
+<p>Sort Video by:</p>
+<button value="true" name="daily" onclick="">Daily</button>
+<button value="false" name="weekly" onclick="">Weekly</button>
+<button value="false" name="monthly" onclick="">Monthly</button>
+<button value="false" name="yearly" onclick="">Yearly</button>
+{% for video in videos %}
+<div class="video">
+   <a href="{{ yt_link }}">
+      <img class="yt_thumbnail" alt="YT Thumbnail" src="{{ yt_thumbnail }}" />
+      <img class="yt_channel" alt="YT Channel" src="{{ yt_channel }}" />
+      <p class="yt_name">{{ yt_name }}</p>
+      <p class="yt_title">{{ yt_title }}</p>
+   </a>
+</div>
+{% endfor %} {% endblock %}

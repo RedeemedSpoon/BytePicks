@@ -94,6 +94,10 @@ footer img {
 }
 
 #g8 {
+   grid-area: 3 / 4 / 3 / 4;
+}
+
+#g9 {
    grid-area: 5 / 1 / 5 / 4;
 }
 
