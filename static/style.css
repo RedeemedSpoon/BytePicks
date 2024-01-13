@@ -55,8 +55,8 @@ footer {
    display: grid;
    place-content: center;
    background-color: rgb(220, 240, 240);
-   grid-template-columns: 5% 65% 7.5% 7.5%;
-   grid-template-rows: 3.5rem 3.5rem 3.5rem 3.5rem 2rem;
+   grid-template-columns: 5% 65% 10% 10%;
+   grid-template-rows: 4rem 4rem 4rem 4rem 2.5rem;
    padding-top: 2.5rem;
 }
 
@@ -98,6 +98,10 @@ footer img {
 }
 
 #g9 {
+   grid-area: 4 / 4 / 4 / 4;
+}
+
+#g10 {
    grid-area: 5 / 1 / 5 / 4;
 }
 
