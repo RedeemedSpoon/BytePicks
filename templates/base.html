@@ -8,9 +8,12 @@
       {% block title %}
       <title>Byte Picks</title>
       {% endblock %}
-      <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" media="all" />
       <meta name="description" content="We filter out the junk in the tech influencer world to show you only the best there is for you, for free." />
       <meta name="robots" content="index, follow, max-snippet: -1, max-image-preview:large, max-video-preview: -1" />
+      <meta name="google-site-verification" content="None" />
+      <meta name="yandex-verification" content="None" />
+      <meta name="generator" content="None" />
+      <meta name="msapplication-TileImage" content="{{ url_for('static', filename='Assets/Logo.svg') }}" />
       <meta property="og:locale" content="en_US" />
       <meta property="og:type" content="website" />
       <meta property="og:title" content="Find The Best Picks In The Tech World" />
@@ -21,12 +24,9 @@
       <meta property="og:image:secure_url" content="{{ url_for('static', filename='Assets/Logo.svg') }}" />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="660" />
-      <meta name="google-site-verification" content="None" />
-      <meta name="yandex-verification" content="None" />
-      <meta name="generator" content="None" />
       <link rel="icon" href="{{ url_for('static', filename='Assets/Logo.svg') }}" />
       <link rel="apple-touch-icon-precomposed" href="{{ url_for('static', filename='Assets/Logo.svg') }}" />
-      <meta name="msapplication-TileImage" content="{{ url_for('static', filename='Assets/Logo.svg') }}" />
+      <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" media="all" />
    </head>
    <body>
       {% block header %}
@@ -46,13 +46,13 @@
          <a href="{{ url_for('home') }}" id="g1">
             <img src="{{ url_for('static', filename='Assets/BytePicks.svg') }}" alt="brand logo" />
          </a>
-         <a href="{{ url_for('home') }}" id="g2">Home</a>
+         <a href="{{ url_for('dashboard') }}" id="g2">DashBoard</a>
          <a href="{{ url_for('api') }}" id="g3">Api Docs</a>
          <a href="{{ url_for('email') }}" id="g4">Inbox Mail</a>
          <a href="{{ url_for('sms') }}" id="g5">Message</a>
          <a href="{{ url_for('explaination') }}" id="g6">Behind The Scene</a>
          <a href="{{ url_for('privacy_policy') }}" id="g7">Privacy Policy</a>
-         <a href="{{ url_for('about_me') }}" id="g8">About Me</a>
+         <a href="{{ url_for('about_us') }}" id="g8">About Us</a>
          <a href="{{ url_for('contact') }}" id="g9">Contact</a>
          <p id="g10">© {{year}} BytePicks. All content on this website is licensed under the Creative Commons Zero (CC0)</p>
       </footer>

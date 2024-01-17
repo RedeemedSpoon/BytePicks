@@ -66,7 +66,6 @@ def fetchNewVideos(channelID: str, subcriberCount: int):
             publishedAt = item["snippet"]["publishedAt"][:16].replace("T", " ")
             videoId = item["contentDetails"]["upload"]["videoId"]
             thumbnailUrl = item["snippet"]["thumbnails"]["medium"]["url"]
-
             request = service.videos().list(id=videoId, part=["statistics", "snippet", "contentDetails"])
             response = request.execute()
 
@@ -85,6 +84,9 @@ def fetchNewVideos(channelID: str, subcriberCount: int):
             fullVideoDetails = {
                 "ChannelName": channelName,
                 "ChannelId": channelId,
+                "ChannelIcon": channelDF[channelDF["ChannelID"] == channelId]["ChannelIcon"].values[0],
+                "ChannelUrl": channelDF[channelDF["ChannelID"] == channelId]["ChannelUrl"].values[0],
+                "VideoUrl": f"https://www.youtube.com/watch?v={videoId}",
                 "VideoTitle": videoTitle,
                 "VideoId": videoId,
                 "PublishedDate": publishedAt,
@@ -99,9 +101,9 @@ def fetchNewVideos(channelID: str, subcriberCount: int):
                 "CommentCount": int(commentCount),
                 "CategoryId": int(categoryId),
             }
-
-            videoRating = allMightyAlgorithm(fullVideoDetails, duration, subcriberCount)
-            allVideos[videoRating] = fullVideoDetails
+            if int(categoryId) in [27, 28] or viewCount > 1000:
+                videoRating = allMightyAlgorithm(fullVideoDetails, duration, subcriberCount)
+                allVideos[videoRating] = fullVideoDetails
 
         except Exception as error:
             logging.error(error)
@@ -109,8 +111,6 @@ def fetchNewVideos(channelID: str, subcriberCount: int):
 
 def allMightyAlgorithm(video: json, vidDuration: isodate, SubscriberCount: str) -> int:
     global channelDF
-    if video["ViewCount"] < 1000:
-        return 0
 
     NRLLikeCount = log(video["LikeCount"] + 1)
     NRLCommentCount = log(video["CommentCount"] + 1)

@@ -1,8 +1,44 @@
+/* ----- General ----- */
+
 @font-face {
    font-family: "Levenim_MT";
-   src: url("/Levenim_MT.ttf") format("truetype");
+   src: url("Levenim_MT.ttf") format("truetype");
    font-weight: normal;
    font-style: normal;
+}
+
+@keyframes blink {
+   0%,
+   100% {
+      opacity: 1;
+   }
+   50% {
+      opacity: 0;
+   }
+}
+
+@keyframes shake {
+   0%,
+   100% {
+      transform: translate(1px, 1px) rotate(0deg);
+   }
+   10%,
+   50%,
+   90% {
+      transform: translate(-1px, -2px) rotate(-1deg);
+   }
+   20%,
+   60% {
+      transform: translate(-3px, 0px) rotate(1deg);
+   }
+   30%,
+   70% {
+      transform: translate(3px, 2px) rotate(0deg);
+   }
+   40%,
+   80% {
+      transform: translate(1px, -1px) rotate(1deg);
+   }
 }
 
 * {
@@ -14,18 +50,53 @@
 
 body {
    font-family: "Levenim_MT", fallback_font_family, sans-serif;
-   background-color: rgb(238, 255, 255);
+   background-color: rgb(240, 255, 255);
    color: rgb(22, 22, 22);
 }
 
 a {
-   color: inherit;
+   color: #0b89a8;
    text-decoration: none;
 }
 
 a:hover {
    text-decoration: underline;
 }
+
+h1 {
+   font-size: 3.5rem;
+   font-weight: 300;
+}
+
+h2 {
+   font-size: 3rem;
+   font-weight: 300;
+}
+
+h3 {
+   font-size: 2.5rem;
+   font-weight: 300;
+}
+
+h4 {
+   font-size: 2rem;
+   font-weight: 300;
+}
+
+h5 {
+   font-size: 1.75rem;
+   font-weight: 300;
+}
+h6 {
+   font-size: 1.5rem;
+   font-weight: 300;
+}
+
+p {
+   font-size: 20px;
+}
+
+/* ----- Header ----- */
 
 header {
    position: fixed;
@@ -35,18 +106,36 @@ header {
    display: flex;
    justify-content: space-between;
    align-items: center;
-   background-color: rgb(220, 240, 240);
+   font-weight: bold;
+   background-color: rgb(210, 230, 230);
+   user-select: none;
+   outline: none;
    z-index: 1;
 }
 
 header img {
    height: 75px;
-   margin: -5px 20px;
+   margin: -5px 20px -15px 20px;
 }
 
 header a {
+   color: inherit;
    margin: 0 10px;
 }
+
+.alt_header {
+   background-color: transparent;
+   color: rgb(210, 230, 230);
+   transition: 0.5s ease;
+}
+
+.new_alt_header {
+   background-color: rgb(210, 230, 230);
+   color: rgb(22, 22, 22);
+   transition: 0.5s ease;
+}
+
+/* ----- Footer ----- */
 
 footer {
    position: relative;
@@ -54,15 +143,21 @@ footer {
    width: 100%;
    display: grid;
    place-content: center;
-   background-color: rgb(220, 240, 240);
+   background-color: rgb(210, 230, 230);
    grid-template-columns: 5% 65% 10% 10%;
    grid-template-rows: 4rem 4rem 4rem 4rem 2.5rem;
    padding-top: 2.5rem;
+   user-select: none;
+   outline: none;
 }
 
 footer img {
    height: 100px;
    margin: -10px 25px;
+}
+
+footer a {
+   color: inherit;
 }
 
 #g1 {
@@ -108,13 +203,10 @@ footer img {
 footer p {
    font-size: 0.65rem;
    text-align: center;
-   padding: 10px 0 0 50px;
+   padding: 10px 0 0 200px;
 }
 
-#alt_header {
-   background-color: transparent;
-   color: rgb(220, 240, 240);
-}
+/* ----- Home Page ----- */
 
 #welcome {
    width: 100%;
@@ -123,29 +215,134 @@ footer p {
 
 .text-container {
    position: absolute;
-   top: 35%;
+   top: 38%;
    left: 50%;
-   transform: translate(-50%, -50%);
    display: flex;
-   align-items: center;
-   color: rgb(220, 240, 240);
+   text-align: center;
+   flex-wrap: wrap;
+   max-width: 625px;
+   transform: translate(-50%, -50%);
+   color: rgb(210, 230, 230);
    font-size: 50px;
 }
 
-.prefix {
-   margin-right: 10px;
-}
-
 .cursor {
+   margin-left: 5px;
    animation: blink 0.75s infinite;
 }
 
-@keyframes blink {
-   0%,
-   100% {
-      opacity: 1;
-   }
-   50% {
-      opacity: 0;
-   }
+.introductory {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   margin-top: 35px;
+   margin-bottom: 75px;
+   font-size: 20px;
+}
+
+.introductory * {
+   margin: 40px;
+}
+
+.alt_text {
+   background-color: #02596e;
+   color: #f9f9f9;
+   transform: skew(-10deg);
+   display: inline-block;
+   margin-left: 10px;
+   padding: 5px 10px;
+   box-shadow: 0 0 2px rgb(30, 30, 30);
+}
+
+#slider {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background: url("./Assets/abstactBG.svg");
+   background-color: #02596e;
+   filter: brightness(0.8);
+   height: 17.5rem;
+   width: 100%;
+   border: 5px solid rgb(10, 10, 10);
+   background-size: cover;
+   background-position: center;
+   user-select: none;
+   outline: none;
+}
+
+#slider img {
+   border: 1px solid rgb(30, 30, 30);
+   box-shadow: 0 0 5px rgb(30, 30, 30);
+   border-radius: 2%;
+   margin: 20px;
+}
+
+section {
+   opacity: 0;
+   transform: translateY(50px);
+   transition:
+      opacity 2s ease,
+      transform 1s ease;
+}
+
+section.activated {
+   opacity: 1;
+   transform: translateY(0);
+}
+
+.welcome {
+   display: grid;
+   margin: 10rem 15rem;
+   grid-template-columns: 50% 50%;
+   gap: 2.5rem;
+}
+
+.welcome img {
+   display: flex;
+   justify-self: center;
+   height: 30rem;
+   border-radius: 5%;
+   border: 4px solid #02596e;
+   grid-area: 1 / 1 / 1 / 1;
+}
+
+.welcome img:hover {
+   scale: 1.005;
+   animation: shake 4s infinite;
+}
+
+.welcome div {
+   display: flex;
+   justify-content: center;
+   align-items: start;
+   flex-direction: column;
+   row-gap: 3rem;
+   grid-area: 1 / 2 / 1 / 2;
+}
+
+.welcome h1 {
+   font-size: 35px;
+}
+
+/* ----- Dashboard Page ----- */
+
+/* ----- Api Page ----- */
+
+/* ----- SMS Page ----- */
+
+/* ----- Email Page ----- */
+
+/* ----- Explaination Page ----- */
+
+/* ----- Contact Page ----- */
+
+/* ----- About Me  & Privacy Policy Page ----- */
+
+.plain_text {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   margin: 7.5rem 25rem;
+   gap: 25px;
 }
