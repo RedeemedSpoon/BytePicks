@@ -4,6 +4,9 @@ from itertools import islice
 from math import sqrt, log
 import pandas as pd
 
+with open("./videos/daily.json") as file:
+    allVideos = json.load(file)
+
 CAPTION_MAPPING = {None: 0.95}
 RATING_MAPPING = {None: 1}
 DEFINITION_MAPPING = {"sd": 0.75, "fhd": 1.05, "uhd": 1.10}
@@ -45,8 +48,7 @@ def updateChannel(channelID: str):
 def fetchNewVideos(channelID: str, subcriberCount: int):
     global allVideos
     fields = (
-        "items(snippet(title,publishedAt,channelTitle,channelId,thumbnails/medium/url),"
-        "contentDetails(upload(videoId)))"
+        "items(snippet(title,publishedAt,channelTitle,channelId,thumbnails/medium/url), contentDetails(upload/videoId))"
     )
 
     request = service.activities().list(
@@ -60,11 +62,14 @@ def fetchNewVideos(channelID: str, subcriberCount: int):
     response = request.execute()
     for item in response["items"]:
         try:
+            videoId = item["contentDetails"]["upload"]["videoId"]
+        except KeyError:
+            pass
+        else:
             channelName = item["snippet"]["channelTitle"]
             channelId = item["snippet"]["channelId"]
             videoTitle = item["snippet"]["title"]
             publishedAt = item["snippet"]["publishedAt"][:16].replace("T", " ")
-            videoId = item["contentDetails"]["upload"]["videoId"]
             thumbnailUrl = item["snippet"]["thumbnails"]["medium"]["url"]
             request = service.videos().list(id=videoId, part=["statistics", "snippet", "contentDetails"])
             response = request.execute()
@@ -101,12 +106,9 @@ def fetchNewVideos(channelID: str, subcriberCount: int):
                 "CommentCount": int(commentCount),
                 "CategoryId": int(categoryId),
             }
-            if int(categoryId) in [27, 28] or viewCount > 1000:
+            if int(categoryId) in [27, 28] and int(viewCount) > 1000:
                 videoRating = allMightyAlgorithm(fullVideoDetails, duration, subcriberCount)
                 allVideos[videoRating] = fullVideoDetails
-
-        except Exception as error:
-            logging.error(error)
 
 
 def allMightyAlgorithm(video: json, vidDuration: isodate, SubscriberCount: str) -> int:
@@ -134,7 +136,7 @@ def allMightyAlgorithm(video: json, vidDuration: isodate, SubscriberCount: str) 
 def rankVideos():
     rankedVideos = dict(sorted(allVideos.items(), key=lambda item: item[0], reverse=True))
     with open("videos/daily.json", "w") as f:
-        json.dump(dict(islice(rankedVideos.items(), 15)), f, indent=4)
+        json.dump(rankedVideos, f, indent=4)
 
 
 def initialize():
@@ -147,7 +149,7 @@ def initialize():
 
 if __name__ == "__main__":
     API_KEY = os.environ.get("YT_API_KEY")
-    yesterday = datetime.date.today() - datetime.timedelta(days=1)
+    yesterday = datetime.date.today() - datetime.timedelta(days=7)
     service = build("youtube", "v3", developerKey=API_KEY)
     channelDF = pd.read_csv("Channels.csv")
     allVideos = {}

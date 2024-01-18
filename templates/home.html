@@ -3,7 +3,7 @@
 {% endblock %} {% block header %}
 <header class="alt_header">
    <a href="{{ url_for('home') }}">
-      <img src="{{ url_for('static', filename='Assets/BytePicks.svg') }}" style="filter: invert(90%)" alt="brand logo" />
+      <img src="{{ url_for('static', filename='Assets/Byte Picks.svg') }}" style="filter: invert(90%)" alt="brand logo" />
    </a>
    <div>
       <a href="{{ url_for('dashboard') }}">DashBoard</a>
@@ -15,22 +15,25 @@
 </header>
 {% endblock %} {% block content %}
 <main>
-   <img src="{{ url_for('static', filename='Assets/welcome.png') }}" alt="Welcome Image" style="filter: brightness(0.85)" />
+   <img src="{{ url_for('static', filename='Assets/welcome.png') }}" alt="Welcome Image" draggable="false" style="filter: brightness(0.85)" />
    <div class="text-container">
       <h2>> <span id="welcome_text"></span><span class="cursor">_</span></h2>
    </div>
 
    <div class="introductory">
-      <h1>Welcome to BytePicks!</h1>
+      <h1>Welcome to Byte Picks!</h1>
       <h6>Say Goodbye to Endless YouTube Scrolling, We Have Your Shortcut to Excellence.</h6>
       <h3 style="margin: -5px 0">We've Cracked the<span class="alt_text">Code!</span></h3>
       <h5>Dive Straight Into Tech's Finest, no Fluff or Fuss.</h5>
    </div>
 
    <div id="slider">
-      {% for video_id, video in videos.items() %}
-      <img class="yt_thumbnail" draggable="false" alt="YT Thumbnail" src="{{ video.Thumbnail }}" />
-      {% endfor %}
+      <img src="{{ url_for('static', filename='Assets/grunge.jpg') }}" alt="Grunge" draggable="false" />
+      <div style="display: flex">
+         {% for video_id, video in videos.items() %}
+         <img draggable="false" alt="All YT Thumbnail" src="{{ video.Thumbnail }}" />
+         {% endfor %}
+      </div>
    </div>
 
    <section class="welcome">
@@ -60,7 +63,7 @@
       <div>
          <h1>Seamless Integration for Developers</h1>
          <p>
-            Developers, take note! Our <a href="{{ url_for('api') }}">API</a> is designed for easy integration, ensuring you can harness the power of BytePicks within your own applications. It's all about making tech discovery effortless and
+            Developers, take note! Our <a href="{{ url_for('api') }}">API</a> is designed for easy integration, ensuring you can harness the power of Byte Picks within your own applications. It's all about making tech discovery effortless and
             enjoyable.
          </p>
       </div>
