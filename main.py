@@ -1,11 +1,10 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template
 from datetime import datetime
-import json
+from youtube import allVideos
+import json, isodate
 
 app = Flask("__main__")
 copyright_year = datetime.now().year
-with open("./videos/daily.json") as file:
-    allVideos = json.load(file)
 
 
 @app.route("/")
@@ -53,5 +52,27 @@ def contact():
     return render_template("contact.html", year=copyright_year)
 
 
+def formatViewCount(number):
+    if number / 1_000 > 1:
+        return str(round(number / 1_000, 1)) + "K"
+    elif number / 1_000_000 > 1:
+        return str(round(number / 1_000_000, 1)) + "M"
+    elif number > 1_000_000_000:
+        return str(round(number / 1_000_000_000, 1)) + "B"
+    else:
+        return str(number)
+
+
+def formatDuration(duration):
+    hours, minutes, seconds = map(int, duration.split(":"))
+    if hours == 0 and minutes < 10:
+        return f"{minutes}:{seconds:02d}"
+    elif hours == 0:
+        return f"{minutes:02d}:{seconds:02d}"
+    else:
+        return duration
+
+
 if __name__ == "__main__":
+    app.jinja_env.globals.update(formatViewCount=formatViewCount, formatDuration=formatDuration)
     app.run(debug=True)
