@@ -1,12 +1,14 @@
 from googleapiclient.discovery import build
-import os, datetime, isodate, logging, json
-from itertools import islice
+import os, datetime, isodate, json
 from math import sqrt, log
 import pandas as pd
 
-with open("./videos/daily.json") as file:
-    allVideos = json.load(file)
+with open("videos/daily.json", "r") as file:
+    AllVideos = json.load(file)
 
+FIELDS = (
+    "items(snippet(title,publishedAt,channelTitle,channelId,thumbnails/medium/url), contentDetails(upload/videoId))"
+)
 CAPTION_MAPPING = {None: 0.95}
 RATING_MAPPING = {None: 1}
 DEFINITION_MAPPING = {"sd": 0.75, "fhd": 1.05, "uhd": 1.10}
@@ -21,99 +23,31 @@ DURATIONS_MAPPING = [
 ]
 
 
-def updateChannel(channelID: str):
-    global channelDF
-    request = service.channels().list(part=["snippet", "statistics", "brandingSettings"], id=channelID)
-    response = request.execute()
+def updateInfoChannels():
+    for channel in channelDF["ChannelID"]:
+        request = service.channels().list(part=["snippet", "statistics", "brandingSettings"], id=channel)
+        response = request.execute()
 
-    channelInfo = {
-        "ChannelID": response["items"][0]["id"],
-        "ChannelName": response["items"][0]["snippet"]["title"],
-        "ChannelIcon": response["items"][0]["snippet"]["thumbnails"]["medium"]["url"],
-        "ChannelUrl": f'https://www.youtube.com/{response["items"][0]["snippet"]["customUrl"]}',
-        "ExistedSince": response["items"][0]["snippet"]["publishedAt"].split("T")[0],
-        "SubscriberCount": int(response["items"][0]["statistics"]["subscriberCount"]),
-        "VideoCount": int(response["items"][0]["statistics"]["videoCount"]),
-        "ViewCount": int(response["items"][0]["statistics"]["viewCount"]),
-        "Country": response["items"][0]["snippet"].get("country", "Unknown"),
-        "Language": channelDF[channelDF["ChannelID"] == channelID]["Language"].values[0],
-    }
+        channelInfo = {
+            "ChannelID": response["items"][0]["id"],
+            "ChannelName": response["items"][0]["snippet"]["title"],
+            "ChannelIcon": response["items"][0]["snippet"]["thumbnails"]["medium"]["url"],
+            "ChannelUrl": f'https://www.youtube.com/{response["items"][0]["snippet"]["customUrl"]}',
+            "ExistedSince": response["items"][0]["snippet"]["publishedAt"].split("T")[0],
+            "SubscriberCount": int(response["items"][0]["statistics"]["subscriberCount"]),
+            "VideoCount": int(response["items"][0]["statistics"]["videoCount"]),
+            "ViewCount": int(response["items"][0]["statistics"]["viewCount"]),
+            "Country": response["items"][0]["snippet"].get("country", "Unknown"),
+            "Language": channelDF[channelDF["ChannelID"] == channel]["Language"].values[0],
+        }
 
-    df = pd.DataFrame([channelInfo])
-    channelDF = channelDF[channelDF["ChannelID"] != response["items"][0]["id"]]
-    channelDF = pd.concat([channelDF, df], ignore_index=True)
-    channelDF.to_csv("Channels.csv", index=False)
+        channels.append(channelInfo)
 
-
-def fetchNewVideos(channelID: str, subcriberCount: int):
-    global allVideos
-    fields = (
-        "items(snippet(title,publishedAt,channelTitle,channelId,thumbnails/medium/url), contentDetails(upload/videoId))"
-    )
-
-    request = service.activities().list(
-        part=["snippet", "id", "contentDetails"],
-        channelId=channelID,
-        publishedAfter=yesterday.isoformat() + "T00:00:00Z",
-        maxResults=5,
-        fields=fields,
-    )
-
-    response = request.execute()
-    for item in response["items"]:
-        try:
-            videoId = item["contentDetails"]["upload"]["videoId"]
-        except KeyError:
-            pass
-        else:
-            channelName = item["snippet"]["channelTitle"]
-            channelId = item["snippet"]["channelId"]
-            videoTitle = item["snippet"]["title"]
-            publishedAt = item["snippet"]["publishedAt"][:16].replace("T", " ")
-            thumbnailUrl = item["snippet"]["thumbnails"]["medium"]["url"]
-            request = service.videos().list(id=videoId, part=["statistics", "snippet", "contentDetails"])
-            response = request.execute()
-
-            viewCount = response["items"][0]["statistics"]["viewCount"]
-            likeCount = response["items"][0]["statistics"]["likeCount"]
-            commentCount = response["items"][0]["statistics"]["commentCount"]
-            categoryId = response["items"][0]["snippet"]["categoryId"]
-            contentRating = response["items"][0]["contentDetails"]["contentRating"]
-            definition = response["items"][0]["contentDetails"]["definition"]
-            duration = isodate.parse_duration(response["items"][0]["contentDetails"]["duration"])
-            caption = response["items"][0]["contentDetails"]["caption"]
-            language = response["items"][0]["snippet"].get(
-                "defaultLanguage", response["items"][0]["snippet"].get("defaultAudioLanguage")
-            )
-
-            fullVideoDetails = {
-                "ChannelName": channelName,
-                "ChannelId": channelId,
-                "ChannelIcon": channelDF[channelDF["ChannelID"] == channelId]["ChannelIcon"].values[0],
-                "ChannelUrl": channelDF[channelDF["ChannelID"] == channelId]["ChannelUrl"].values[0],
-                "VideoUrl": f"https://www.youtube.com/watch?v={videoId}",
-                "VideoTitle": videoTitle,
-                "VideoId": videoId,
-                "PublishedDate": publishedAt,
-                "Thumbnail": thumbnailUrl,
-                "Duration": str(duration),
-                "Definition": definition,
-                "language": language,
-                "Caption": None if caption == "false" else caption,
-                "ContentRating": None if not contentRating else contentRating,
-                "ViewCount": int(viewCount),
-                "LikeCount": int(likeCount),
-                "CommentCount": int(commentCount),
-                "CategoryId": int(categoryId),
-            }
-            if int(categoryId) in [27, 28] and int(viewCount) > 1000:
-                videoRating = allMightyAlgorithm(fullVideoDetails, duration, subcriberCount)
-                allVideos[videoRating] = fullVideoDetails
+    df = pd.DataFrame(channels)
+    df.to_csv("data/channels.csv", index=False)
 
 
 def allMightyAlgorithm(video: json, vidDuration: isodate, SubscriberCount: str) -> int:
-    global channelDF
-
     NRLLikeCount = log(video["LikeCount"] + 1)
     NRLCommentCount = log(video["CommentCount"] + 1)
     NRLViewCount = log(video["ViewCount"] + 1)
@@ -133,25 +67,134 @@ def allMightyAlgorithm(video: json, vidDuration: isodate, SubscriberCount: str) 
     return rating
 
 
-def rankVideos():
-    rankedVideos = dict(sorted(allVideos.items(), key=lambda item: item[0], reverse=True))
-    with open("videos/daily.json", "w") as f:
-        json.dump(rankedVideos, f, indent=4)
-
-
-def initialize():
+def fetchNewVideos():
     for channel in channelDF["ChannelID"]:
         subcriberCount = channelDF[channelDF["ChannelID"] == channel]["SubscriberCount"].values[0]
-        fetchNewVideos(channel, subcriberCount)
-        if yesterday.day % 7 == 0:
-            updateChannel(channel)
+        request = service.activities().list(
+            part=["snippet", "id", "contentDetails"],
+            channelId=channel,
+            publishedAfter=yesterday.isoformat() + "T00:00:00Z",
+            maxResults=5,
+            fields=FIELDS,
+        )
+
+        response = request.execute()
+        for item in response["items"]:
+            try:
+                videoId = item["contentDetails"]["upload"]["videoId"]
+
+            except KeyError:
+                pass
+
+            else:
+                channelName = item["snippet"]["channelTitle"]
+                channelId = item["snippet"]["channelId"]
+                videoTitle = item["snippet"]["title"]
+                publishedAt = item["snippet"]["publishedAt"][:16].replace("T", " ")
+                thumbnailUrl = item["snippet"]["thumbnails"]["medium"]["url"]
+
+                request = service.videos().list(id=videoId, part=["statistics", "snippet", "contentDetails"])
+                response = request.execute()
+
+                viewCount = response["items"][0]["statistics"]["viewCount"]
+                likeCount = response["items"][0]["statistics"]["likeCount"]
+                commentCount = response["items"][0]["statistics"]["commentCount"]
+                categoryId = response["items"][0]["snippet"]["categoryId"]
+                contentRating = response["items"][0]["contentDetails"]["contentRating"]
+                definition = response["items"][0]["contentDetails"]["definition"]
+                duration = isodate.parse_duration(response["items"][0]["contentDetails"]["duration"])
+                caption = response["items"][0]["contentDetails"]["caption"]
+                language = response["items"][0]["snippet"].get(
+                    "defaultLanguage", response["items"][0]["snippet"].get("defaultAudioLanguage")
+                )
+
+                fullVideoDetails = {
+                    "ChannelName": channelName,
+                    "ChannelId": channelId,
+                    "ChannelIcon": channelDF[channelDF["ChannelID"] == channelId]["ChannelIcon"].values[0],
+                    "ChannelUrl": channelDF[channelDF["ChannelID"] == channelId]["ChannelUrl"].values[0],
+                    "VideoUrl": f"https://www.youtube.com/watch?v={videoId}",
+                    "VideoTitle": videoTitle,
+                    "VideoId": videoId,
+                    "PublishedDate": publishedAt,
+                    "Thumbnail": thumbnailUrl,
+                    "Duration": str(duration).split(", ")[1] if ", " in str(duration) else str(duration),
+                    "Definition": definition,
+                    "language": language,
+                    "Caption": None if caption == "false" else caption,
+                    "ContentRating": None if not contentRating else contentRating,
+                    "ViewCount": int(viewCount),
+                    "LikeCount": int(likeCount),
+                    "CommentCount": int(commentCount),
+                    "CategoryId": int(categoryId),
+                }
+
+                if int(categoryId) in [27, 28] and int(viewCount) > 1000:
+                    videoRating = allMightyAlgorithm(fullVideoDetails, duration, subcriberCount)
+                    Videos[videoRating] = fullVideoDetails
+
+
+def deleteOldVideos():
+    if today.weekday() == 0:
+        with open("videos/weekly.json", "w") as f:
+            json.dump({}, f)
+
+    if today.day == 1:
+        with open("videos/monthly.json", "w") as f:
+            json.dump({}, f)
+
+    if today.day == 1 and today.month == 1:
+        with open("videos/yearly.json", "w") as f:
+            json.dump({}, f)
+
+
+def storeVideos():
+    dailyTop = dict(sorted(Videos.items(), key=lambda item: float(item[0]), reverse=True)[:20])
+    with open("videos/daily.json", "w") as f:
+        json.dump(dailyTop, f, indent=3)
+
+    weeklyTop = dict(list(dailyTop.items())[:5])
+    with open("videos/weekly.json", "r") as f:
+        existingWeekly = json.load(f)
+
+    existingWeekly.update(weeklyTop)
+    existingWeekly = dict(sorted(existingWeekly.items(), key=lambda item: float(item[0]), reverse=True)[:5])
+    with open("videos/weekly.json", "w") as f:
+        json.dump(existingWeekly, f, indent=3)
+
+    if today.weekday() == 0:
+        monthlyTop = dict(sorted(existingWeekly.items(), key=lambda item: float(item[0]), reverse=True)[:10])
+        with open("videos/monthly.json", "r") as f:
+            existingMonthly = json.load(f)
+
+        existingMonthly.update(monthlyTop)
+        existingMonthly = dict(sorted(existingMonthly.items(), key=lambda item: float(item[0]), reverse=True)[:10])
+        with open("videos/monthly.json", "w") as f:
+            json.dump(existingMonthly, f, indent=3)
+
+    if today.day == 1:
+        yearlyTop = dict(sorted(existingMonthly.items(), key=lambda item: float(item[0]), reverse=True)[:5])
+        with open("videos/yearly.json", "r") as f:
+            existingYearly = json.load(f)
+
+        existingYearly.update(yearlyTop)
+        existingYearly = dict(sorted(existingYearly.items(), key=lambda item: float(item[0]), reverse=True)[:5])
+        with open("videos/yearly.json", "w") as f:
+            json.dump(existingYearly, f, indent=3)
 
 
 if __name__ == "__main__":
+    global channelDF, service, yesterday, today, Videos
+
     API_KEY = os.environ.get("YT_API_KEY")
-    yesterday = datetime.date.today() - datetime.timedelta(days=7)
+    today = datetime.date.today()
+    yesterday = datetime.date.today() - datetime.timedelta(days=1)
     service = build("youtube", "v3", developerKey=API_KEY)
-    channelDF = pd.read_csv("Channels.csv")
-    allVideos = {}
-    initialize()
-    rankVideos()
+    channelDF = pd.read_csv("data/channels.csv")
+    channels = []
+    Videos = {}
+
+    updateInfoChannels() if yesterday.day % 9 == 0 else None
+    fetchNewVideos()
+    deleteOldVideos()
+    storeVideos()

@@ -1,7 +1,6 @@
 from flask import Flask, render_template
 from datetime import datetime
-from youtube import allVideos
-import json, isodate
+from youtube import AllVideos
 
 app = Flask("__main__")
 copyright_year = datetime.now().year
@@ -9,12 +8,12 @@ copyright_year = datetime.now().year
 
 @app.route("/")
 def home():
-    return render_template("home.html", year=copyright_year, videos=allVideos)
+    return render_template("home.html", year=copyright_year, videos=AllVideos)
 
 
 @app.route("/Dashboard")
 def dashboard():
-    return render_template("dashboard.html", year=copyright_year, videos=allVideos)
+    return render_template("dashboard.html", year=copyright_year, videos=AllVideos)
 
 
 @app.route("/Api")
