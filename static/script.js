@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (charIndex > currentText.length) {
                isDeleting = true;
-               setTimeout(typeText, 2000);
+               setTimeout(typeText, 1750);
             } else {
                setTimeout(typeText, 75);
             }
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (charIndex < 0) {
                isDeleting = false;
                index = (index + 1) % textList.length;
-               setTimeout(typeText, 1000);
+               setTimeout(typeText, 750);
             } else {
                setTimeout(typeText, 50);
             }
@@ -46,6 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
             section.classList.add("activated");
             triggeredFlag = true;
          }
+
          return triggeredFlag;
       };
 
@@ -65,6 +66,19 @@ document.addEventListener("DOMContentLoaded", function () {
             const offset = index <= 3 ? index * 500 + 250 : 0;
             sectionTriggers[index] = activateSection(section, triggerSectionPosition, offset, sectionTriggers[index]);
          });
+      });
+   } else if (window.location.pathname === "/Dashboard") {
+      $(document).ready(function () {
+         $("select").change(function () {
+            updateURL();
+         });
+
+         function updateURL() {
+            let time = $("#time").val();
+            let language = $("#language").val();
+            let url = `${window.location.pathname}?time=${time}&lang=${language}`;
+            window.location.href = url;
+         }
       });
    }
 });

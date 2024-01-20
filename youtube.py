@@ -1,47 +1,72 @@
 from googleapiclient.discovery import build
-import os, datetime, isodate, json
+import os, datetime, isodate, json, sys
 from math import sqrt, log
 import pandas as pd
 
-with open("videos/daily.json", "r") as file:
-    AllVideos = json.load(file)
-
+MIN_DUR = isodate.parse_duration("PT10S")
+MAX_DUR = isodate.parse_duration("PT10H")
 FIELDS = (
     "items(snippet(title,publishedAt,channelTitle,channelId,thumbnails/medium/url), contentDetails(upload/videoId))"
 )
-CAPTION_MAPPING = {None: 0.95}
+
+CAPTION_MAPPING = {None: 0.975}
 RATING_MAPPING = {None: 1}
-DEFINITION_MAPPING = {"sd": 0.75, "fhd": 1.05, "uhd": 1.10}
-SUBSCRIBER_MAPPING = {10_000: 1.10, 100_000: 1.05, 500_000: 1, 1_000_000: 0.95, 5_000_000: 0.90}
+DEFINITION_MAPPING = {"sd": 0.90, "fhd": 1.025, "uhd": 1.05}
+SUBSCRIBER_MAPPING = {10_000: 1.05, 100_000: 1.025, 500_000: 1, 1_000_000: 0.975, 5_000_000: 0.95}
 DURATIONS_MAPPING = [
-    (isodate.parse_duration("PT2M"), 0.1),
-    (isodate.parse_duration("PT7M"), 0.85),
-    (isodate.parse_duration("PT15M"), 0.90),
+    (isodate.parse_duration("PT2M"), 0.500),
+    (isodate.parse_duration("PT7M"), 0.950),
+    (isodate.parse_duration("PT15M"), 0.975),
     (isodate.parse_duration("PT30M"), 1),
-    (isodate.parse_duration("PT45M"), 1.10),
-    (isodate.parse_duration("PT1H"), 1.05),
+    (isodate.parse_duration("PT45M"), 1.025),
+    (isodate.parse_duration("PT1H"), 1.050),
 ]
 
 
-def updateInfoChannels():
-    for channel in channelDF["ChannelID"]:
-        request = service.channels().list(part=["snippet", "statistics", "brandingSettings"], id=channel)
+def search():
+    nextPageToken = None
+    while True:
+        request = service.search().list(
+            q="technology | programming | coding | computer science | software development | cloud computing | cybersecurity | IT | data science | artificial intelligence | machine learning | web development | devops | robotics | algorithms | databases | networking | programming tutorials | software engineering",
+            type="channel",
+            part="id",
+            maxResults=50,
+            order="relevance",
+            relevanceLanguage="en",
+            regionCode="US",
+            pageToken=nextPageToken,
+        )
+
         response = request.execute()
+        for item in response.get("items", []):
+            channel_id = item["id"]["channelId"]
+            searchedChannels.append(channel_id)
 
-        channelInfo = {
-            "ChannelID": response["items"][0]["id"],
-            "ChannelName": response["items"][0]["snippet"]["title"],
-            "ChannelIcon": response["items"][0]["snippet"]["thumbnails"]["medium"]["url"],
-            "ChannelUrl": f'https://www.youtube.com/{response["items"][0]["snippet"]["customUrl"]}',
-            "ExistedSince": response["items"][0]["snippet"]["publishedAt"].split("T")[0],
-            "SubscriberCount": int(response["items"][0]["statistics"]["subscriberCount"]),
-            "VideoCount": int(response["items"][0]["statistics"]["videoCount"]),
-            "ViewCount": int(response["items"][0]["statistics"]["viewCount"]),
-            "Country": response["items"][0]["snippet"].get("country", "Unknown"),
-            "Language": channelDF[channelDF["ChannelID"] == channel]["Language"].values[0],
-        }
+        nextPageToken = response.get("nextPageToken")
+        if not nextPageToken:
+            break
 
-        channels.append(channelInfo)
+
+def updateInfoChannels():
+    for channel in searchedChannels:
+        if channelDF[channelDF["ChannelID"] == channel].empty:
+            request = service.channels().list(part=["snippet", "statistics", "brandingSettings"], id=channel)
+            response = request.execute()
+
+            channelInfo = {
+                "ChannelID": response["items"][0]["id"],
+                "ChannelName": response["items"][0]["snippet"]["title"],
+                "ChannelIcon": response["items"][0]["snippet"]["thumbnails"]["medium"]["url"],
+                "ChannelUrl": f'https://www.youtube.com/{response["items"][0]["snippet"]["customUrl"]}',
+                "ExistedSince": response["items"][0]["snippet"]["publishedAt"].split("T")[0],
+                "SubscriberCount": int(response["items"][0]["statistics"]["subscriberCount"]),
+                "VideoCount": int(response["items"][0]["statistics"]["videoCount"]),
+                "ViewCount": int(response["items"][0]["statistics"]["viewCount"]),
+                "Country": response["items"][0]["snippet"].get("country", "Unknown"),
+                "Language": response["items"][0]["snippet"].get("defaultLanguage", "Unknown"),
+            }
+
+            channels.append(channelInfo)
 
     df = pd.DataFrame(channels)
     df.to_csv("data/channels.csv", index=False)
@@ -52,18 +77,18 @@ def allMightyAlgorithm(video: json, vidDuration: isodate, SubscriberCount: str) 
     NRLCommentCount = log(video["CommentCount"] + 1)
     NRLViewCount = log(video["ViewCount"] + 1)
 
-    viewRate = sqrt(NRLViewCount) / 4
+    viewRate = sqrt(NRLViewCount) / 3.5
     likeRate = NRLLikeCount / NRLViewCount
-    commentRate = NRLCommentCount / NRLViewCount * 1.5
+    commentRate = NRLCommentCount / NRLViewCount * 1.25
 
     defQuality = DEFINITION_MAPPING.get(video["Definition"], 1)
     capQuality = CAPTION_MAPPING.get(video["Caption"], 1)
-    ratQuality = RATING_MAPPING.get(video["ContentRating"], 0.85)
-    durQuality = next((quality for duration, quality in DURATIONS_MAPPING if vidDuration < duration), 0.85)
-    subBalance = next((balance for channel, balance in SUBSCRIBER_MAPPING.items() if SubscriberCount < channel), 0.90)
+    ratQuality = RATING_MAPPING.get(video["ContentRating"], 0.925)
+    durQuality = next((quality for duration, quality in DURATIONS_MAPPING if vidDuration < duration), 0.90)
+    subBalance = next((balance for channel, balance in SUBSCRIBER_MAPPING.items() if SubscriberCount < channel), 0.925)
 
     qualityMultiplier = subBalance * defQuality * capQuality * ratQuality * durQuality
-    rating = round((viewRate + likeRate + commentRate) * qualityMultiplier * 100, 2)
+    rating = round((viewRate + likeRate + commentRate) * qualityMultiplier * 100, 3)
     return rating
 
 
@@ -104,9 +129,11 @@ def fetchNewVideos():
                 definition = response["items"][0]["contentDetails"]["definition"]
                 duration = isodate.parse_duration(response["items"][0]["contentDetails"]["duration"])
                 caption = response["items"][0]["contentDetails"]["caption"]
-                language = response["items"][0]["snippet"].get(
-                    "defaultLanguage", response["items"][0]["snippet"].get("defaultAudioLanguage")
-                )
+                language = str(
+                    response["items"][0]["snippet"].get(
+                        "defaultLanguage", response["items"][0]["snippet"].get("defaultAudioLanguage")
+                    )
+                ).upper()
 
                 fullVideoDetails = {
                     "ChannelName": channelName,
@@ -119,17 +146,17 @@ def fetchNewVideos():
                     "PublishedDate": publishedAt,
                     "Thumbnail": thumbnailUrl,
                     "Duration": str(duration).split(", ")[1] if ", " in str(duration) else str(duration),
-                    "Definition": definition,
+                    "Definition": str(definition).upper(),
                     "language": language,
-                    "Caption": None if caption == "false" else caption,
-                    "ContentRating": None if not contentRating else contentRating,
+                    "Caption": False if caption == "false" else True,
+                    "ContentRating": False if not contentRating else True,
                     "ViewCount": int(viewCount),
                     "LikeCount": int(likeCount),
                     "CommentCount": int(commentCount),
                     "CategoryId": int(categoryId),
                 }
 
-                if int(categoryId) in [27, 28] and int(viewCount) > 1000:
+                if int(categoryId) in [27, 28] and int(viewCount) > 1000 and duration > MIN_DUR and duration < MAX_DUR:
                     videoRating = allMightyAlgorithm(fullVideoDetails, duration, subcriberCount)
                     Videos[videoRating] = fullVideoDetails
 
@@ -149,50 +176,56 @@ def deleteOldVideos():
 
 
 def storeVideos():
-    dailyTop = dict(sorted(Videos.items(), key=lambda item: float(item[0]), reverse=True)[:20])
+    bestVideo = dict(sorted(Videos.items(), key=lambda item: float(item[0]), reverse=True)[:25])
     with open("videos/daily.json", "w") as f:
-        json.dump(dailyTop, f, indent=3)
+        json.dump(bestVideo, f, indent=3)
 
-    weeklyTop = dict(list(dailyTop.items())[:5])
+    dayTop = dict(list(bestVideo.items())[:5])
     with open("videos/weekly.json", "r") as f:
         existingWeekly = json.load(f)
 
-    existingWeekly.update(weeklyTop)
-    existingWeekly = dict(sorted(existingWeekly.items(), key=lambda item: float(item[0]), reverse=True)[:5])
+    existingWeekly.update(dayTop)
+    existingWeekly = dict(sorted(existingWeekly.items(), key=lambda item: float(item[0]), reverse=True))
     with open("videos/weekly.json", "w") as f:
         json.dump(existingWeekly, f, indent=3)
 
     if today.weekday() == 0:
-        monthlyTop = dict(sorted(existingWeekly.items(), key=lambda item: float(item[0]), reverse=True)[:10])
+        weekTop = dict(sorted(existingWeekly.items(), key=lambda item: float(item[0]), reverse=True)[:10])
         with open("videos/monthly.json", "r") as f:
             existingMonthly = json.load(f)
 
-        existingMonthly.update(monthlyTop)
-        existingMonthly = dict(sorted(existingMonthly.items(), key=lambda item: float(item[0]), reverse=True)[:10])
+        existingMonthly.update(weekTop)
+        existingMonthly = dict(sorted(existingMonthly.items(), key=lambda item: float(item[0]), reverse=True))
         with open("videos/monthly.json", "w") as f:
             json.dump(existingMonthly, f, indent=3)
 
     if today.day == 1:
-        yearlyTop = dict(sorted(existingMonthly.items(), key=lambda item: float(item[0]), reverse=True)[:5])
+        monthTop = dict(sorted(existingMonthly.items(), key=lambda item: float(item[0]), reverse=True)[:5])
         with open("videos/yearly.json", "r") as f:
             existingYearly = json.load(f)
 
-        existingYearly.update(yearlyTop)
-        existingYearly = dict(sorted(existingYearly.items(), key=lambda item: float(item[0]), reverse=True)[:5])
+        existingYearly.update(monthTop)
+        existingYearly = dict(sorted(existingYearly.items(), key=lambda item: float(item[0]), reverse=True))
         with open("videos/yearly.json", "w") as f:
             json.dump(existingYearly, f, indent=3)
 
 
 if __name__ == "__main__":
-    global channelDF, service, yesterday, today, Videos
+    global channelDF, service, yesterday, today, Videos, searchedChannels
 
     API_KEY = os.environ.get("YT_API_KEY")
     today = datetime.date.today()
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
     service = build("youtube", "v3", developerKey=API_KEY)
     channelDF = pd.read_csv("data/channels.csv")
+    searchedChannels = []
     channels = []
     Videos = {}
+
+    if sys.argv[1] == "search":
+        search()
+        updateInfoChannels()
+        exit(0)
 
     updateInfoChannels() if yesterday.day % 9 == 0 else None
     fetchNewVideos()

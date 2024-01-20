@@ -1,9 +1,13 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, jsonify
 from datetime import datetime
-from youtube import AllVideos
+import json
 
+TIME = ["daily", "weeky", "monthy", "yearly"]
+LANGUAGE = ["EN", "FR", "ES", "DE", "PT", "RU", "HI"]
 app = Flask("__main__")
 copyright_year = datetime.now().year
+with open("videos/daily.json", "r") as file:
+    AllVideos = json.load(file)
 
 
 @app.route("/")
@@ -13,10 +17,33 @@ def home():
 
 @app.route("/Dashboard")
 def dashboard():
-    return render_template("dashboard.html", year=copyright_year, videos=AllVideos)
+    time = request.args.get("time", default="daily")
+    language = request.args.get("lang", default="EN")
+    specificVideos = getVideos(time, language)
+    return render_template("dashboard.html", year=copyright_year, videos=specificVideos, time=time, language=language)
 
 
-@app.route("/Api")
+@app.route("/api/request")
+def apiRequest():
+    time = request.args.get("time", default="daily")
+    language = request.args.get("lang", default="EN")
+    top = request.args.get("top", default=25, type=int)
+
+    if time in TIME and language in LANGUAGE and top > 0:
+        requestedVideos = list(getVideos(time, language).values())[:top]
+        response = {
+            "Request": f"The Top {top} {time} videos in {language}",
+            "Date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+            "Result": requestedVideos,
+        }
+
+    else:
+        response = {"Result": "You gave an invalid request."}
+
+    return jsonify(response)
+
+
+@app.route("/Api-Docs")
 def api():
     return render_template("api.html", year=copyright_year)
 
@@ -26,7 +53,7 @@ def email():
     return render_template("email.html", year=copyright_year)
 
 
-@app.route("/SMS")
+@app.route("/Messages")
 def sms():
     return render_template("sms.html", year=copyright_year)
 
@@ -49,6 +76,14 @@ def about_us():
 @app.route("/Contact")
 def contact():
     return render_template("contact.html", year=copyright_year)
+
+
+def getVideos(time, language):
+    with open(f"videos/{time}.json", "r") as file:
+        timeVideos = json.load(file)
+
+    langSpecificVideos = {key: value for key, value in timeVideos.items() if value["language"] == language}
+    return langSpecificVideos
 
 
 def formatViewCount(number):

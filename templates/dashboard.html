@@ -3,9 +3,24 @@
 {% endblock %} {% block content %}
 <main id="videolist">
    <div id="selecters">
-      <h5>Sort Video by :</h5>
-      <h5>Language :</h5>
+      <div>
+         <label>Sort Time :</label>
+         <select id="time">
+            {% for optionValue, optionLabel in [('daily', 'Day'), ('weekly', 'Week'), ('monthly', 'Month'), ('yearly', 'Year')] %}
+            <option value="{{ optionValue }}" {% if time == optionValue %}selected{% endif %}>{{ optionLabel }}</option>
+            {% endfor %}
+         </select>
+      </div>
+      <div>
+         <label>Language :</label>
+         <select id="language">
+            {% for optionValue, optionLabel in [('EN', '🇬🇧 English'), ('FR', '🇫🇷 French'), ('ES', '🇪🇸 Spanish'), ('DE', '🇩🇪 Deutsch'), ('PT', '🇵🇹 Portuguese'), ('RU', '🇷🇺 Russian'), ('HI', '🇮🇳 Hindi')] %}
+            <option value="{{ optionValue }}" {% if language == optionValue %}selected{% endif %}>{{ optionLabel }}</option>
+            {% endfor %}
+         </select>
+      </div>
    </div>
+
    <div id="allvideos">
       {% for video_id, video in videos.items() %}
       <div class="video">
