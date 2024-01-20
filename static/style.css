@@ -265,7 +265,7 @@ footer p {
 }
 
 .introductory * {
-   margin: 40px;
+   margin: 30px;
 }
 
 .alt_text {
@@ -286,7 +286,7 @@ footer p {
    justify-content: center;
    background: url("./Assets/abstactaBG.svg");
    background-color: #02596e;
-   filter: brightness(0.9);
+   filter: brightness(0.8);
    border: 5px solid rgb(10, 10, 10);
    background-size: cover;
    background-position: center;
@@ -370,6 +370,20 @@ section.activated {
 #selecters {
    display: flex;
    justify-content: space-evenly;
+   font-size: 1.25rem;
+}
+
+label {
+   margin-right: 1rem;
+}
+
+select {
+   padding: 5px;
+   font-size: 1rem;
+   color: rgb(30, 30, 30);
+   background-color: rgb(220, 240, 240);
+   border: #303030 solid 1px;
+   border-radius: 5%;
 }
 
 #allvideos {
@@ -392,7 +406,7 @@ section.activated {
 .video:hover {
    scale: 1.0125;
    cursor: pointer;
-   background-color: #14a9ce;
+   background-color: #21b8dd;
    transition: 0.5s ease;
    text-decoration: none;
 }
