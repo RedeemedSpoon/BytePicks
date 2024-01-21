@@ -32,7 +32,7 @@ def apiRequest():
     if time in TIME and language in LANGUAGE and top > 0:
         requestedVideos = list(getVideos(time, language).values())[:top]
         response = {
-            "Request": f"The Top {top} {time} videos in {language}",
+            "Request": f"The top {top} {time} videos in {language}",
             "Date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
             "Result": requestedVideos,
         }

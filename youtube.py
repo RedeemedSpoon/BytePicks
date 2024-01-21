@@ -48,25 +48,24 @@ def search():
 
 
 def updateInfoChannels():
-    for channel in searchedChannels:
-        if channelDF[channelDF["ChannelID"] == channel].empty:
-            request = service.channels().list(part=["snippet", "statistics", "brandingSettings"], id=channel)
-            response = request.execute()
+    for channel in channelDF["ChannelID"]:
+        request = service.channels().list(part=["snippet", "statistics", "brandingSettings"], id=channel)
+        response = request.execute()
 
-            channelInfo = {
-                "ChannelID": response["items"][0]["id"],
-                "ChannelName": response["items"][0]["snippet"]["title"],
-                "ChannelIcon": response["items"][0]["snippet"]["thumbnails"]["medium"]["url"],
-                "ChannelUrl": f'https://www.youtube.com/{response["items"][0]["snippet"]["customUrl"]}',
-                "ExistedSince": response["items"][0]["snippet"]["publishedAt"].split("T")[0],
-                "SubscriberCount": int(response["items"][0]["statistics"]["subscriberCount"]),
-                "VideoCount": int(response["items"][0]["statistics"]["videoCount"]),
-                "ViewCount": int(response["items"][0]["statistics"]["viewCount"]),
-                "Country": response["items"][0]["snippet"].get("country", "Unknown"),
-                "Language": response["items"][0]["snippet"].get("defaultLanguage", "Unknown"),
-            }
+        channelInfo = {
+            "ChannelID": response["items"][0]["id"],
+            "ChannelName": response["items"][0]["snippet"]["title"],
+            "ChannelIcon": response["items"][0]["snippet"]["thumbnails"]["medium"]["url"],
+            "ChannelUrl": f'https://www.youtube.com/{response["items"][0]["snippet"]["customUrl"]}',
+            "ExistedSince": response["items"][0]["snippet"]["publishedAt"].split("T")[0],
+            "SubscriberCount": int(response["items"][0]["statistics"]["subscriberCount"]),
+            "VideoCount": int(response["items"][0]["statistics"]["videoCount"]),
+            "ViewCount": int(response["items"][0]["statistics"]["viewCount"]),
+            "Country": response["items"][0]["snippet"].get("country", "Unknown"),
+            "Language": response["items"][0]["snippet"].get("defaultLanguage", "Unknown"),
+        }
 
-            channels.append(channelInfo)
+        channels.append(channelInfo)
 
     df = pd.DataFrame(channels)
     df.to_csv("data/channels.csv", index=False)

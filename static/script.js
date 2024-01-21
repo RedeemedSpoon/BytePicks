@@ -81,4 +81,41 @@ document.addEventListener("DOMContentLoaded", function () {
          }
       });
    }
+   if (window.location.pathname === "/Api-Docs") {
+      const languageButtons = document.querySelectorAll(".programmingLanguage");
+      const codeBlocks = document.querySelectorAll(".code");
+      function showCode(language) {
+         codeBlocks.forEach((block) => {
+            if (block.classList.contains(language)) {
+               block.style.display = "block";
+               languageButtons.forEach((button) => {
+                  button.classList.remove("selected");
+                  if (button.id === language) {
+                     button.classList.add("selected");
+                  }
+               });
+            } else {
+               block.style.display = "none";
+            }
+         });
+      }
+
+      languageButtons.forEach((button) => {
+         button.addEventListener("click", function () {
+            const language = this.id;
+            showCode(language);
+         });
+      });
+
+      showCode("python");
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+         anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            document.querySelector(this.getAttribute("href")).scrollIntoView({
+               behavior: "smooth",
+            });
+         });
+      });
+   }
 });

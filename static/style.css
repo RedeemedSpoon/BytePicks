@@ -66,8 +66,9 @@
 
 body {
    font-family: "Levenim_MT", fallback_font_family, sans-serif;
-   background-color: rgb(240, 255, 255);
+   background-color: rgb(240, 250, 250);
    color: rgb(22, 22, 22);
+   scroll-behavior: smooth;
 }
 
 a {
@@ -406,7 +407,7 @@ select {
 .video:hover {
    scale: 1.0125;
    cursor: pointer;
-   background-color: #21b8dd;
+   background-color: rgb(190, 215, 215);
    transition: 0.5s ease;
    text-decoration: none;
 }
@@ -451,6 +452,117 @@ select {
 }
 
 /* ----- Api Page ----- */
+
+#partition {
+   position: fixed;
+   display: flex;
+   flex-direction: column;
+   margin: 3rem 15% 0 7.5%;
+   color: #303030;
+   gap: 1rem;
+}
+
+#api {
+   display: flex;
+   flex-direction: column;
+   margin: 7.5rem 15% 7.5rem 25%;
+   gap: 2rem;
+}
+
+ul {
+   margin-left: 3rem;
+}
+
+ul * {
+   padding: 5px 0;
+}
+
+.url {
+   padding: 10px;
+   max-width: 50%;
+   border-radius: 2%;
+   color: #c9ced6;
+   background-color: #282c33;
+   font-family: "Droid Sans Mono", monospace;
+   font-size: 1.125rem;
+}
+
+.code {
+   padding: 10px;
+   max-width: 75%;
+   border-radius: 1%;
+   border: 1px solid #abb2bf;
+   color: #abb2bf;
+   background-color: #282c33;
+   font-family: "Droid Sans Mono", monospace;
+   font-size: 1rem;
+}
+
+.output {
+   padding: 10px;
+   max-width: 75%;
+   border-radius: 1%;
+   border: 1px solid #abb2bf;
+   color: #abb2bf;
+   background-color: #282c33;
+   font-family: "Droid Sans Mono", monospace;
+   font-size: 1rem;
+}
+
+#buttons {
+   display: flex;
+   margin: 0 0 -30px 30px;
+   gap: 3px;
+}
+
+.programmingLanguage {
+   background-color: #282c33;
+   color: #c9ced6;
+   border: none;
+   border-radius: 7.5%;
+   font-size: 1.375rem;
+   padding: 13px;
+}
+
+.programmingLanguage:hover {
+   cursor: pointer;
+}
+
+.selected {
+   background-color: #c9ced6;
+   color: #282c33;
+}
+
+.comment {
+   color: #797a7c;
+}
+
+.keyword {
+   color: #c778dd;
+}
+
+.function {
+   color: #62aeef;
+}
+
+.operator {
+   color: #55b6c2;
+}
+
+.int,
+.class,
+.const,
+.import {
+   color: #e5c07a;
+}
+
+.var {
+   color: #e06b74;
+}
+
+.str {
+   color: #98c179;
+}
 
 /* ----- Email & SMS Page ----- */
 
