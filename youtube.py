@@ -48,7 +48,7 @@ def search():
 
 
 def updateInfoChannels():
-    for channel in channelDF["ChannelID"]:
+    for channel in searchedChannels:
         request = service.channels().list(part=["snippet", "statistics", "brandingSettings"], id=channel)
         response = request.execute()
 
@@ -56,7 +56,7 @@ def updateInfoChannels():
             "ChannelID": response["items"][0]["id"],
             "ChannelName": response["items"][0]["snippet"]["title"],
             "ChannelIcon": response["items"][0]["snippet"]["thumbnails"]["medium"]["url"],
-            "ChannelUrl": f'https://www.youtube.com/{response["items"][0]["snippet"]["customUrl"]}',
+            "ChannelUrl": f'https://www.youtube.com/{response["items"][0]["snippet"].get("customUrl", "None")}',
             "ExistedSince": response["items"][0]["snippet"]["publishedAt"].split("T")[0],
             "SubscriberCount": int(response["items"][0]["statistics"]["subscriberCount"]),
             "VideoCount": int(response["items"][0]["statistics"]["videoCount"]),
@@ -122,7 +122,7 @@ def fetchNewVideos():
 
                 viewCount = response["items"][0]["statistics"]["viewCount"]
                 likeCount = response["items"][0]["statistics"]["likeCount"]
-                commentCount = response["items"][0]["statistics"]["commentCount"]
+                commentCount = response["items"][0]["statistics"].get("commentCount", 0)
                 categoryId = response["items"][0]["snippet"]["categoryId"]
                 contentRating = response["items"][0]["contentDetails"]["contentRating"]
                 definition = response["items"][0]["contentDetails"]["definition"]

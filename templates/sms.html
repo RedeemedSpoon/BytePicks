@@ -1,9 +1,13 @@
 {% extends "base.html" %} {% block title %}
-<title>Byte Picks - Message</title>
+<title>Byte Picks - SMS</title>
 {% endblock %} {% block content %}
-<h1>Receive Messages About The Best Tech Videos From Us</h1>
-<p>Stay updated with the latest and most insightful tech videos curated just for you by Byte Picks. From in-depth reviews to cutting-edge innovations, we've got it all covered.</p>
-<button>Subscribe Via SMS</button>
-<p>Alternatively, you can opt for <a href="{{ url_for('email') }}">Email notifications</a> or just visit <a href="{{ url_for('dashboard') }}">our dashboard.</a></p>
-<p>Don't miss out on the opportunity to elevate your tech knowledge and be part of a community that shares your passion. Subscribe today and be a part of Byte Picks!</p>
+<img class="decoration left" src="{{ url_for('static', filename='Assets/sms.svg') }}" alt="sms"/>
+<img class="decoration right" src="{{ url_for('static', filename='Assets/phone.svg') }}" alt="phone"/>
+<main class="communication">
+   <h2>Receive Messages About The Best Tech Videos From Us</h2>
+   <h6>Stay updated with the latest and most insightful tech videos curated just for you by Byte Picks. From in-depth reviews to cutting-edge innovations, we've got it all covered, for free.</h6>
+   <button class="subscribe" style="border-radius: 5px 20px 10px 30px">Subscribe Via SMS</button>
+   <h5>Alternatively, you can opt for <a href="{{ url_for('email') }}">Email notifications</a> or just visit <a href="{{ url_for('dashboard') }}">our dashboard.</a></h5>
+   <h6>Don't miss out on the opportunity to elevate your tech knowledge and be part of a community that shares your passion. Subscribe today and be a part of Byte Picks!</h6>
+</main>
 {% endblock %}

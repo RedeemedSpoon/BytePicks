@@ -308,16 +308,14 @@ img[alt="All YT Thumbnail"] {
    border: 1px solid rgb(30, 30, 30);
    box-shadow: 0 0 5px rgb(10, 10, 10);
    animation: slide 80s infinite linear;
-   border-radius: 2%;
+   border-radius: 10px;
    margin: 20px;
 }
 
 section {
    opacity: 0;
    transform: translateY(50px);
-   transition:
-      opacity 2s ease,
-      transform 1s ease;
+   transition: opacity 2s ease, transform 1s ease;
 }
 
 section.activated {
@@ -336,7 +334,7 @@ section.activated {
    display: flex;
    justify-self: center;
    height: 30rem;
-   border-radius: 5%;
+   border-radius: 20px;
    border: 2px solid #02596e;
    grid-area: 1 / 1 / 1 / 1;
 }
@@ -384,7 +382,7 @@ select {
    color: rgb(30, 30, 30);
    background-color: rgb(220, 240, 240);
    border: #303030 solid 1px;
-   border-radius: 5%;
+   border-radius: 5px;
 }
 
 #allvideos {
@@ -401,7 +399,7 @@ select {
    grid-template-columns: 60px 300px;
    font-family: "Lato", sans-serif;
    transition: 0.5s ease;
-   border-radius: 5%;
+   border-radius: 20px;
 }
 
 .video:hover {
@@ -417,7 +415,7 @@ select {
    align-self: center;
    justify-self: center;
    width: 300px;
-   border-radius: 2%;
+   border-radius: 5px;
    grid-area: 1 / 1 / 1 / 3;
 }
 
@@ -429,7 +427,7 @@ select {
    grid-area: 1 / 1 / 1 / 3;
    background-color: rgba(0, 0, 0, 0.75);
    color: rgb(210, 230, 230);
-   border-radius: 10%;
+   border-radius: 2px;
    padding: 3px;
 }
 
@@ -480,7 +478,7 @@ ul * {
 .url {
    padding: 10px;
    max-width: 50%;
-   border-radius: 2%;
+   border-radius: 15px;
    color: #c9ced6;
    background-color: #282c33;
    font-family: "Droid Sans Mono", monospace;
@@ -490,7 +488,7 @@ ul * {
 .code {
    padding: 10px;
    max-width: 75%;
-   border-radius: 1%;
+   border-radius: 20px;
    border: 1px solid #abb2bf;
    color: #abb2bf;
    background-color: #282c33;
@@ -501,7 +499,7 @@ ul * {
 .output {
    padding: 10px;
    max-width: 75%;
-   border-radius: 1%;
+   border-radius: 20px;
    border: 1px solid #abb2bf;
    color: #abb2bf;
    background-color: #282c33;
@@ -519,7 +517,7 @@ ul * {
    background-color: #282c33;
    color: #c9ced6;
    border: none;
-   border-radius: 7.5%;
+   border-radius: 5px;
    font-size: 1.375rem;
    padding: 13px;
 }
@@ -566,9 +564,138 @@ ul * {
 
 /* ----- Email & SMS Page ----- */
 
-/* ----- Explaination Page ----- */
+.decoration {
+   position: absolute;
+   filter: invert(15%);
+   top: 35vh;
+   height: 250px;
+   z-index: -1;
+}
+
+.right {
+   right: 30px;
+   rotate: -15deg;
+}
+
+.left {
+   left: 30px;
+   rotate: 15deg;
+}
+
+.communication {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   text-align: center;
+   flex-direction: column;
+   margin: 7.5rem 15rem;
+   gap: 5rem;
+}
+
+.subscribe {
+   background-color: #0b89a8;
+   color: rgb(230, 250, 250);
+   border-radius: 30px 10px 20px 5px;
+   box-shadow: 5px 5px 0 rgb(30, 30, 30);
+   transition: 0.5s ease;
+   border: none;
+   font-size: 2rem;
+   padding: 20px;
+}
+
+.subscribe:hover {
+   cursor: pointer;
+   scale: 1.075;
+   background-color: #157a94;
+   transition: 0.5s ease;
+}
 
 /* ----- Contact Page ----- */
+
+.submitbtn {
+   width: 75%;
+   padding: 10px;
+   margin-top: 50px;
+   transition: 0.5s ease;
+   font-size: 1.25rem;
+   background-color: #0b89a8;
+   color: rgb(230, 250, 250);
+   border-radius: 5px;
+   border: none;
+}
+
+.submitbtn:hover {
+   cursor: pointer;
+   background-color: #157a94;
+   transition: 0.5s ease;
+}
+
+form {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   row-gap: 3rem;
+   margin: 3rem 5rem;
+}
+
+.form-group {
+   display: flex;
+   align-items: flex-start;
+   width: fit-content;
+   column-gap: 5rem;
+}
+
+.form-group div {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   width: 20rem;
+}
+
+.form-group label {
+   font-size: 1.35rem;
+   font-weight: bold;
+}
+
+.form-group small {
+   font-size: 0.85rem;
+}
+
+input,
+textarea {
+   font-family: "Lato", sans-serif;
+   color: #303030;
+   font-size: 20px;
+   min-width: 50rem;
+   background-color: rgb(250, 250, 250);
+   border: 1px solid #a3a5a8;
+   border-radius: 5px;
+}
+
+input {
+   min-height: 3rem;
+   padding: 0 5px;
+}
+
+textarea {
+   padding: 5px;
+   min-height: 20rem;
+   resize: none;
+}
+
+/* ----- Explaination Page ----- */
+
+#explaination {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   text-align: center;
+   flex-direction: column;
+   margin: 7.5rem 15rem;
+   gap: 5rem;
+}
 
 /* ----- About Me  & Privacy Policy Page ----- */
 
