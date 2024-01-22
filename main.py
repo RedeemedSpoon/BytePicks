@@ -109,4 +109,4 @@ def formatDuration(duration):
 
 if __name__ == "__main__":
     app.jinja_env.globals.update(formatViewCount=formatViewCount, formatDuration=formatDuration)
-    app.run(debug=True)
+    app.run()
