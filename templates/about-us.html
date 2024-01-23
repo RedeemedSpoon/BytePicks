@@ -2,14 +2,15 @@
 <title>Byte Picks - About Me</title>
 {% endblock %} {% block content %}
 <main class="plain_text">
-   <h2>Who Are We?</h2>
+   <h2>Who Are We ?</h2>
    <p>
       When I say 'We,' I'm referring to a lone individual. A humble developer navigating the expansive landscapes of technology. My journey is propelled by a fervor for constructing solutions, frequently encountering captivating ideas that may not
       have a monumental purpose but endure because they align with my hobbies and contribute to my continuous learning. Every so often, amidst these explorations, I stumble upon ideas that turn out to be genuinely beneficial, not only to myself but
       potentially to others as well.
    </p>
 
-   <h4>Why Byte Picks Exists</h4>
+   <h4>Why Byte Picks Exists ?</h4>
+   <img id="based" src="{{ url_for('static', filename='Assets/example.png') }}" alt="Byte Picks" />
    <p>
       Byte Picks didn't materialize on a whim, it was born out of a genuine need. In a digital landscape drowning in content (especially on <a href="https://www.youtube.com">Youtube</a>), I envisioned a platform that stands out by prioritizing
       quality over quantity. Byte Picks strives to be a sanctuary for tech enthusiasts, providing a curated, relevant, and insightful collection without the overwhelming noise.
@@ -21,7 +22,7 @@
       quality tech insights, one pick at a time.
    </p>
 
-   <h4>How We Developed Byte Picks</h4>
+   <h4>How We Developed Byte Picks ?</h4>
    <p>
       Interested in the nuts and bolts? Byte Picks is built using vanilla HTML/CSS/JS, with Python serving as the backend powerhouse. The process involves clever utilization of loops and CSV to fetch new videos, employing JSON and a
       <a href="{{ url_for('explaination') }}">specialized algorithm</a> for ranking, filtering, and storing the content. Flask takes the stage for preparing the webpage and API. Additional tools in the arsenal include Twilio for SMS, SMTP for Email,
@@ -35,7 +36,7 @@
       world.
    </p>
 
-   <h4>Can You Contribute?</h4>
+   <h4>Can You Contribute ?</h4>
    <p>
       Without a doubt! Byte Picks resides on <a href="https://RedeemedSpoon.github.com/Byte Picks">GitHub</a>, and I welcome contributions from fellow tech enthusiasts. Join me in shaping and enhancing Byte Picks into something even more remarkable!
    </p>

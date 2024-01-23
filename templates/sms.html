@@ -1,8 +1,37 @@
 {% extends "base.html" %} {% block title %}
 <title>Byte Picks - SMS</title>
 {% endblock %} {% block content %}
-<img class="decoration left" src="{{ url_for('static', filename='Assets/sms.svg') }}" alt="sms"/>
-<img class="decoration right" src="{{ url_for('static', filename='Assets/phone.svg') }}" alt="phone"/>
+<div class="popup">
+   <div class="popup-content">
+      <h3 style="margin-top: 2rem">Subcribe to our Newletter</h3>
+      <img src="{{ url_for('static', filename='Assets/chat.png') }}" alt="sms image" />
+      <form action="{{ url_for('sms')}}" method="post">
+         <div>
+            <label>Choose The Time :</label>
+            <select id="time">
+               {% for optionValue, optionLabel in [('daily', 'Day'), ('weekly', 'Week'), ('monthly', 'Month'), ('yearly', 'Year')] %}
+               <option name="time" value="{{ optionValue }}">{{ optionLabel }}</option>
+               {% endfor %}
+            </select>
+         </div>
+         <div>
+            <label>Choose The Language :</label>
+            <select id="language">
+               {% for optionValue, optionLabel in [('EN', '🇬🇧 English'), ('FR', '🇫🇷 French'), ('ES', '🇪🇸 Spanish'), ('DE', '🇩🇪 Deutsch'), ('PT', '🇵🇹 Portuguese'), ('RU', '🇷🇺 Russian'), ('HI', '🇮🇳 Hindi')] %}
+               <option name="language" value="{{ optionValue }}">{{ optionLabel }}</option>
+               {% endfor %}
+            </select>
+         </div>
+         <div style="display: flex">
+            <button type="submit" id="subscribe">Subscribe</button>
+            <button type="button" id="cancel">Cancel</button>
+         </div>
+      </form>
+   </div>
+</div>
+
+<img class="decoration left" src="{{ url_for('static', filename='Assets/sms.svg') }}" alt="sms" />
+<img class="decoration right" src="{{ url_for('static', filename='Assets/phone.svg') }}" alt="phone" />
 <main class="communication">
    <h2>Receive Messages About The Best Tech Videos From Us</h2>
    <h6>Stay updated with the latest and most insightful tech videos curated just for you by Byte Picks. From in-depth reviews to cutting-edge innovations, we've got it all covered, for free.</h6>

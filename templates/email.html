@@ -1,8 +1,37 @@
 {% extends "base.html" %} {% block title %}
 <title>Byte Picks - Email</title>
 {% endblock %} {% block content %}
-<img class="decoration left" src="{{ url_for('static', filename='Assets/email.svg') }}" alt="email"/>
-<img class="decoration right" src="{{ url_for('static', filename='Assets/open.svg') }}" alt="open email"/>
+<div class="popup">
+   <div class="popup-content">
+      <h3 style="margin-top: 2rem;">Subcribe to our Newletter</h3>
+      <img src="{{ url_for('static', filename='Assets/envelope.png') }}" alt="mail image" />
+      <form action="{{ url_for('email')}}" method="post">
+         <div>
+            <label>Choose The Time :</label>
+            <select id="time">
+               {% for optionValue, optionLabel in [('daily', 'Day'), ('weekly', 'Week'), ('monthly', 'Month'), ('yearly', 'Year')] %}
+               <option name="time" value="{{ optionValue }}">{{ optionLabel }}</option>
+               {% endfor %}
+            </select>
+         </div>
+         <div>
+            <label>Choose The Language :</label>
+            <select id="language">
+               {% for optionValue, optionLabel in [('EN', '🇬🇧 English'), ('FR', '🇫🇷 French'), ('ES', '🇪🇸 Spanish'), ('DE', '🇩🇪 Deutsch'), ('PT', '🇵🇹 Portuguese'), ('RU', '🇷🇺 Russian'), ('HI', '🇮🇳 Hindi')] %}
+               <option name="language" value="{{ optionValue }}">{{ optionLabel }}</option>
+               {% endfor %}
+            </select>
+         </div>
+         <div style="display: flex">
+            <button type="submit" id="subscribe">Subscribe</button>
+            <button type="button" id="cancel">Cancel</button>
+         </div>
+      </form>
+   </div>
+</div>
+
+<img class="decoration left" src="{{ url_for('static', filename='Assets/email.svg') }}" alt="email" />
+<img class="decoration right" src="{{ url_for('static', filename='Assets/open.svg') }}" alt="open email" />
 <main class="communication">
    <h2>Get the Best Tech Updates Delivered Straight to Your Inbox</h2>
    <h6>Stay ahead of the curve with Byte Picks' curated tech content sent directly to your email. Receive the latest trends and must-watch YouTube videos related to technology, for free.</h6>
