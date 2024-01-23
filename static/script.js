@@ -1,10 +1,10 @@
-document.addEventListener("DOMContentLoaded", function () {
+$(document).ready(function () {
    if (window.location.pathname === "/") {
-      const altHeader = document.querySelector(".alt_header");
-      const logo = document.querySelector(".alt_header img");
-      const welcomeImg = document.querySelector('img[alt="Welcome Image"]');
-      const sections = Array.from(document.querySelectorAll("section"));
-      const typetext = document.querySelector("#welcome_text");
+      const altHeader = $(".alt_header");
+      const logo = $(".alt_header img");
+      const welcomeImg = $(".welcome img");
+      const sections = $("section");
+      const typetext = $("#welcome_text");
       const textList = ["Your Gateway to Wonders!", "Discover, Learn, and Thrive.", "Quality Over Quantity.", "Tech Vibes, No Limits!", "Masterpieces at Your Fingertips!", "Elevate Your Online Experience!", "Where Ideas Take Flight!"];
       let index = 0;
       let charIndex = 0;
@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
       function typeText() {
          let currentText = textList[index];
          if (!isDeleting) {
-            typetext.textContent = currentText.substring(0, charIndex);
+            typetext.text(currentText.substring(0, charIndex));
             charIndex++;
 
             if (charIndex > currentText.length) {
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
                setTimeout(typeText, 75);
             }
          } else {
-            typetext.textContent = currentText.substring(0, charIndex);
+            typetext.text(currentText.substring(0, charIndex));
             charIndex--;
 
             if (charIndex < 0) {
@@ -36,86 +36,89 @@ document.addEventListener("DOMContentLoaded", function () {
          }
       }
 
-      if (welcomeImg && typetext) {
+      if (welcomeImg.length > 0 && typetext.length > 0) {
          typeText();
       }
 
-      let sectionTriggers = sections.map(() => false);
+      let sectionTriggers = Array(sections.length).fill(false);
       const activateSection = (section, triggerPosition, offset, triggeredFlag) => {
-         if (!triggeredFlag && window.scrollY - offset > triggerPosition) {
-            section.classList.add("activated");
+         if (!triggeredFlag && $(window).scrollTop() - offset > triggerPosition) {
+            section.addClass("activated");
             triggeredFlag = true;
          }
 
          return triggeredFlag;
       };
 
-      window.addEventListener("scroll", () => {
-         const triggerWelcomeImgPosition = welcomeImg.getBoundingClientRect().bottom + 500;
+      $(window).scroll(() => {
+         const triggerWelcomeImgPosition = welcomeImg.offset().top - welcomeImg.outerHeight() - 600;
 
-         if (window.scrollY > triggerWelcomeImgPosition) {
-            altHeader.classList.add("new_alt_header");
-            logo.style.filter = "invert(0%)";
+         if ($(window).scrollTop() > triggerWelcomeImgPosition) {
+            altHeader.addClass("new_alt_header");
+            logo.css("filter", "invert(0%)");
          } else {
-            altHeader.classList.remove("new_alt_header");
-            logo.style.filter = "invert(90%)";
+            altHeader.removeClass("new_alt_header");
+            logo.css("filter", "invert(90%)");
          }
 
-         sections.forEach((section, index) => {
-            const triggerSectionPosition = section.getBoundingClientRect().top;
-            const offset = index <= 3 ? index * 500 + 250 : 0;
-            sectionTriggers[index] = activateSection(section, triggerSectionPosition, offset, sectionTriggers[index]);
+         sections.each((index, section) => {
+            const triggerSectionPosition = $(section).offset().top;
+            const offset = index <= 3 ? index * 100 - 1000 : 0;
+            sectionTriggers[index] = activateSection($(section), triggerSectionPosition, offset, sectionTriggers[index]);
          });
       });
    } else if (window.location.pathname === "/Dashboard") {
-      $(document).ready(function () {
-         $("select").change(function () {
-            updateURL();
-         });
-
-         function updateURL() {
-            let time = $("#time").val();
-            let language = $("#language").val();
-            let url = `${window.location.pathname}?time=${time}&lang=${language}`;
-            window.location.href = url;
-         }
+      $("select").change(function () {
+         updateURL();
       });
-   }
-   if (window.location.pathname === "/Api-Docs") {
-      const languageButtons = document.querySelectorAll(".programmingLanguage");
-      const codeBlocks = document.querySelectorAll(".code");
+
+      function updateURL() {
+         let time = $("#time").val();
+         let language = $("#language").val();
+         let url = `${window.location.pathname}?time=${time}&lang=${language}`;
+         window.location.href = url;
+      }
+   } else if (window.location.pathname === "/Api-Docs") {
+      const languageButtons = $(".programmingLanguage");
+      const codeBlocks = $(".code");
       function showCode(language) {
-         codeBlocks.forEach((block) => {
-            if (block.classList.contains(language)) {
-               block.style.display = "block";
-               languageButtons.forEach((button) => {
-                  button.classList.remove("selected");
-                  if (button.id === language) {
-                     button.classList.add("selected");
-                  }
-               });
+         codeBlocks.each((index, block) => {
+            if ($(block).hasClass(language)) {
+               $(block).css("display", "block");
+               languageButtons.removeClass("selected");
+               languageButtons.filter(`#${language}`).addClass("selected");
             } else {
-               block.style.display = "none";
+               $(block).css("display", "none");
             }
          });
       }
 
-      languageButtons.forEach((button) => {
-         button.addEventListener("click", function () {
-            const language = this.id;
-            showCode(language);
-         });
+      languageButtons.click(function () {
+         const language = $(this).attr("id");
+         showCode(language);
       });
 
       showCode("python");
-      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-         anchor.addEventListener("click", function (e) {
-            e.preventDefault();
+      $('a[href^="#"]').click(function (e) {
+         e.preventDefault();
 
-            document.querySelector(this.getAttribute("href")).scrollIntoView({
-               behavior: "smooth",
-            });
+         $($(this).attr("href"))[0].scrollIntoView({
+            behavior: "smooth",
          });
+      });
+   } else if (window.location.pathname === "/Email" || window.location.pathname === "/Messages") {
+      const subBtn = $(".subscribe");
+      const cancelBtn = $("#cancel");
+      const popUp = $(".popup");
+
+      subBtn.click(function () {
+         $("body").css("overflow", "hidden");
+         popUp.show();
+      });
+
+      cancelBtn.click(function () {
+         $("body").css("overflow", "auto");
+         popUp.hide();
       });
    }
 });
