@@ -67,8 +67,8 @@
 body {
    font-family: "Levenim_MT", fallback_font_family, sans-serif;
    background-color: rgb(245, 250, 250);
-   color: rgb(22, 22, 22);
    scroll-behavior: smooth;
+   color: #252525;
 }
 
 a {
@@ -148,7 +148,7 @@ header a {
 
 .new_alt_header {
    background-color: rgb(215, 230, 230);
-   color: rgb(22, 22, 22);
+   color: #252525;
    transition: 0.5s ease;
 }
 
@@ -210,10 +210,6 @@ footer a {
 }
 
 #g9 {
-   grid-area: 4 / 4 / 4 / 4;
-}
-
-#g10 {
    grid-area: 5 / 1 / 5 / 4;
 }
 
@@ -287,7 +283,7 @@ footer p {
    justify-content: center;
    background: url("./Assets/abstactaBG.svg");
    background-color: #02596e;
-   filter: brightness(0.8);
+   filter: brightness(0.8125);
    border: 5px solid rgb(10, 10, 10);
    background-size: cover;
    background-position: center;
@@ -300,7 +296,7 @@ img[alt="Grunge"] {
    position: absolute;
    object-fit: cover;
    object-position: center;
-   opacity: 0.2;
+   opacity: 0.175;
    z-index: 1;
 }
 
@@ -441,7 +437,7 @@ select {
 
 .yt_info {
    min-width: 250px;
-   color: rgb(22, 22, 22) !important;
+   color: #252525 !important;
    grid-area: 2 / 2 / 2 / 3;
 }
 
@@ -475,17 +471,7 @@ ul * {
    padding: 5px 0;
 }
 
-.url {
-   padding: 10px;
-   max-width: 50%;
-   border-radius: 15px;
-   color: #c9ced6;
-   background-color: #282c33;
-   font-family: "Droid Sans Mono", monospace;
-   font-size: 1.125rem;
-}
-
-.code {
+.api_call_example {
    padding: 10px;
    max-width: 75%;
    border-radius: 20px;
@@ -496,14 +482,15 @@ ul * {
    font-size: 1rem;
 }
 
-.output {
-   padding: 10px;
+.code {
+   padding: 10px 40px 10px 10px;
    max-width: 75%;
-   border-radius: 20px;
    border: 1px solid #abb2bf;
+   border-radius: 20px;
    color: #abb2bf;
    background-color: #282c33;
    font-family: "Droid Sans Mono", monospace;
+   text-align: left;
    font-size: 1rem;
 }
 
@@ -513,7 +500,7 @@ ul * {
    gap: 3px;
 }
 
-.programmingLanguage {
+.programming_language {
    background-color: #282c33;
    color: #c9ced6;
    border: none;
@@ -522,7 +509,7 @@ ul * {
    padding: 13px;
 }
 
-.programmingLanguage:hover {
+.programming_language:hover {
    cursor: pointer;
 }
 
@@ -562,23 +549,23 @@ ul * {
    color: #98c179;
 }
 
-/* ----- Email & SMS Page ----- */
+/* ----- Newsletter Page ----- */
 
 .decoration {
    position: absolute;
-   filter: invert(25%);
-   top: 35vh;
-   height: 200px;
+   filter: invert(20%);
+   top: 37.5vh;
+   height: 175px;
    z-index: -1;
 }
 
 .right {
-   right: 30px;
+   right: 7.5rem;
    rotate: -15deg;
 }
 
 .left {
-   left: 30px;
+   left: 7.5rem;
    rotate: 15deg;
 }
 
@@ -787,6 +774,14 @@ textarea {
    gap: 5rem;
 }
 
+#explaination h4 {
+   margin: -1.5rem;
+}
+
+#explaination p {
+   margin: -1.25rem;
+}
+
 /* ----- About Me & Privacy Policy Page ----- */
 
 .plain_text {
@@ -803,4 +798,5 @@ textarea {
    align-self: center;
    border: 3px solid #0b89a8;
    border-radius: 15px;
+   margin-bottom: 15px;
 }

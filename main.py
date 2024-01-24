@@ -48,14 +48,9 @@ def api():
     return render_template("api.html", year=copyright_year)
 
 
-@app.route("/Email")
-def email():
-    return render_template("email.html", year=copyright_year)
-
-
-@app.route("/Messages")
-def sms():
-    return render_template("sms.html", year=copyright_year)
+@app.route("/Newsletter")
+def newsletter():
+    return render_template("newsletter.html", year=copyright_year)
 
 
 @app.route("/Explaination")
@@ -82,7 +77,7 @@ def getVideos(time, language):
     with open(f"videos/{time}.json", "r") as file:
         timeVideos = json.load(file)
 
-    langSpecificVideos = {key: value for key, value in timeVideos.items() if value["language"] == language}
+    langSpecificVideos = {key: value for key, value in timeVideos.items() if value["language"][:2] == language}
     return langSpecificVideos
 
 

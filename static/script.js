@@ -79,8 +79,8 @@ $(document).ready(function () {
          window.location.href = url;
       }
    } else if (window.location.pathname === "/Api-Docs") {
-      const languageButtons = $(".programmingLanguage");
-      const codeBlocks = $(".code");
+      const languageButtons = $(".programming_language");
+      const codeBlocks = $(".api_call_example");
       function showCode(language) {
          codeBlocks.each((index, block) => {
             if ($(block).hasClass(language)) {
@@ -106,7 +106,7 @@ $(document).ready(function () {
             behavior: "smooth",
          });
       });
-   } else if (window.location.pathname === "/Email" || window.location.pathname === "/Messages") {
+   } else if (window.location.pathname === "/Newsletter") {
       const subBtn = $(".subscribe");
       const cancelBtn = $("#cancel");
       const popUp = $(".popup");
@@ -119,6 +119,13 @@ $(document).ready(function () {
       cancelBtn.click(function () {
          $("body").css("overflow", "auto");
          popUp.hide();
+      });
+
+      popUp.click(function (event) {
+         if (!$(event.target).closest(".popup-content").length) {
+            $("body").css("overflow", "auto");
+            popUp.hide();
+         }
       });
    }
 });
