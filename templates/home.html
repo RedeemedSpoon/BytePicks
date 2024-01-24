@@ -7,9 +7,9 @@
    </a>
    <div>
       <a href="{{ url_for('dashboard') }}">DashBoard</a>
+      <a href="{{ url_for('newsletter') }}">Newsletter</a>
       <a href="{{ url_for('api') }}">Api Docs</a>
-      <a href="{{ url_for('email') }}">Inbox Mail</a>
-      <a href="{{ url_for('sms') }}" style="padding-right: 15px">Message</a>
+      <a href="{{ url_for('contact') }}" style="padding-right: 15px">Contact</a>
    </div>
 </header>
 {% endblock %} {% block content %}
@@ -49,12 +49,12 @@
    </section>
 
    <section class="welcome">
-      <img style="grid-area: 1 / 2 / 1 / 2 !important" src="{{ url_for('static', filename='Assets/means.jpg') }}" alt="Email & SMS" />
+      <img style="grid-area: 1 / 2 / 1 / 2 !important" src="{{ url_for('static', filename='Assets/means.jpg') }}" alt="Newsletter" />
       <div style="grid-area: 1 / 1 / 1 / 1 !important">
          <h1>Stay Connected, Anytime, Anywhere</h1>
          <p>
-            Whether you're on the move or relaxing at home, we've got you covered. Subscribe to our <a href="{{ url_for('email') }}">newsletter</a> for curated updates or opt for <a href="{{ url_for('sms') }}">SMS</a> notifications. Our goal? Making
-            quality tech easily accessible wherever you are.
+            Whether you're on the move or relaxing at home, we've got you covered. Subscribe to our <a href="{{ url_for('newsletter') }}">Newsletter</a> for curated updates everyday or week without hassle. Our goal? Making quality tech easily
+            accessible wherever you are.
          </p>
       </div>
    </section>
@@ -75,7 +75,7 @@
       <div style="grid-area: 1 / 1 / 1 / 1 !important">
          <h1>Got a Recommendation? Let's Hear It!</h1>
          <p>
-            Stumbled upon a fantastic creator we're yet to feature? Share your hidden gems with us. We're all ears and always on the lookout for fresh, top-tier content to elevate our community's experience. You can contact us
+            Stumbled upon a fantastic creator we're yet to feature? Share your hidden gems with us. We're all ears and always on the lookout for fresh, top-tier content to elevate our community's experience. You can contact us right
             <a href="{{ url_for('contact') }}">Here.</a>
          </p>
       </div>

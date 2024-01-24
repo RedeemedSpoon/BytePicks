@@ -3,7 +3,7 @@
    <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <meta name="keywords" content="tech, youtube, yt, api, SMS, email, best tech, technology, influencer, content creator, quality, trending" />
+      <meta name="keywords" content="tech, youtube, yt, api, newsletter, email, top, best tech, technology, influencer, content creator, quality, trending" />
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
       {% block title %}
       <title>Byte Picks</title>
@@ -18,7 +18,7 @@
       <meta property="og:type" content="website" />
       <meta property="og:title" content="Find The Best Picks In The Tech World" />
       <meta property="og:description" content="We filter out the junk in the tech influencer world to show you only the best there is for you, for free." />
-      <meta property="og:url" content="https://www.Byte Picks.onrender.com" />
+      <meta property="og:url" content="https://www.BytePicks.com" />
       <meta property="og:site_name" content="Byte Picks" />
       <meta property="og:image" content="{{ url_for('static', filename='Assets/Logo.svg') }}" />
       <meta property="og:image:secure_url" content="{{ url_for('static', filename='Assets/Logo.svg') }}" />
@@ -36,9 +36,9 @@
          </a>
          <div>
             <a href="{{ url_for('dashboard') }}">DashBoard</a>
+            <a href="{{ url_for('newsletter') }}">Newsletter</a>
             <a href="{{ url_for('api') }}">Api Docs</a>
-            <a href="{{ url_for('email') }}">Inbox Mail</a>
-            <a href="{{ url_for('sms') }}" style="padding-right: 15px">Message</a>
+            <a href="{{ url_for('contact') }}" style="padding-right: 20px">Contact</a>
          </div>
       </header>
       {% endblock %} {% block content %} {% endblock %}
@@ -47,14 +47,13 @@
             <img src="{{ url_for('static', filename='Assets/Byte Picks.svg') }}" alt="brand logo" />
          </a>
          <a href="{{ url_for('dashboard') }}" id="g2">DashBoard</a>
-         <a href="{{ url_for('api') }}" id="g3">Api Docs</a>
-         <a href="{{ url_for('email') }}" id="g4">Inbox Mail</a>
-         <a href="{{ url_for('sms') }}" id="g5">Message</a>
+         <a href="{{ url_for('newsletter') }}" id="g3">Newsletter</a>
+         <a href="{{ url_for('api') }}" id="g4">Api Docs</a>
+         <a href="{{ url_for('contact') }}" id="g5">Contact</a>
          <a href="{{ url_for('explaination') }}" id="g6">Behind The Scene</a>
          <a href="{{ url_for('privacy_policy') }}" id="g7">Privacy Policy</a>
          <a href="{{ url_for('about_us') }}" id="g8">About Us</a>
-         <a href="{{ url_for('contact') }}" id="g9">Contact</a>
-         <p id="g10">© {{year}} Byte Picks. All content on this website is licensed under the Creative Commons Zero (CC0)</p>
+         <p id="g9">© {{year}} Byte Picks. All content on this website is licensed under the <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International</a> (CC BY 4.0)</p>
       </footer>
       <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
       <script src="{{ url_for('static', filename='script.js') }}" async defer></script>

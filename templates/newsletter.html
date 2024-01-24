@@ -1,11 +1,11 @@
 {% extends "base.html" %} {% block title %}
-<title>Byte Picks - SMS</title>
+<title>Byte Picks - Newsletter</title>
 {% endblock %} {% block content %}
 <div class="popup">
    <div class="popup-content">
-      <h3 style="margin-top: 2rem">Subcribe to our Newletter</h3>
-      <img src="{{ url_for('static', filename='Assets/chat.png') }}" alt="sms image" />
-      <form action="{{ url_for('sms')}}" method="post">
+      <h3 style="margin-top: 2rem">Subcribe to our Newsletter</h3>
+      <img src="{{ url_for('static', filename='Assets/envelope.png') }}" alt="mail image" />
+      <form action="{{ url_for('newsletter')}}" method="post">
          <div>
             <label>Choose The Time :</label>
             <select id="time">
@@ -30,13 +30,13 @@
    </div>
 </div>
 
-<img class="decoration left" src="{{ url_for('static', filename='Assets/sms.svg') }}" alt="sms" />
-<img class="decoration right" src="{{ url_for('static', filename='Assets/phone.svg') }}" alt="phone" />
+<img class="decoration left" src="{{ url_for('static', filename='Assets/deco1.svg') }}" alt="email" />
+<img class="decoration right" src="{{ url_for('static', filename='Assets/deco2.svg') }}" alt="open email" />
 <main class="communication">
-   <h2>Receive Messages About The Best Tech Videos From Us</h2>
-   <h6>Stay updated with the latest and most insightful tech videos curated just for you by Byte Picks. From in-depth reviews to cutting-edge innovations, we've got it all covered, for free.</h6>
-   <button class="subscribe" style="border-radius: 5px 20px 10px 30px">Subscribe Via SMS</button>
-   <h5>Alternatively, you can opt for <a href="{{ url_for('email') }}">Email notifications</a> or just visit <a href="{{ url_for('dashboard') }}">our dashboard.</a></h5>
-   <h6>Don't miss out on the opportunity to elevate your tech knowledge and be part of a community that shares your passion. Subscribe today and be a part of Byte Picks!</h6>
+   <h2>Get the Best Tech Updates Delivered Straight to Your Inbox</h2>
+   <h6>Stay ahead of the curve with Byte Picks' curated tech content sent directly to your email. Receive the latest trends and must-watch YouTube videos related to technology, for free.</h6>
+   <button class="subscribe">Join Our Newsletter</button>
+   <h5>Alternatively, you can opt for <a href="{{ url_for('api') }}">Api requests</a> or just visit <a href="{{ url_for('dashboard') }}">our dashboard.</a></h5>
+   <h6>Experience convenience with Byte Picks Newsletter. Get timely updates without having to search for the best content. It's all delivered right to your inbox!</h6>
 </main>
 {% endblock %}

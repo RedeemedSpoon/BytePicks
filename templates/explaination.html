@@ -1,33 +1,55 @@
 {% extends "base.html" %} {% block title %}
 <title>Byte Picks - Behind the Scene</title>
+{% endblock %} {% block content %}
 <main id="explaination">
-   <h1>On Progress...</h1>
+   <h1 style="margin-bottom: -20px">Behind The Scene</h1>
+   <h4>How do we differ from the competition ?</h4>
    <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eu euismod arcu, sed interdum ligula. Curabitur in convallis felis, et tincidunt risus. Phasellus rhoncus ultrices justo sed auctor. In lacinia tempus interdum. Vivamus sit
-      amet sagittis mauris. Curabitur maximus orci ut mi eleifend vulputate. Sed ut est ultrices, mollis mi sed, mollis augue. In odio ante, maximus nec risus sit amet, finibus elementum erat. Sed id ullamcorper nisl.
+      We, at Byte Picks, do things a bit differently than the usual platforms. Our approach to content selection and filtering is unique, backed by advanced algorithms that always showcase our content in the best light for our users. We employ
+      cutting-edge tools and techniques to keep things modern.
    </p>
    <p>
-      Vestibulum scelerisque est scelerisque lacus tincidunt tempus. Nulla facilisi. Donec cursus libero sit amet lectus consequat laoreet. Phasellus venenatis varius orci. Ut ex nibh, vulputate eu ipsum a, vehicula feugiat tortor. Donec vitae felis
-      in nulla facilisis dapibus id ac augue. Aenean consectetur placerat risus, ut commodo lorem efficitur ut. Pellentesque lobortis metus sed lacus interdum vestibulum. Pellentesque quis justo eget dui molestie venenatis non a odio. Nulla sagittis
-      erat nec magna bibendum semper. Sed dictum tellus lorem, a suscipit orci vehicula porttitor. Nunc quis ante in nunc egestas tempus. Suspendisse semper urna purus, vel egestas velit efficitur eu.
+      But hey, we're not keeping these secrets to ourselves, we believe in transparency and continuous improvement, just like any good community does. So, here's the lowdown on our all-mighty algorithm and genius engineering to make such a thing
+      happen. Check out our open-source <a href="https://github.com/RedeemedSpoon/BytePicks">code</a>, contribute if you fancy, and remember, we're all ears for your ideas!
+   </p>
+   <h4>How we operate under the hood ?</h4>
+   <p>
+      Beneath the surface, our web service's codebase is openly available on GitHub, a testament to our commitment to transparency and collaboration. Simplifying our hosting needs, we leverage Render to power our website, manage the backend, take
+      care of the boring admin tasks and automate recurring tasks. The essential components of our digital identity, including the URL and communication email, are derived from Namecheap. There are our only expences, which is impressively low, under
+      $10 a month, and everything is taken care of. Power of the cloud I guess...
    </p>
    <p>
-      Sed nunc nisi, vehicula in ullamcorper sit amet, vulputate quis sem. Integer tristique odio in ante rhoncus, at hendrerit mi vehicula. Vivamus ac malesuada quam. Praesent facilisis, nisi a porttitor ornare, nisi neque rutrum risus, non
-      condimentum ante lectus ut mauris. Cras laoreet leo sed felis interdum, id fermentum sapien porta. Sed eget dignissim velit. Mauris at lorem quis purus convallis accumsan. Quisque vel mauris dui. Nunc nibh lorem, dapibus eu placerat quis,
-      maximus ut lectus. Donec tristique facilisis lacus in varius. Praesent tincidunt sed mauris eget varius. Mauris et auctor eros.
+      Transitioning to the heart of our operation, Python emerges as a pivotal player. Flask, a powerful web framework, orchestrates URL handling, redirects, flashes, form data collection, and the creation of a RESTful API through the magic, with
+      some help of Jinja templating. At a deeper level, we employ Pandas for storing, analyzing, and manipulating channel data in a covert CSV format. The unsung hero, JSON, becomes the linchpin for simple yet effective data storage and retrieval
+      within the market context. Never thought in my life I would love anything remotely close to JavaScript.
    </p>
    <p>
-      Nunc pretium sapien lectus, tempus consequat diam blandit quis. Quisque at magna volutpat, pretium massa et, pulvinar quam. Quisque in aliquam massa. Nullam et vestibulum est, id egestas eros. Donec at feugiat augue, mollis efficitur felis.
-      Nunc tempor ligula quis orci malesuada viverra. Ut euismod egestas dui, ut rhoncus felis sollicitudin id. Nam eget sapien nec purus pretium egestas non at augue. Cras sit amet faucibus massa. Vivamus blandit nibh at lorem imperdiet, et
-      fringilla lacus luctus. Mauris gravida metus eget lobortis finibus. Etiam nec ex eu orci volutpat efficitur. Morbi laoreet dui et dolor interdum, eu interdum eros tempor.
+      Notably, SQLite steps in as the guardian of sensitive information, safeguarding user email, channels Information and preferences. A sprinkle of additional libraries, such as jQuery and python isodate, join the ensemble to enhance functionality
+      and interactivity. And all of this isn't even remotely complicated or impressive for today's standards for web development, which will make some sure pee their pants.
    </p>
+
+   <h4>How we collect YouTube data ?</h4>
    <p>
-      Nulla tincidunt quam sed placerat tempor. Duis pulvinar, metus sit amet dictum malesuada, velit magna imperdiet orci, vel iaculis tortor dolor fringilla eros. In a libero purus. Nullam non tincidunt orci. Donec egestas arcu eu enim interdum
-      venenatis. Ut dignissim laoreet felis eget auctor. Sed vestibulum ornare aliquam. Cras sit amet pulvinar arcu.
+      Thanks to the robust infrastructure provided by Google (obviously they are Google), we tap into the YouTube API with finesse, wielding nothing more than an API key and a few lines of code. Simplifying this process even further is the Google API
+      client library for Python, aptly named googleapiclient offering us simple functions to call and some parameters. I just need to have an api key that I got the google cloud console with over a 10,000 quota points which is more then enough for
+      me. Here is a code snippet example:
    </p>
-   <p>
-      Proin tincidunt lacus. Fusce ullamcorper interdum nisi eu dictum. Etiam sem risus, auctor vel erat id, pellentesque tincidunt nunc. Praesent aliquam, metus egestas scelerisque laoreet, magna nibh condimentum augue, ac dictum augue odio sed
-      dolor.
-   </p>
+   <pre class="code"><code>
+   <span class="keyword">import</span> <span class="import">os</span>
+   <span class="keyword">from</span> <span class="import">googleapiclient</span>.<span class="import">discovery</span> <span class="keyword">import</span> <span class="function">build</span>
+
+   <span class="keyword">if</span> <span class="var">__name__</span> <span class="operator">==</span> <span class="str">"__main__"</span>:
+      <span class="const">API_KEY</span> <span class="operator">=</span> <span class="import">os</span>.<span class="var">environ</span>.<span class="function">get</span>(<span class="str">"YT_API_KEY"</span>)
+      <span class="var">service</span> <span class="operator">=</span> <span class="function">build</span>(<span class="str">"youtube"</span>, <span class="str">"v3"</span>, <span class="const">API_KEY</span>)
+   </code></pre>
+
+   <h4>how we dicover & find new channels ?</h4>
+   <p>YT search, update info</p>
+   <h4>How we get the videos ?</h4>
+   <p>fetch new videos loop</p>
+   <h4>How we sort, rank & store these videos ?</h4>
+   <p>algorithm, store videos</p>
+   <h4>How we automate this ?</h4>
+   <p>cron, render magics</p>
 </main>
-{% endblock %} {% block content %} {% endblock %}
+{% endblock %}

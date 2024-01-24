@@ -24,27 +24,26 @@ DURATIONS_MAPPING = [
 
 
 def search():
-    nextPageToken = None
-    while True:
-        request = service.search().list(
-            q="technology | programming | coding | computer science | software development | cloud computing | cybersecurity | IT | data science | artificial intelligence | machine learning | web development | devops | robotics | algorithms | databases | networking | programming tutorials | software engineering",
-            type="channel",
-            part="id",
-            maxResults=50,
-            order="relevance",
-            relevanceLanguage="en",
-            regionCode="US",
-            pageToken=nextPageToken,
-        )
+    global curPageToken
+    request = service.search().list(
+        q="technology | programming | coding | computer science | software development | cloud computing | cybersecurity | IT | data science | artificial intelligence | machine learning | web development | devops | robotics | algorithms | databases | networking | programming tutorials | software engineering | hacking | ai | hardware reviews | software reviews",
+        type="channel",
+        part="id",
+        maxResults=50,
+        order="relevance",
+        relevanceLanguage="fr",
+        regionCode="FR",
+        pageToken=curPageToken,
+    )
 
-        response = request.execute()
-        for item in response.get("items", []):
-            channel_id = item["id"]["channelId"]
-            searchedChannels.append(channel_id)
+    response = request.execute()
+    for item in response.get("items", []):
+        channel_id = item["id"]["channelId"]
+        searchedChannels.append(channel_id)
 
-        nextPageToken = response.get("nextPageToken")
-        if not nextPageToken:
-            break
+    curPageToken = response.get("nextPageToken")
+    if curPageToken is not None:
+        search()
 
 
 def updateInfoChannels():
@@ -68,6 +67,9 @@ def updateInfoChannels():
         channels.append(channelInfo)
 
     df = pd.DataFrame(channels)
+    df = pd.concat([channelDF, df], ignore_index=True)
+    df.drop_duplicates(inplace=True)
+    df.dropna(inplace=True)
     df.to_csv("data/channels.csv", index=False)
 
 
@@ -106,10 +108,8 @@ def fetchNewVideos():
         for item in response["items"]:
             try:
                 videoId = item["contentDetails"]["upload"]["videoId"]
-
             except KeyError:
                 pass
-
             else:
                 channelName = item["snippet"]["channelTitle"]
                 channelId = item["snippet"]["channelId"]
@@ -210,14 +210,15 @@ def storeVideos():
 
 
 if __name__ == "__main__":
-    global channelDF, service, yesterday, today, Videos, searchedChannels
+    global channelDF, service, yesterday, today, Videos, searchedChannels, curPageToken
 
     API_KEY = os.environ.get("YT_API_KEY")
-    today = datetime.date.today()
-    yesterday = datetime.date.today() - datetime.timedelta(days=1)
     service = build("youtube", "v3", developerKey=API_KEY)
     channelDF = pd.read_csv("data/channels.csv")
+    today = datetime.date.today()
+    yesterday = datetime.date.today() - datetime.timedelta(days=1)
     searchedChannels = []
+    curPageToken = None
     channels = []
     Videos = {}
 
