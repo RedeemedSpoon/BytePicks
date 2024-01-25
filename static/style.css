@@ -534,19 +534,23 @@ ul * {
    color: #55b6c2;
 }
 
-.int,
-.class,
-.const,
-.import {
-   color: #e5c07a;
-}
-
 .var {
    color: #e06b74;
 }
 
 .str {
    color: #98c179;
+}
+
+.int,
+.class,
+.import {
+   color: #e5c07a;
+}
+
+.bool,
+.const {
+   color: #d19a66;
 }
 
 /* ----- Newsletter Page ----- */
@@ -780,6 +784,12 @@ textarea {
 
 #explaination p {
    margin: -1.25rem;
+}
+
+.python_img {
+   width: 50%;
+   border: 4px solid #252525;
+   border-radius: 15px;
 }
 
 /* ----- About Me & Privacy Policy Page ----- */

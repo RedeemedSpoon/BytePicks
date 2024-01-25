@@ -3,11 +3,10 @@ import os, datetime, isodate, json, sys
 from math import sqrt, log
 import pandas as pd
 
-MIN_DUR = isodate.parse_duration("PT10S")
+MIN_DUR = isodate.parse_duration("PT30S")
 MAX_DUR = isodate.parse_duration("PT10H")
-FIELDS = (
-    "items(snippet(title,publishedAt,channelTitle,channelId,thumbnails/medium/url), contentDetails(upload/videoId))"
-)
+LANGUAGE = ["EN", "FR", "ES", "DE", "PT", "RU", "HI"]
+FIELDS = "items(snippet(title,publishedAt,channelTitle,channelId,thumbnails/medium/url), contentDetails(upload/videoId))"
 
 CAPTION_MAPPING = {None: 0.975}
 RATING_MAPPING = {None: 1}
@@ -38,8 +37,8 @@ def search():
 
     response = request.execute()
     for item in response.get("items", []):
-        channel_id = item["id"]["channelId"]
-        searchedChannels.append(channel_id)
+        tempId = item["id"]["channelId"]
+        searchedChannels.append(tempId)
 
     curPageToken = response.get("nextPageToken")
     if curPageToken is not None:
@@ -68,8 +67,7 @@ def updateInfoChannels():
 
     df = pd.DataFrame(channels)
     df = pd.concat([channelDF, df], ignore_index=True)
-    df.drop_duplicates(inplace=True)
-    df.dropna(inplace=True)
+    df.drop_duplicates(inplace=True).dropna(inplace=True)
     df.to_csv("data/channels.csv", index=False)
 
 
@@ -78,7 +76,7 @@ def allMightyAlgorithm(video: json, vidDuration: isodate, SubscriberCount: str) 
     NRLCommentCount = log(video["CommentCount"] + 1)
     NRLViewCount = log(video["ViewCount"] + 1)
 
-    viewRate = sqrt(NRLViewCount) / 3.5
+    viewRate = NRLViewCount / 3.50
     likeRate = NRLLikeCount / NRLViewCount
     commentRate = NRLCommentCount / NRLViewCount * 1.25
 
@@ -88,7 +86,7 @@ def allMightyAlgorithm(video: json, vidDuration: isodate, SubscriberCount: str) 
     durQuality = next((quality for duration, quality in DURATIONS_MAPPING if vidDuration < duration), 0.90)
     subBalance = next((balance for channel, balance in SUBSCRIBER_MAPPING.items() if SubscriberCount < channel), 0.925)
 
-    qualityMultiplier = subBalance * defQuality * capQuality * ratQuality * durQuality
+    qualityMultiplier = float(subBalance * defQuality * capQuality * ratQuality * durQuality)
     rating = round((viewRate + likeRate + commentRate) * qualityMultiplier * 100, 3)
     return rating
 
@@ -107,23 +105,20 @@ def fetchNewVideos():
         response = request.execute()
         for item in response["items"]:
             try:
-                videoId = item["contentDetails"]["upload"]["videoId"]
-            except KeyError:
-                pass
-            else:
                 channelName = item["snippet"]["channelTitle"]
                 channelId = item["snippet"]["channelId"]
                 videoTitle = item["snippet"]["title"]
+                videoId = item["contentDetails"]["upload"]["videoId"]
                 publishedAt = item["snippet"]["publishedAt"][:16].replace("T", " ")
                 thumbnailUrl = item["snippet"]["thumbnails"]["medium"]["url"]
 
                 request = service.videos().list(id=videoId, part=["statistics", "snippet", "contentDetails"])
                 response = request.execute()
 
-                viewCount = response["items"][0]["statistics"]["viewCount"]
-                likeCount = response["items"][0]["statistics"]["likeCount"]
-                commentCount = response["items"][0]["statistics"].get("commentCount", 0)
-                categoryId = response["items"][0]["snippet"]["categoryId"]
+                viewCount = int(response["items"][0]["statistics"]["viewCount"])
+                likeCount = int(response["items"][0]["statistics"]["likeCount"])
+                commentCount = int(response["items"][0]["statistics"].get("commentCount", 0))
+                categoryId = int(response["items"][0]["snippet"]["categoryId"])
                 contentRating = response["items"][0]["contentDetails"]["contentRating"]
                 definition = response["items"][0]["contentDetails"]["definition"]
                 duration = isodate.parse_duration(response["items"][0]["contentDetails"]["duration"])
@@ -134,30 +129,32 @@ def fetchNewVideos():
                     )
                 ).upper()
 
-                fullVideoDetails = {
-                    "ChannelName": channelName,
-                    "ChannelId": channelId,
-                    "ChannelIcon": channelDF[channelDF["ChannelID"] == channelId]["ChannelIcon"].values[0],
-                    "ChannelUrl": channelDF[channelDF["ChannelID"] == channelId]["ChannelUrl"].values[0],
-                    "VideoUrl": f"https://www.youtube.com/watch?v={videoId}",
-                    "VideoTitle": videoTitle,
-                    "VideoId": videoId,
-                    "PublishedDate": publishedAt,
-                    "Thumbnail": thumbnailUrl,
-                    "Duration": str(duration).split(", ")[1] if ", " in str(duration) else str(duration),
-                    "Definition": str(definition).upper(),
-                    "language": language,
-                    "Caption": False if caption == "false" else True,
-                    "ContentRating": False if not contentRating else True,
-                    "ViewCount": int(viewCount),
-                    "LikeCount": int(likeCount),
-                    "CommentCount": int(commentCount),
-                    "CategoryId": int(categoryId),
-                }
+                if categoryId in [27, 28] and viewCount > 1000 and MIN_DUR < duration < MAX_DUR and language[:2] in LANGUAGE:
+                    fullVideoDetails = {
+                        "ChannelName": channelName,
+                        "ChannelId": channelId,
+                        "ChannelIcon": channelDF[channelDF["ChannelID"] == channelId]["ChannelIcon"].values[0],
+                        "ChannelUrl": channelDF[channelDF["ChannelID"] == channelId]["ChannelUrl"].values[0],
+                        "VideoUrl": f"https://www.youtube.com/watch?v={videoId}",
+                        "VideoTitle": videoTitle,
+                        "VideoId": videoId,
+                        "PublishedDate": publishedAt,
+                        "Thumbnail": thumbnailUrl,
+                        "Duration": str(duration).split(", ")[1] if ", " in str(duration) else str(duration),
+                        "Definition": str(definition).upper(),
+                        "language": language,
+                        "Caption": False if caption == "false" else True,
+                        "ContentRating": False if not contentRating else True,
+                        "ViewCount": int(viewCount),
+                        "LikeCount": int(likeCount),
+                        "CommentCount": int(commentCount),
+                        "CategoryId": int(categoryId),
+                    }
 
-                if int(categoryId) in [27, 28] and int(viewCount) > 1000 and duration > MIN_DUR and duration < MAX_DUR:
                     videoRating = allMightyAlgorithm(fullVideoDetails, duration, subcriberCount)
                     Videos[videoRating] = fullVideoDetails
+            except:
+                pass
 
 
 def deleteOldVideos():
@@ -222,7 +219,7 @@ if __name__ == "__main__":
     channels = []
     Videos = {}
 
-    if sys.argv[1] == "search":
+    if len(sys.argv) > 1 and sys.argv[1] == "search":
         search()
         updateInfoChannels()
         exit(0)
