@@ -25,13 +25,12 @@ DURATIONS_MAPPING = [
 def search():
     global curPageToken
     request = service.search().list(
-        q="technology | programming | coding | computer science | software development | cloud computing | cybersecurity | IT | data science | artificial intelligence | machine learning | web development | devops | robotics | algorithms | databases | networking | programming tutorials | software engineering | hacking | ai | hardware reviews | software reviews",
+        q="programming | coding | computer science | tech | ai | cloud computing | computer",
         type="channel",
         part="id",
         maxResults=50,
         order="relevance",
-        relevanceLanguage="fr",
-        regionCode="FR",
+        relevanceLanguage="en",
         pageToken=curPageToken,
     )
 
@@ -47,6 +46,7 @@ def search():
 
 def updateInfoChannels():
     for channel in searchedChannels:
+        print("Updating channel: " + channel)
         request = service.channels().list(part=["snippet", "statistics", "brandingSettings"], id=channel)
         response = request.execute()
 
@@ -62,12 +62,15 @@ def updateInfoChannels():
             "Country": response["items"][0]["snippet"].get("country", "Unknown"),
             "Language": response["items"][0]["snippet"].get("defaultLanguage", "Unknown"),
         }
-
-        channels.append(channelInfo)
+        if channelInfo["SubscriberCount"] > 10000:
+            channels.append(channelInfo)
 
     df = pd.DataFrame(channels)
     df = pd.concat([channelDF, df], ignore_index=True)
-    df.drop_duplicates(inplace=True).dropna(inplace=True)
+    df.drop_duplicates(inplace=True)
+    df.dropna(inplace=True)
+    to_drop = df["SubscriberCount"] < 10000
+    df.drop(df[to_drop].index, inplace=True)
     df.to_csv("data/channels.csv", index=False)
 
 

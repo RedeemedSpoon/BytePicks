@@ -1,18 +1,24 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, jsonify, request
 from datetime import datetime
-import json
+import json, secrets, string
+from common import *
 
 TIME = ["daily", "weeky", "monthy", "yearly"]
 LANGUAGE = ["EN", "FR", "ES", "DE", "PT", "RU", "HI"]
 app = Flask("__main__")
 copyright_year = datetime.now().year
-with open("videos/daily.json", "r") as file:
-    AllVideos = json.load(file)
+
+
+@app.teardown_request
+def teardown_request(exception=None):
+    session.close()
 
 
 @app.route("/")
 def home():
-    return render_template("home.html", year=copyright_year, videos=AllVideos)
+    with open("videos/daily.json", "r") as file:
+        homeThumbnails = json.load(file)
+    return render_template("home.html", year=copyright_year, videos=homeThumbnails)
 
 
 @app.route("/Dashboard")
@@ -21,6 +27,11 @@ def dashboard():
     language = request.args.get("lang", default="EN")
     specificVideos = getVideos(time, language)
     return render_template("dashboard.html", year=copyright_year, videos=specificVideos, time=time, language=language)
+
+
+@app.route("/Api-Docs")
+def api():
+    return render_template("api.html", year=copyright_year)
 
 
 @app.route("/api/request")
@@ -36,21 +47,45 @@ def apiRequest():
             "Date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
             "Result": requestedVideos,
         }
-
     else:
         response = {"Result": "You gave an invalid request."}
 
     return jsonify(response)
 
 
-@app.route("/Api-Docs")
-def api():
-    return render_template("api.html", year=copyright_year)
-
-
-@app.route("/Newsletter")
+@app.route("/Newsletter", methods=["GET", "POST"])
 def newsletter():
-    return render_template("newsletter.html", year=copyright_year)
+    message = None
+    if request.method == "POST":
+        email = request.form["user_email"]
+        time = request.form["time"]
+        language = request.form["language"]
+        token = "".join(secrets.choice(string.ascii_letters + string.digits) for _ in range(20))
+
+        user = session.query(User).filter_by(email=email).first()
+        if user:
+            user.time, user.language, user.token, message = time, language, token, "User info updated!"
+        else:
+            session.add(User(email=email, time=time, language=language, token=token))
+            message = "Thank you for subscribing!"
+        session.commit()
+
+    return render_template("newsletter.html", year=copyright_year, message=message)
+
+
+@app.route("/drop/user")
+def drop():
+    token = request.args.get("token", default=None)
+    if token is None:
+        return render_template("newsletter.html", year=copyright_year, message="Missing token")
+
+    user = session.query(User).filter_by(token=token).first()
+    if user:
+        session.delete(user)
+        session.commit()
+        return render_template("newsletter.html", year=copyright_year, message="User deleted")
+    else:
+        return render_template("newsletter.html", year=copyright_year, message="User not found")
 
 
 @app.route("/Explaination")
@@ -68,38 +103,18 @@ def about_us():
     return render_template("about-us.html", year=copyright_year)
 
 
-@app.route("/Contact")
+@app.route("/Contact", methods=["GET", "POST"])
 def contact():
-    return render_template("contact.html", year=copyright_year)
+    message = None
+    if request.method == "POST":
+        initializeEmail()
+        sender = "Anonymous Person" if request.form["name"] == "" else request.form["email"]
+        email = f"Subject: {request.form['subject']}\n\n{request.form['message']}\nThis message was sent by : {sender}"
+        server.sendmail(senderEmail, senderPassword, email)
+        server.close()
+        message = "Thank you for contacting us!"
 
-
-def getVideos(time, language):
-    with open(f"videos/{time}.json", "r") as file:
-        timeVideos = json.load(file)
-
-    langSpecificVideos = {key: value for key, value in timeVideos.items() if value["language"][:2] == language}
-    return langSpecificVideos
-
-
-def formatViewCount(number):
-    if number / 1_000 > 1:
-        return str(round(number / 1_000, 1)) + "K"
-    elif number / 1_000_000 > 1:
-        return str(round(number / 1_000_000, 1)) + "M"
-    elif number > 1_000_000_000:
-        return str(round(number / 1_000_000_000, 1)) + "B"
-    else:
-        return str(number)
-
-
-def formatDuration(duration):
-    hours, minutes, seconds = map(int, duration.split(":"))
-    if hours == 0 and minutes < 10:
-        return f"{minutes}:{seconds:02d}"
-    elif hours == 0:
-        return f"{minutes:02d}:{seconds:02d}"
-    else:
-        return duration
+    return render_template("contact.html", year=copyright_year, message=message)
 
 
 if __name__ == "__main__":

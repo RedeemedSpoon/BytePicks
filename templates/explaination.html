@@ -95,7 +95,8 @@
 
     <span class="var">df</span> <span class="operator"><span class="operator">=</span></span> <span class="var">pd</span>.<span class="class">DataFrame</span>(<span class="var">channels</span>)
     <span class="var">df</span> <span class="operator"><span class="operator">=</span></span> <span class="var">pd</span>.<span class="function">concat</span>([<span class="var">channelDF</span>, <span class="var">df</span>], <span class="var">ignore_index</span><span class="operator">=</span><span class="bool">True</span>)
-    <span class="var">df</span>.<span class="function">drop_duplicates</span>(<span class="var">inplace</span><span class="operator">=</span><span class="bool">True</span>).<span class="function">dropna</span>(<span class="var">inplace</span><span class="operator">=</span><span class="bool">True</span>)
+    <span class="var">df</span>.<span class="function">drop_duplicates</span>(<span class="var">inplace</span><span class="operator">=</span><span class="bool">True</span>)
+    <span class="var">df</span>.<span class="function">dropna</span>(<span class="var">inplace</span><span class="operator">=</span><span class="bool">True</span>)
     <span class="var">df</span>.<span class="function">to_csv</span>(<span class="str">"data/channels.csv"</span>, <span class="var">index</span><span class="operator">=</span><span class="bool">False</span>)
    </code></pre>
    <h4>How we get the videos ?</h4>
