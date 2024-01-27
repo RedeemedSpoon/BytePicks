@@ -391,7 +391,7 @@ select {
 
 .video {
    display: grid;
-   grid-template-rows: 210px 150px;
+   grid-template-rows: 210px 170px;
    grid-template-columns: 60px 300px;
    font-family: "Lato", sans-serif;
    transition: 0.5s ease;
@@ -401,7 +401,7 @@ select {
 .video:hover {
    scale: 1.0125;
    cursor: pointer;
-   background-color: rgb(190, 210, 210);
+   background-color: rgb(100, 200, 200);
    transition: 0.5s ease;
    text-decoration: none;
 }
@@ -633,7 +633,11 @@ ul * {
    align-self: center;
 }
 
-#subscribe {
+input[name="user_email"] {
+   min-width: 1.5rem;
+}
+
+.primarybtn {
    background-color: #0b89a8;
    color: #f9f9f9;
    border-radius: 5px;
@@ -641,10 +645,9 @@ ul * {
    font-size: 1.5rem;
    padding: 10px 15px;
    border: none;
-   margin-right: 2rem;
 }
 
-#subscribe:hover {
+.primarybtn:hover {
    cursor: pointer;
    background-color: #157a94;
    color: #f0f0f0;
@@ -732,7 +735,7 @@ textarea {
    color: #303030;
    font-size: 20px;
    min-width: 55rem;
-   background-color: #dfecf0;
+   background-color: rgb(240, 245, 245);
    border: 1px solid #a3a5a8;
    border-radius: 10px;
 }

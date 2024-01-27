@@ -1,29 +1,40 @@
 {% extends "base.html" %} {% block title %}
 <title>Byte Picks - Newsletter</title>
-{% endblock %} {% block content %}
-<div class="popup">
+{% endblock %} {% block content %} {% if message %}
+<div class="popup" style="display: block">
+   <div class="popup-content">
+      <h3 style="margin: 2rem 2rem 4rem 2rem">{{ message }}</h3>
+      <button class="primarybtn" id="closebtn" style="margin-bottom: 1rem; scale: 1.25">Close</button>
+   </div>
+</div>
+{% endif %}
+<div id="sub" class="popup">
    <div class="popup-content">
       <h3 style="margin-top: 2rem">Subcribe to our Newsletter</h3>
       <img src="{{ url_for('static', filename='Assets/envelope.png') }}" alt="mail image" />
       <form action="{{ url_for('newsletter')}}" method="post">
          <div>
+            <label>Email Address :</label>
+            <input name="user_email" type="email" required />
+         </div>
+         <div>
             <label>Choose The Time :</label>
-            <select id="time">
+            <select id="time" name="time">
                {% for optionValue, optionLabel in [('daily', 'Day'), ('weekly', 'Week'), ('monthly', 'Month'), ('yearly', 'Year')] %}
-               <option name="time" value="{{ optionValue }}">{{ optionLabel }}</option>
+               <option value="{{ optionValue }}">{{ optionLabel }}</option>
                {% endfor %}
             </select>
          </div>
          <div>
             <label>Choose The Language :</label>
-            <select id="language">
+            <select id="language" name="language">
                {% for optionValue, optionLabel in [('EN', '🇬🇧 English'), ('FR', '🇫🇷 French'), ('ES', '🇪🇸 Spanish'), ('DE', '🇩🇪 Deutsch'), ('PT', '🇵🇹 Portuguese'), ('RU', '🇷🇺 Russian'), ('HI', '🇮🇳 Hindi')] %}
-               <option name="language" value="{{ optionValue }}">{{ optionLabel }}</option>
+               <option value="{{ optionValue }}">{{ optionLabel }}</option>
                {% endfor %}
             </select>
          </div>
          <div style="display: flex">
-            <button type="submit" id="subscribe">Subscribe</button>
+            <button type="submit" class="primarybtn" style="margin-right: 2rem">Subscribe</button>
             <button type="button" id="cancel">Cancel</button>
          </div>
       </form>

@@ -106,10 +106,11 @@ $(document).ready(function () {
             behavior: "smooth",
          });
       });
-   } else if (window.location.pathname === "/Newsletter") {
+   } else if (window.location.pathname === "/Newsletter" || window.location.pathname === "/drop/user" || window.location.pathname === "/Contact") {
       const subBtn = $(".subscribe");
       const cancelBtn = $("#cancel");
       const popUp = $(".popup");
+      const closeBtn = $("#closebtn");
 
       subBtn.click(function () {
          $("body").css("overflow", "hidden");
@@ -122,10 +123,14 @@ $(document).ready(function () {
       });
 
       popUp.click(function (event) {
-         if (!$(event.target).closest(".popup-content").length) {
+         if (!$(event.target).closest("#sub .popup-content").length) {
             $("body").css("overflow", "auto");
             popUp.hide();
          }
+      });
+
+      closeBtn.click(function () {
+         popUp.hide();
       });
    }
 });

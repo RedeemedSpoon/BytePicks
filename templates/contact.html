@@ -1,6 +1,13 @@
 {% extends "base.html" %} {% block title %}
 <title>Byte Picks - Contact</title>
-{% endblock %} {% block content %}
+{% endblock %} {% block content %} {% if message %}
+<div class="popup" style="display: block">
+   <div class="popup-content">
+      <h3 style="margin: 2rem 2rem 4rem 2rem">{{ message }}</h3>
+      <button class="primarybtn" id="closebtn" style="margin-bottom: 1rem; scale: 1.25">Close</button>
+   </div>
+</div>
+{% endif %}
 <main class="contact">
    <h1>Contact Us</h1>
    <h6 style="margin: -2rem 0">Whether you have a question, feedback, or want to recommend a new creator for Byte Picks, We'd love to hear from you! Please use the form below to get in touch.</h6>
