@@ -107,11 +107,11 @@ def about_us():
 def contact():
     message = None
     if request.method == "POST":
-        initializeEmail()
-        sender = "Anonymous Person" if request.form["name"] == "" else request.form["email"]
-        email = f"Subject: {request.form['subject']}\n\n{request.form['message']}\nThis message was sent by : {sender}"
-        server.sendmail(senderEmail, senderPassword, email)
-        server.close()
+        subject = request.form["subject"]
+        sender = "Anonymous Person" if request.form["email"] == "" else request.form["email"]
+        message = f"{request.form["message"]}<br><br>This message was sent by : {sender}"
+
+        sendEmail(message, subject, "contact@bytepicks.com", "contact@bytepicks.com")
         message = "Thank you for contacting us!"
 
     return render_template("contact.html", year=copyright_year, message=message)
@@ -119,4 +119,4 @@ def contact():
 
 if __name__ == "__main__":
     app.jinja_env.globals.update(formatViewCount=formatViewCount, formatDuration=formatDuration)
-    app.run()
+    app.run(debug=True)

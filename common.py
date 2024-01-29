@@ -1,8 +1,13 @@
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import json, smtplib, os
-
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+from datetime import datetime, timezone
+import json, base64, os, requests
 
 engine = create_engine("sqlite:///data/newsletter.db", echo=True)
 Session = sessionmaker(bind=engine)
@@ -17,17 +22,6 @@ class User(Base):
     token = Column(String, nullable=False)
     time = Column(String)
     language = Column(String)
-
-
-def initializeEmail():
-    global senderEmail, senderPassword, smtpServer, smtpPort, server
-    senderEmail = "newsletter@bytepicks.com"
-    senderPassword = os.environ.get("BP_PASSWORD")
-    smtpServer = "smtp.bytepicks.com"
-    smtpPort = 587
-    server = smtplib.SMTP(smtpServer, smtpPort)
-    server.starttls()
-    server.login(senderEmail, senderPassword)
 
 
 def getVideos(time, language):
@@ -56,3 +50,54 @@ def formatDuration(duration):
         return f"{minutes:02d}:{seconds:02d}"
     else:
         return duration
+
+
+def sendEmail(body, subject, receiver, sender):
+    SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
+    creds = None
+
+    if os.path.exists("token.json"):
+        creds = Credentials.from_authorized_user_file("token.json", scopes=SCOPES)
+
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+            creds = flow.run_local_server(port=5000, access_type="offline", prompt="consent")
+
+        with open("token.json", "w") as token:
+            token.write(creds.to_json())
+
+    service = build("gmail", "v1", credentials=creds)
+    rawMessage = f"Content-Type: text/html; charset=utf-8\nFrom: {sender}\nTo: {receiver}\nSubject: {subject}\n\n{body}"
+    encoded_message = base64.urlsafe_b64encode(rawMessage.encode()).decode("utf-8")
+
+    service.users().messages().send(userId="me", body={"raw": encoded_message}).execute()
+    service.close()
+
+
+def getNewToken(refresh_token, client_id, client_secret):
+    token_endpoint = "https://oauth2.googleapis.com/token"
+    payload = {
+        "client_id": client_id,
+        "client_secret": client_secret,
+        "refresh_token": refresh_token,
+        "grant_type": "refresh_token",
+    }
+    response = requests.post(token_endpoint, data=payload)
+    return response.json()
+
+
+def updateToken():
+    with open("token.json", "r") as JsonFile:
+        tokenInfo = json.load(JsonFile)
+
+    expiryTime = datetime.fromisoformat(tokenInfo["expiry"]).replace(tzinfo=timezone.utc)
+    currentTime = datetime.now(timezone.utc)
+
+    if currentTime >= expiryTime:
+        newTokenInfo = getNewToken(tokenInfo["refresh_token"], tokenInfo["client_id"], tokenInfo["client_secret"])
+        if newTokenInfo["refresh_token"]:
+            with open("token.json", "w") as JsonFile:
+                json.dump(newTokenInfo, JsonFile, indent=2)
