@@ -1,22 +1,8 @@
 {% extends "base.html" %} {% block title %}
 <title>Byte Picks - Home</title>
-{% endblock %} {% block header %}
-<header class="alt_header">
-   <a href="{{ url_for('home') }}">
-      <img src="{{ url_for('static', filename='Assets/Byte Picks.svg') }}" style="filter: invert(90%)" alt="brand logo" />
-   </a>
-   <div>
-      <a href="{{ url_for('dashboard') }}">DashBoard</a>
-      <a href="{{ url_for('newsletter') }}">Newsletter</a>
-      <a href="{{ url_for('api') }}">Api Docs</a>
-      <a href="{{ url_for('contact') }}" style="padding-right: 15px">Contact</a>
-   </div>
-</header>
 {% endblock %} {% block content %}
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="{{ url_for('static', filename='script.js') }}" async defer></script>
 <main>
-   <img src="{{ url_for('static', filename='Assets/welcome.png') }}" alt="Welcome Image" draggable="false" style="filter: brightness(0.85)" />
+   <img src="{{ url_for('static', filename='Assets/welcome.png') }}" alt="Welcome Image" draggable="false" style="filter: brightness(0.85); width: 100%" />
    <div class="text-container">
       <h2>> <span id="welcome_text"></span><span class="cursor">_</span></h2>
    </div>

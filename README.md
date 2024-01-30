@@ -1,12 +1,12 @@
 ![BytePicks](./static/Assets/markdown.png)
 
-## Welcome to Byte Picks - Your Hub for Quality Tech Content!
+# Byte Picks - Your Hub for Quality Tech Content!
 
 [Byte Picks](https://bytepicks.com) is not your typical platform, it's where tech enthusiasts find top-notch content in a straightforward setting. Our mission is clear: to give you an easy way to discover excellent tech videos from YouTube without any unnecessary fuss. We're here to make sure you get quality without the complications.
 
 ## Why we Exist
 
-In the online world flooded with content, Byte Picks steps up to provide a comfy spot for nerds and whatnot. We get it – you want a place where you can find cool stuff without the extra noise. Byte Picks was born because we genuinely want to contribute to the tech community and share awesome insights with you. Quality is the name of our game.
+In the online world flooded with content, Byte Picks steps up to provide a comfy spot for nerds and whatnot. We get it, you want a place where you can find cool stuff without the extra noise. Byte Picks was born because we genuinely want to contribute to the tech community and share awesome insights with you. Quality is the name of our game.
 
 ## How to Use our Services
 

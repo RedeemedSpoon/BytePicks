@@ -149,7 +149,25 @@ header a {
 .new_alt_header {
    background-color: rgb(215, 230, 230);
    color: #252525;
-   transition: 0.5s ease;
+}
+
+.hamburger-menu {
+   display: none;
+   cursor: pointer;
+   margin-right: 20px;
+}
+
+.bar {
+   width: 25px;
+   height: 3px;
+   background-color: #333;
+   margin: 6px 0;
+}
+
+.visible {
+   display: flex !important;
+   flex-direction: column;
+   row-gap: 20px;
 }
 
 /* ----- Footer ----- */
@@ -220,13 +238,6 @@ footer p {
 }
 
 /* ----- Home Page ----- */
-
-#welcome {
-   width: 100%;
-   position: relative;
-   user-select: none;
-   outline: none;
-}
 
 #welcome_text {
    user-select: text;
@@ -812,4 +823,83 @@ textarea {
    border: 3px solid #0b89a8;
    border-radius: 15px;
    margin-bottom: 15px;
+}
+
+/* ----- Media Queries ----- */
+
+/* Extra small devices */
+@media only screen and (min-width: 250px) and (max-width: 549px) {
+   body {
+      background-color: #09026e;
+   }
+
+   .nav-links {
+      display: none;
+      top: 50px;
+      right: 20px;
+      position: absolute;
+      max-width: fit-content;
+      color: #252525;
+      background-color: rgb(230, 250, 250);
+      padding: 20px 10px;
+      border: 1px solid #252525;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgb(10, 10, 10);
+      z-index: 2;
+   }
+
+   .hamburger-menu {
+      display: block;
+   }
+
+   footer {
+      display: none;
+   }
+}
+
+/* Small devices */
+@media only screen and (min-width: 550px) and (max-width: 767px) {
+   body {
+      background-color: #6e0257;
+   }
+
+   .nav-links {
+      display: none;
+      top: 50px;
+      right: 20px;
+      position: absolute;
+      max-width: fit-content;
+      color: #252525;
+      background-color: rgb(230, 250, 250);
+      padding: 20px 10px;
+      border: 1px solid #252525;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgb(10, 10, 10);
+      z-index: 2;
+   }
+
+   .hamburger-menu {
+      display: block;
+   }
+}
+
+/* Medium devices  */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+   body {
+      background-color: #6e0f02;
+   }
+}
+
+/* Large devices */
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+   body {
+      background-color: #6e6c02;
+   }
+}
+
+/* Extra large devices */
+@media only screen and (min-width: 1200px) and (max-width: 1399px) {
+   body {
+      background-color: #0b9ea8;
+   }
 }

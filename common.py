@@ -1,15 +1,13 @@
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
+from google.oauth2.credentials import Credentials
 from googleapiclient.errors import HttpError
 from datetime import datetime, timezone
 import json, base64, os, requests
 
-engine = create_engine("sqlite:///data/newsletter.db", echo=True)
+engine = create_engine("sqlite:////var/data/newsletter.db", echo=True)
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
 session = Session()
@@ -25,7 +23,7 @@ class User(Base):
 
 
 def getVideos(time, language):
-    with open(f"videos/{time}.json", "r") as file:
+    with open(f"/var/data/{time}.json", "r") as file:
         timeVideos = json.load(file)
 
     return {key: value for key, value in timeVideos.items() if value["language"][:2] == language}
@@ -54,20 +52,7 @@ def formatDuration(duration):
 
 def sendEmail(body, subject, receiver, sender):
     SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
-    creds = None
-
-    if os.path.exists("token.json"):
-        creds = Credentials.from_authorized_user_file("token.json", scopes=SCOPES)
-
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
-            creds = flow.run_local_server(port=5000, access_type="offline", prompt="consent")
-
-        with open("token.json", "w") as token:
-            token.write(creds.to_json())
+    creds = Credentials.from_authorized_user_file("/var/data/token.json", scopes=SCOPES)
 
     service = build("gmail", "v1", credentials=creds)
     rawMessage = f"Content-Type: text/html; charset=utf-8\nFrom: {sender}\nTo: {receiver}\nSubject: {subject}\n\n{body}"
@@ -90,7 +75,7 @@ def getNewToken(refresh_token, client_id, client_secret):
 
 
 def updateToken():
-    with open("token.json", "r") as JsonFile:
+    with open("/var/data/token.json", "r") as JsonFile:
         tokenInfo = json.load(JsonFile)
 
     expiryTime = datetime.fromisoformat(tokenInfo["expiry"]).replace(tzinfo=timezone.utc)
@@ -99,5 +84,5 @@ def updateToken():
     if currentTime >= expiryTime:
         newTokenInfo = getNewToken(tokenInfo["refresh_token"], tokenInfo["client_id"], tokenInfo["client_secret"])
         if newTokenInfo["refresh_token"]:
-            with open("token.json", "w") as JsonFile:
+            with open("/var/data/token.json", "w") as JsonFile:
                 json.dump(newTokenInfo, JsonFile, indent=2)

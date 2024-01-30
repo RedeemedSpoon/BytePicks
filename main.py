@@ -16,7 +16,7 @@ def teardown_request(exception=None):
 
 @app.route("/")
 def home():
-    with open("videos/daily.json", "r") as file:
+    with open("/var/data/daily.json", "r") as file:
         homeThumbnails = json.load(file)
     return render_template("home.html", year=copyright_year, videos=homeThumbnails)
 
@@ -119,4 +119,4 @@ def contact():
 
 if __name__ == "__main__":
     app.jinja_env.globals.update(formatViewCount=formatViewCount, formatDuration=formatDuration)
-    app.run(debug=True)
+    app.run()
