@@ -62,7 +62,7 @@ def updateInfoChannels():
             "Country": response["items"][0]["snippet"].get("country", "Unknown"),
             "Language": response["items"][0]["snippet"].get("defaultLanguage", "Unknown"),
         }
-        if channelInfo["SubscriberCount"] > 10000:
+        if channelInfo["SubscriberCount"] > 10_000:
             channels.append(channelInfo)
 
     df = pd.DataFrame(channels)
@@ -71,7 +71,7 @@ def updateInfoChannels():
     df.dropna(inplace=True)
     to_drop = df["SubscriberCount"] < 10000
     df.drop(df[to_drop].index, inplace=True)
-    df.to_csv("data/channels.csv", index=False)
+    df.to_csv("/var/data/channels.csv", index=False)
 
 
 def allMightyAlgorithm(video: json, vidDuration: isodate, SubscriberCount: str) -> int:
@@ -95,6 +95,7 @@ def allMightyAlgorithm(video: json, vidDuration: isodate, SubscriberCount: str) 
 
 
 def fetchNewVideos():
+    global oldItem
     for channel in channelDF["ChannelID"]:
         subcriberCount = channelDF[channelDF["ChannelID"] == channel]["SubscriberCount"].values[0]
         request = service.activities().list(
@@ -108,6 +109,9 @@ def fetchNewVideos():
         response = request.execute()
         for item in response["items"]:
             try:
+                if item["contentDetails"]["upload"]["videoId"] == oldItem:
+                    break
+
                 channelName = item["snippet"]["channelTitle"]
                 channelId = item["snippet"]["channelId"]
                 videoTitle = item["snippet"]["title"]
@@ -156,71 +160,76 @@ def fetchNewVideos():
 
                     videoRating = allMightyAlgorithm(fullVideoDetails, duration, subcriberCount)
                     Videos[videoRating] = fullVideoDetails
+                    oldItem = videoId
             except:
                 pass
 
 
 def deleteOldVideos():
     if today.weekday() == 0:
-        with open("videos/weekly.json", "w") as f:
+        with open("/var/data/weekly.json", "w") as f:
             json.dump({}, f)
 
     if today.day == 1:
-        with open("videos/monthly.json", "w") as f:
+        with open("/var/data/monthly.json", "w") as f:
             json.dump({}, f)
 
     if today.day == 1 and today.month == 1:
-        with open("videos/yearly.json", "w") as f:
+        with open("/var/data/yearly.json", "w") as f:
             json.dump({}, f)
 
 
 def storeVideos():
     bestVideo = dict(sorted(Videos.items(), key=lambda item: float(item[0]), reverse=True)[:25])
-    with open("videos/daily.json", "w") as f:
+    with open("/var/data/daily.json", "w") as f:
         json.dump(bestVideo, f, indent=3)
 
     dayTop = dict(list(bestVideo.items())[:5])
-    with open("videos/weekly.json", "r") as f:
+    with open("/var/data/weekly.json", "r") as f:
         existingWeekly = json.load(f)
 
     existingWeekly.update(dayTop)
     existingWeekly = dict(sorted(existingWeekly.items(), key=lambda item: float(item[0]), reverse=True))
-    with open("videos/weekly.json", "w") as f:
+    with open("/var/data/weekly.json", "w") as f:
         json.dump(existingWeekly, f, indent=3)
 
     if today.weekday() == 0:
         weekTop = dict(sorted(existingWeekly.items(), key=lambda item: float(item[0]), reverse=True)[:10])
-        with open("videos/monthly.json", "r") as f:
+        with open("/var/data/monthly.json", "r") as f:
             existingMonthly = json.load(f)
 
         existingMonthly.update(weekTop)
         existingMonthly = dict(sorted(existingMonthly.items(), key=lambda item: float(item[0]), reverse=True))
-        with open("videos/monthly.json", "w") as f:
+        with open("/var/data/monthly.json", "w") as f:
             json.dump(existingMonthly, f, indent=3)
 
     if today.day == 1:
         monthTop = dict(sorted(existingMonthly.items(), key=lambda item: float(item[0]), reverse=True)[:5])
-        with open("videos/yearly.json", "r") as f:
+        with open("/var/data/yearly.json", "r") as f:
             existingYearly = json.load(f)
 
         existingYearly.update(monthTop)
         existingYearly = dict(sorted(existingYearly.items(), key=lambda item: float(item[0]), reverse=True))
-        with open("videos/yearly.json", "w") as f:
+        with open("/var/data/yearly.json", "w") as f:
             json.dump(existingYearly, f, indent=3)
 
 
-if __name__ == "__main__":
-    global channelDF, service, yesterday, today, Videos, searchedChannels, curPageToken
-
-    API_KEY = os.environ.get("YT_API_KEY")
-    service = build("youtube", "v3", developerKey=API_KEY)
-    channelDF = pd.read_csv("data/channels.csv")
+def initialize():
+    global channelDF, service, yesterday, today, Videos, searchedChannels, channels, oldItem, curPageToken
+    channelDF = pd.read_csv("/var/data/channels.csv")
     today = datetime.date.today()
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
+    API_KEY = os.environ.get("YT_API_KEY")
+    service = build("youtube", "v3", developerKey=API_KEY)
     searchedChannels = []
     curPageToken = None
     channels = []
     Videos = {}
+    oldItem = {}
+
+
+if __name__ == "__main__":
+    initialize()
 
     if len(sys.argv) > 1 and sys.argv[1] == "search":
         search()

@@ -1,7 +1,13 @@
 $(document).ready(function () {
+   function toggleMenu() {
+      $(".nav-links").toggleClass("visible");
+   }
+
+   $(".hamburger-menu").click(toggleMenu);
    if (window.location.pathname === "/") {
-      const altHeader = $(".alt_header");
-      const logo = $(".alt_header img");
+      const altHeader = $("header");
+      const logo = $("header img");
+      const bar = $(".bar");
       const welcomeImg = $(".welcome img");
       const sections = $("section");
       const typetext = $("#welcome_text");
@@ -50,14 +56,19 @@ $(document).ready(function () {
          return triggeredFlag;
       };
 
+      altHeader.addClass("alt_header");
+      logo.css("filter", "invert(90%)");
+      bar.css("background-color", "rgb(215, 230, 230)");
       $(window).scroll(() => {
          const triggerWelcomeImgPosition = welcomeImg.offset().top - welcomeImg.outerHeight() - 600;
 
          if ($(window).scrollTop() > triggerWelcomeImgPosition) {
             altHeader.addClass("new_alt_header");
+            bar.css("background-color", "#252525");
             logo.css("filter", "invert(0%)");
          } else {
             altHeader.removeClass("new_alt_header");
+            bar.css("background-color", "rgb(215, 230, 230)");
             logo.css("filter", "invert(90%)");
          }
 
