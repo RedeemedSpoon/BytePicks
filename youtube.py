@@ -95,7 +95,7 @@ def allMightyAlgorithm(video: json, vidDuration: isodate, SubscriberCount: str) 
 
 
 def fetchNewVideos():
-    global oldItem
+    videosIds = []
     for channel in channelDF["ChannelID"]:
         subcriberCount = channelDF[channelDF["ChannelID"] == channel]["SubscriberCount"].values[0]
         request = service.activities().list(
@@ -109,9 +109,6 @@ def fetchNewVideos():
         response = request.execute()
         for item in response["items"]:
             try:
-                if item["contentDetails"]["upload"]["videoId"] == oldItem:
-                    break
-
                 channelName = item["snippet"]["channelTitle"]
                 channelId = item["snippet"]["channelId"]
                 videoTitle = item["snippet"]["title"]
@@ -136,7 +133,7 @@ def fetchNewVideos():
                     )
                 ).upper()
 
-                if categoryId in [27, 28] and viewCount > 1000 and MIN_DUR < duration < MAX_DUR and language[:2] in LANGUAGE:
+                if videoId not in videosIds and viewCount > 1000 and MIN_DUR < duration < MAX_DUR and language[:2] in LANGUAGE:
                     fullVideoDetails = {
                         "ChannelName": channelName,
                         "ChannelId": channelId,
@@ -160,7 +157,7 @@ def fetchNewVideos():
 
                     videoRating = allMightyAlgorithm(fullVideoDetails, duration, subcriberCount)
                     Videos[videoRating] = fullVideoDetails
-                    oldItem = videoId
+                    videosIds.append(videoId)
             except:
                 pass
 
@@ -215,7 +212,7 @@ def storeVideos():
 
 
 def initialize():
-    global channelDF, service, yesterday, today, Videos, searchedChannels, channels, oldItem, curPageToken
+    global channelDF, service, yesterday, today, Videos, searchedChannels, channels, curPageToken
     channelDF = pd.read_csv("/var/data/channels.csv")
     today = datetime.date.today()
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
@@ -225,7 +222,6 @@ def initialize():
     curPageToken = None
     channels = []
     Videos = {}
-    oldItem = {}
 
 
 if __name__ == "__main__":

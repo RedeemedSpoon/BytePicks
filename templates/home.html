@@ -2,9 +2,11 @@
 <title>Byte Picks - Home</title>
 {% endblock %} {% block content %}
 <main>
-   <img src="{{ url_for('static', filename='Assets/welcome.png') }}" alt="Welcome Image" draggable="false" style="filter: brightness(0.85); width: 100%" />
-   <div class="text-container">
-      <h2>> <span id="welcome_text"></span><span class="cursor">_</span></h2>
+   <div id="start">
+      <img id="stylish" src="{{ url_for('static', filename='Assets/welcome.png') }}" alt="Welcome Image" draggable="false" />
+      <div class="text-container">
+         <h2>> <span id="welcome_text"></span><span class="cursor">_</span></h2>
+      </div>
    </div>
 
    <div class="introductory">
