@@ -77,15 +77,17 @@ def newsletter():
 def drop():
     token = request.args.get("token", default=None)
     if token is None:
-        return render_template("newsletter.html", year=copyright_year, message="Missing token")
-
-    user = session.query(User).filter_by(token=token).first()
-    if user:
-        session.delete(user)
-        session.commit()
-        return render_template("newsletter.html", year=copyright_year, message="User deleted")
+        message = "Missing token"
     else:
-        return render_template("newsletter.html", year=copyright_year, message="User not found")
+        user = session.query(User).filter_by(token=token).first()
+        if user:
+            session.delete(user)
+            session.commit()
+            message = "User deleted"
+        else:
+            message = "User not found"
+
+    return render_template("drop.html", year=copyright_year, message=message)
 
 
 @app.route("/Explaination")
@@ -109,7 +111,7 @@ def contact():
     if request.method == "POST":
         subject = request.form["subject"]
         sender = "Anonymous Person" if request.form["email"] == "" else request.form["email"]
-        message = f"{request.form["message"]}<br><br>This message was sent by : {sender}"
+        message = f"{request.form['message']}<br><br>This message was sent by : {sender}"
 
         sendEmail(message, subject, "contact@bytepicks.com", "contact@bytepicks.com")
         message = "Thank you for contacting us!"

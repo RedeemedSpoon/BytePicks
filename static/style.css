@@ -239,13 +239,21 @@ footer p {
 
 /* ----- Home Page ----- */
 
-#welcome_text {
-   user-select: text;
+#start {
+   width: 100%;
+   box-sizing: border-box;
+   overflow: hidden !important;
+   object-fit: cover;
+}
+
+#stylish {
+   filter: brightness(0.85);
+   overflow: hidden;
 }
 
 .text-container {
    position: absolute;
-   top: 350px;
+   top: 35%;
    left: 50%;
    display: flex;
    text-align: center;
@@ -274,6 +282,7 @@ footer p {
 
 .introductory * {
    margin: 30px;
+   text-align: center;
 }
 
 .alt_text {
@@ -340,6 +349,7 @@ section.activated {
 .welcome img {
    display: flex;
    justify-self: center;
+   align-self: center;
    height: 30rem;
    border-radius: 20px;
    border: 2px solid #02596e;
@@ -402,7 +412,7 @@ select {
 
 .video {
    display: grid;
-   grid-template-rows: 210px 170px;
+   grid-template-rows: 210px 180px;
    grid-template-columns: 60px 300px;
    font-family: "Lato", sans-serif;
    transition: 0.5s ease;
@@ -482,27 +492,20 @@ ul * {
    padding: 5px 0;
 }
 
-.api_call_example {
-   padding: 10px;
-   max-width: 75%;
-   border-radius: 20px;
-   border: 1px solid #abb2bf;
-   color: #abb2bf;
-   background-color: #282c33;
-   font-family: "Droid Sans Mono", monospace;
-   font-size: 1rem;
-}
-
 .code {
-   padding: 10px 40px 10px 10px;
-   max-width: 75%;
+   padding: 10px 30px 25px 45px;
+   max-width: 80%;
    border: 1px solid #abb2bf;
    border-radius: 20px;
    color: #abb2bf;
    background-color: #282c33;
    font-family: "Droid Sans Mono", monospace;
    text-align: left;
-   font-size: 1rem;
+   font-size: 0.9rem;
+}
+
+.small-screen-message {
+   display: none;
 }
 
 #buttons {
@@ -685,6 +688,12 @@ input[name="user_email"] {
    transition: 0.5s ease;
 }
 
+.news_btn {
+   display: flex;
+   align-items: normal;
+   justify-content: space-around;
+}
+
 .popup-content label {
    font-size: 1.5rem;
 }
@@ -828,11 +837,7 @@ textarea {
 /* ----- Media Queries ----- */
 
 /* Extra small devices */
-@media only screen and (min-width: 250px) and (max-width: 549px) {
-   body {
-      background-color: #09026e;
-   }
-
+@media only screen and (min-width: 1px) and (max-width: 549px) {
    .nav-links {
       display: none;
       top: 50px;
@@ -853,16 +858,252 @@ textarea {
    }
 
    footer {
+      grid-template-columns: 20% 0% 40% 40%;
+      grid-template-rows: 3rem 3rem 3rem 5rem 6rem;
+   }
+
+   footer img {
       display: none;
+   }
+
+   footer p {
+      font-size: 9px;
+      grid-area: 5 / 2 / 5 / 4 !important;
+      padding: 0 0 0 4rem;
+   }
+
+   h1 {
+      font-size: 1.5rem;
+   }
+
+   h2 {
+      font-size: 1.4rem;
+   }
+
+   h3 {
+      font-size: 1.3rem;
+   }
+
+   h4 {
+      font-size: 1.2rem;
+   }
+
+   h5 {
+      font-size: 1.1rem;
+   }
+
+   h6 {
+      font-size: 1rem;
+   }
+
+   p {
+      font-size: 15px;
+   }
+
+   #stylish {
+      width: 100vh;
+      margin-left: -50%;
+   }
+
+   .text-container {
+      top: 17.5%;
+   }
+
+   .introductory * {
+      margin: 20px;
+   }
+
+   .welcome {
+      margin: 5rem 2rem;
+      gap: 1rem;
+   }
+
+   .welcome img {
+      height: 10rem;
+      border-radius: 10px;
+      border: 1px solid #02596e;
+   }
+
+   .welcome div {
+      row-gap: 1rem;
+   }
+
+   .welcome h1 {
+      font-size: 25px;
+   }
+
+   #partition,
+   .code,
+   .math,
+   .decoration {
+      display: none;
+   }
+
+   #api {
+      margin: 6.5rem 3rem;
+      gap: 1rem;
+   }
+
+   .small-screen-message {
+      display: block;
+      font-size: 1rem;
+      padding: 20px;
+      border: 1px solid #abb2bf;
+      border-radius: 15px;
+      color: #abb2bf;
+      background-color: #282c33;
+      font-family: "Droid Sans Mono", monospace;
+      text-align: center;
+   }
+
+   #buttons {
+      margin: 0 0 -10px 5px;
+      gap: 3px;
+   }
+
+   .programming_language {
+      font-size: 1.25rem;
+      padding: 10px;
+   }
+
+   #videolist {
+      margin: 6.5rem 3rem;
+      gap: 0.5rem;
+   }
+
+   #selecters {
+      font-size: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+   }
+
+   select {
+      padding: 3px;
+      font-size: 0.85rem;
+   }
+
+   #allvideos {
+      margin-top: 20px;
+      row-gap: 1rem;
+   }
+
+   .communication {
+      margin: 6.5rem 3rem;
+      scale: 1;
+      gap: 2.5rem;
+   }
+
+   .subscribe {
+      font-size: 1.5rem;
+      padding: 15px;
+   }
+
+   .popup-content {
+      padding: 0;
+      border-radius: 2rem;
+   }
+
+   .popup-content > form {
+      row-gap: 1.5rem;
+   }
+
+   .popup-content > form > div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+   }
+
+   .popup-content img {
+      width: 30%;
+      margin-top: 20px;
+   }
+
+   .primarybtn {
+      font-size: 1.25rem;
+      padding: 8px 12px;
+   }
+
+   #cancel {
+      font-size: 1.25rem;
+      padding: 8px 12px;
+      margin-left: 0rem;
+   }
+
+   .popup-content label {
+      font-size: 0.8rem;
+      margin-bottom: 0.5rem;
+   }
+
+   .news_btn > * {
+      margin: 1rem;
+   }
+
+   .plain_text {
+      margin: 6.5rem 3rem;
+      gap: 20px;
+   }
+
+   #explaination {
+      margin: 6.5rem 3rem;
+      gap: 3rem;
+   }
+
+   #explaination h4 {
+      margin: -0.5rem;
+   }
+
+   #explaination p {
+      margin: -0.25rem;
+   }
+
+   .python_img {
+      width: 75%;
+      border: 2px solid #252525;
+      border-radius: 10px;
+   }
+
+   .contact {
+      margin: 5rem 3rem;
+      gap: 2rem;
+   }
+
+   form {
+      row-gap: 3rem;
+      margin: 3rem 5rem;
+   }
+
+   .form-group {
+      flex-direction: column;
+      column-gap: 4rem;
+   }
+
+   .form-group div {
+      width: 20rem;
+   }
+
+   .form-group label {
+      font-size: 1.35rem;
+      font-weight: bold;
+   }
+
+   input,
+   textarea {
+      font-size: 15px;
+      min-width: 25rem;
+   }
+
+   .submitbtn {
+      width: 25%;
+      margin-top: 10px;
    }
 }
 
 /* Small devices */
 @media only screen and (min-width: 550px) and (max-width: 767px) {
-   body {
-      background-color: #6e0257;
-   }
-
    .nav-links {
       display: none;
       top: 50px;
@@ -881,25 +1122,562 @@ textarea {
    .hamburger-menu {
       display: block;
    }
+
+   footer {
+      grid-template-columns: 10% 35% 20% 25%;
+      grid-template-rows: 4rem 4rem 4rem 5rem 3rem;
+   }
+
+   footer p {
+      padding: 0 0 0 7.5rem;
+   }
+
+   h1 {
+      font-size: 1.75rem;
+   }
+
+   h2 {
+      font-size: 1.6rem;
+   }
+
+   h3 {
+      font-size: 1.45rem;
+   }
+
+   h4 {
+      font-size: 1.3rem;
+   }
+
+   h5 {
+      font-size: 1.15rem;
+   }
+
+   h6 {
+      font-size: 1.05rem;
+   }
+
+   p {
+      font-size: 17px;
+   }
+
+   #stylish {
+      width: 140vh;
+      margin-left: -40%;
+   }
+
+   .text-container {
+      top: 22.5%;
+   }
+
+   .introductory * {
+      margin: 25px;
+   }
+
+   .welcome {
+      margin: 5rem 3rem;
+      gap: 1.25rem;
+   }
+
+   .welcome img {
+      height: 14rem;
+      border-radius: 10px;
+   }
+
+   .welcome div {
+      row-gap: 2rem;
+   }
+
+   .welcome h1 {
+      font-size: 28px;
+   }
+
+   #partition,
+   .code,
+   .math,
+   .decoration {
+      display: none;
+   }
+
+   #api {
+      margin: 6.5rem 4rem;
+      gap: 1rem;
+   }
+
+   .small-screen-message {
+      display: block;
+      font-size: 1rem;
+      padding: 20px;
+      border: 1px solid #abb2bf;
+      border-radius: 15px;
+      color: #abb2bf;
+      background-color: #282c33;
+      font-family: "Droid Sans Mono", monospace;
+      text-align: center;
+   }
+
+   #buttons {
+      margin: 0 0 -10px 5px;
+      gap: 3px;
+   }
+
+   .programming_language {
+      font-size: 1.25rem;
+      padding: 10px;
+   }
+
+   #videolist {
+      margin: 6.5rem 2rem;
+      gap: 0.5rem;
+   }
+
+   #selecters {
+      font-size: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+   }
+
+   select {
+      padding: 10px;
+      font-size: 1rem;
+   }
+
+   #allvideos {
+      margin: 0 -30px;
+      row-gap: 1rem;
+      column-gap: 0.25rem;
+   }
+
+   .video {
+      grid-template-rows: 170px 140px;
+      grid-template-columns: 40px 270px;
+      border-radius: 10px;
+   }
+
+   .yt_thumbnail {
+      width: 240px;
+   }
+
+   .duration {
+      margin-top: 7.5rem;
+      margin-left: 14rem;
+   }
+
+   .yt_channel {
+      width: 30px;
+   }
+
+   .yt_info {
+      min-width: 225px;
+   }
+
+   .communication {
+      margin: 6.5rem 4rem;
+      scale: 1;
+      gap: 3rem;
+   }
+
+   .subscribe {
+      font-size: 1.5rem;
+      padding: 15px;
+   }
+
+   .popup-content {
+      padding: 0;
+      border-radius: 2rem;
+   }
+
+   .popup-content > form {
+      row-gap: 1.5rem;
+   }
+
+   .popup-content > form > div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+   }
+
+   .popup-content img {
+      width: 30%;
+      margin-top: 20px;
+   }
+
+   .primarybtn {
+      font-size: 1.25rem;
+      padding: 8px 12px;
+   }
+
+   #cancel {
+      font-size: 1.25rem;
+      padding: 8px 12px;
+      margin-left: 0rem;
+   }
+
+   .popup-content label {
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+   }
+
+   .news_btn > * {
+      margin: 1rem;
+   }
+
+   .plain_text {
+      margin: 6.5rem 4rem;
+      gap: 20px;
+   }
+
+   #explaination {
+      margin: 6.5rem 4rem;
+      gap: 3rem;
+   }
+
+   #explaination h4 {
+      margin: -0.5rem;
+   }
+
+   #explaination p {
+      margin: -0.25rem;
+   }
+
+   .python_img {
+      width: 90%;
+   }
+
+   .contact {
+      margin: 5rem 3rem;
+      gap: 2rem;
+   }
+
+   form {
+      row-gap: 3rem;
+      margin: 3rem 5rem;
+   }
+
+   .form-group {
+      flex-direction: column;
+      column-gap: 4rem;
+   }
+
+   .form-group div {
+      width: 20rem;
+   }
+
+   input,
+   textarea {
+      font-size: 15px;
+      min-width: 35rem;
+   }
 }
 
 /* Medium devices  */
-@media only screen and (min-width: 768px) and (max-width: 991px) {
-   body {
-      background-color: #6e0f02;
+@media only screen and (min-width: 768px) and (max-width: 1099px) {
+   footer {
+      grid-template-columns: 5% 50% 15% 20%;
+      grid-template-rows: 4rem 4rem 4rem 4rem 2.5rem;
+   }
+
+   footer p {
+      padding: 0 0 0 7.5rem;
+   }
+
+   h1 {
+      font-size: 2.5rem;
+   }
+
+   h2 {
+      font-size: 2.25rem;
+   }
+
+   h3 {
+      font-size: 2rem;
+   }
+
+   h4 {
+      font-size: 1.75rem;
+   }
+
+   h5 {
+      font-size: 1.5rem;
+   }
+
+   h6 {
+      font-size: 1.25rem;
+   }
+
+   p {
+      font-size: 1rem;
+   }
+
+   #stylish {
+      width: 165vh;
+      margin-left: -35%;
+   }
+
+   .text-container {
+      top: 27.5%;
+   }
+
+   .welcome {
+      margin: 5rem 4rem;
+   }
+
+   .welcome img {
+      height: 18rem;
+      border-radius: 10px;
+   }
+
+   .welcome h1 {
+      font-size: 30px;
+   }
+
+   #partition {
+      display: none;
+   }
+
+   #api {
+      margin: 7.5rem 5rem;
+      gap: 1rem;
+   }
+
+   #buttons {
+      margin: 0 0 -15px 30px;
+      gap: 3px;
+   }
+
+   .code {
+      padding: 10px 20px 25px 20px;
+      max-width: 110%;
+      font-size: 0.85em;
+   }
+
+   .math {
+      scale: 0.85;
+   }
+
+   #videolist {
+      margin: 6.5rem 3rem;
+      gap: 0.5rem;
+   }
+
+   #allvideos {
+      margin: 0 -30px;
+      row-gap: 3rem;
+      column-gap: 1rem;
+   }
+
+   .communication {
+      margin: 7.5rem 5rem;
+      scale: 1;
+   }
+
+   .decoration {
+      height: 125px;
+      top: 40%;
+   }
+
+   .left {
+      left: 5rem;
+   }
+
+   .right {
+      right: 5rem;
+   }
+
+   .popup-content {
+      width: 70%;
+   }
+
+   .popup-content > form > div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+   }
+
+   .news_btn {
+      display: block !important;
+   }
+
+   .plain_text {
+      margin: 7.5rem;
+      gap: 20px;
+   }
+
+   #explaination {
+      margin: 7.5rem 5rem;
+      gap: 3rem;
+   }
+
+   .contact {
+      margin: 5rem;
+      gap: 2.5rem;
+   }
+
+   .form-group {
+      flex-direction: column;
+      column-gap: 4rem;
+   }
+
+   input,
+   textarea {
+      min-width: 45rem;
    }
 }
 
 /* Large devices */
-@media only screen and (min-width: 992px) and (max-width: 1199px) {
-   body {
-      background-color: #6e6c02;
+@media only screen and (min-width: 1100px) and (max-width: 1374px) {
+   footer {
+      grid-template-columns: 5% 50% 15% 20%;
+   }
+
+   footer p {
+      padding: 0 0 0 10rem;
+   }
+
+   h1 {
+      font-size: 3rem;
+   }
+
+   h2 {
+      font-size: 2.675rem;
+   }
+
+   h3 {
+      font-size: 2.3rem;
+   }
+
+   h4 {
+      font-size: 1.925rem;
+   }
+
+   h5 {
+      font-size: 1.575rem;
+   }
+
+   h6 {
+      font-size: 1.3rem;
+   }
+
+   p {
+      font-size: 1.125rem;
+   }
+
+   #stylish {
+      width: 190vh;
+      margin-left: -30%;
+   }
+
+   .text-container {
+      top: 32.5%;
+   }
+
+   .welcome {
+      margin: 5rem 7.5rem;
+   }
+
+   .welcome img {
+      height: 25rem;
+   }
+
+   .welcome h1 {
+      font-size: 35px;
+   }
+
+   #partition {
+      display: none;
+   }
+
+   #api {
+      margin: 7.5rem 10rem;
+   }
+
+   #buttons {
+      margin: 0 0 -50px 90px;
+      gap: 3px;
+   }
+
+   .code {
+      padding: 15px 25px 30px 25px;
+      max-width: 120%;
+      font-size: 1rem;
+      scale: 0.9;
+   }
+
+   #videolist {
+      margin: 6.5rem 3rem;
+      gap: 0.5rem;
+   }
+
+   #allvideos {
+      margin: 0 -30px;
+      row-gap: 3rem;
+      column-gap: 0.75rem;
+   }
+
+   .communication {
+      margin: 7.5rem 7.5rem;
+      scale: 1;
+   }
+
+   .decoration {
+      height: 125px;
+      top: 40%;
+   }
+
+   .popup-content > form > div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+   }
+
+   .news_btn {
+      display: block !important;
+   }
+
+   .plain_text {
+      margin: 10rem 15rem;
+   }
+
+   #explaination {
+      margin: 7.5rem;
+   }
+
+   .contact {
+      margin: 6.5rem 10rem;
+   }
+
+   .form-group {
+      flex-direction: column;
+      column-gap: 5rem;
    }
 }
 
 /* Extra large devices */
-@media only screen and (min-width: 1200px) and (max-width: 1399px) {
-   body {
-      background-color: #0b9ea8;
+@media only screen and (min-width: 1375px) and (max-width: 1700px) {
+   #stylish {
+      margin-left: -10%;
+   }
+
+   .welcome img {
+      height: 22.5rem;
+   }
+
+   .code {
+      padding: 15px 25px 30px 25px;
+      max-width: 120%;
+      font-size: 1rem;
+   }
+
+   .communication {
+      margin: 7.5rem 15rem;
+   }
+
+   .decoration {
+      height: 150px;
    }
 }
