@@ -1,1 +1,8 @@
 /__pycache__/
+channels.csv
+daily.json
+weekly.json
+monthly.json
+yearly.json
+token.json
+newsletter.db

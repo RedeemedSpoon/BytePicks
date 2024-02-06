@@ -4,8 +4,8 @@ import json, secrets, string
 from common import *
 
 TIME = ["daily", "weeky", "monthy", "yearly"]
-LANGUAGE = ["EN", "FR", "ES", "DE", "PT", "RU", "HI"]
-app = Flask("__main__")
+LANGUAGE = ["EN", "FR", "ES", "RU", "HI"]
+app = Flask(__name__)
 copyright_year = datetime.now().year
 
 
@@ -16,7 +16,7 @@ def teardown_request(exception=None):
 
 @app.route("/")
 def home():
-    with open("/var/data/daily.json", "r") as file:
+    with open("daily.json", "r") as file:
         homeThumbnails = json.load(file)
     return render_template("home.html", year=copyright_year, videos=homeThumbnails)
 
@@ -26,7 +26,10 @@ def dashboard():
     time = request.args.get("time", default="daily")
     language = request.args.get("lang", default="EN")
     specificVideos = getVideos(time, language)
-    return render_template("dashboard.html", year=copyright_year, videos=specificVideos, time=time, language=language)
+    return render_template("dashboard.html", year=copyright_year,
+        videos=specificVideos, time=time,language=language,
+        formatDuration=formatDuration, formatViewCount=formatViewCount,
+    )
 
 
 @app.route("/Api-Docs")
@@ -87,7 +90,7 @@ def drop():
         else:
             message = "User not found"
 
-    return render_template("drop.html", year=copyright_year, message=message)
+    return render_template("newsletter.html", year=copyright_year, message=message)
 
 
 @app.route("/Explaination")
@@ -120,5 +123,4 @@ def contact():
 
 
 if __name__ == "__main__":
-    app.jinja_env.globals.update(formatViewCount=formatViewCount, formatDuration=formatDuration)
     app.run()

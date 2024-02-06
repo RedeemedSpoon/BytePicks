@@ -1,11 +1,11 @@
 from googleapiclient.discovery import build
 import os, datetime, isodate, json, sys
-from math import sqrt, log
+from math import log
 import pandas as pd
 
 MIN_DUR = isodate.parse_duration("PT30S")
 MAX_DUR = isodate.parse_duration("PT10H")
-LANGUAGE = ["EN", "FR", "ES", "DE", "PT", "RU", "HI"]
+LANGUAGE = ["EN", "FR", "ES", "RU", "HI"]
 FIELDS = "items(snippet(title,publishedAt,channelTitle,channelId,thumbnails/medium/url), contentDetails(upload/videoId))"
 
 CAPTION_MAPPING = {None: 0.975}
@@ -36,8 +36,11 @@ def search():
 
     response = request.execute()
     for item in response.get("items", []):
-        tempId = item["id"]["channelId"]
-        searchedChannels.append(tempId)
+        try:
+            tempId = item["id"]["channelId"]
+            searchedChannels.append(tempId)
+        except:
+            pass
 
     curPageToken = response.get("nextPageToken")
     if curPageToken is not None:
@@ -46,24 +49,27 @@ def search():
 
 def updateInfoChannels():
     for channel in searchedChannels:
-        print("Updating channel: " + channel)
         request = service.channels().list(part=["snippet", "statistics", "brandingSettings"], id=channel)
         response = request.execute()
 
-        channelInfo = {
-            "ChannelID": response["items"][0]["id"],
-            "ChannelName": response["items"][0]["snippet"]["title"],
-            "ChannelIcon": response["items"][0]["snippet"]["thumbnails"]["medium"]["url"],
-            "ChannelUrl": f'https://www.youtube.com/{response["items"][0]["snippet"].get("customUrl", "None")}',
-            "ExistedSince": response["items"][0]["snippet"]["publishedAt"].split("T")[0],
-            "SubscriberCount": int(response["items"][0]["statistics"]["subscriberCount"]),
-            "VideoCount": int(response["items"][0]["statistics"]["videoCount"]),
-            "ViewCount": int(response["items"][0]["statistics"]["viewCount"]),
-            "Country": response["items"][0]["snippet"].get("country", "Unknown"),
-            "Language": response["items"][0]["snippet"].get("defaultLanguage", "Unknown"),
-        }
-        if channelInfo["SubscriberCount"] > 10_000:
-            channels.append(channelInfo)
+        try:
+            channelInfo = {
+                "ChannelID": response["items"][0]["id"],
+                "ChannelName": response["items"][0]["snippet"]["title"],
+                "ChannelIcon": response["items"][0]["snippet"]["thumbnails"]["medium"]["url"],
+                "ChannelUrl": f'https://www.youtube.com/{response["items"][0]["snippet"].get("customUrl", "None")}',
+                "ExistedSince": response["items"][0]["snippet"]["publishedAt"].split("T")[0],
+                "SubscriberCount": int(response["items"][0]["statistics"]["subscriberCount"]),
+                "VideoCount": int(response["items"][0]["statistics"]["videoCount"]),
+                "ViewCount": int(response["items"][0]["statistics"]["viewCount"]),
+                "Country": response["items"][0]["snippet"].get("country", "Unknown"),
+                "Language": response["items"][0]["snippet"].get("defaultLanguage", "Unknown"),
+            }
+
+            if channelInfo["SubscriberCount"] > 10_000:
+                channels.append(channelInfo)
+        except:
+            pass
 
     df = pd.DataFrame(channels)
     df = pd.concat([channelDF, df], ignore_index=True)
@@ -71,7 +77,7 @@ def updateInfoChannels():
     df.dropna(inplace=True)
     to_drop = df["SubscriberCount"] < 10000
     df.drop(df[to_drop].index, inplace=True)
-    df.to_csv("/var/data/channels.csv", index=False)
+    df.to_csv("channels.csv", index=False)
 
 
 def allMightyAlgorithm(video: json, vidDuration: isodate, SubscriberCount: str) -> int:
@@ -164,56 +170,59 @@ def fetchNewVideos():
 
 def deleteOldVideos():
     if today.weekday() == 0:
-        with open("/var/data/weekly.json", "w") as f:
+        with open("weekly.json", "w") as f:
             json.dump({}, f)
 
     if today.day == 1:
-        with open("/var/data/monthly.json", "w") as f:
+        with open("monthly.json", "w") as f:
             json.dump({}, f)
 
     if today.day == 1 and today.month == 1:
-        with open("/var/data/yearly.json", "w") as f:
+        with open("yearly.json", "w") as f:
             json.dump({}, f)
 
 
 def storeVideos():
     bestVideo = dict(sorted(Videos.items(), key=lambda item: float(item[0]), reverse=True)[:25])
-    with open("/var/data/daily.json", "w") as f:
+    with open("daily.json", "w") as f:
         json.dump(bestVideo, f, indent=3)
 
     dayTop = dict(list(bestVideo.items())[:5])
-    with open("/var/data/weekly.json", "r") as f:
+    with open("weekly.json", "r") as f:
         existingWeekly = json.load(f)
 
     existingWeekly.update(dayTop)
     existingWeekly = dict(sorted(existingWeekly.items(), key=lambda item: float(item[0]), reverse=True))
-    with open("/var/data/weekly.json", "w") as f:
+    with open("weekly.json", "w") as f:
         json.dump(existingWeekly, f, indent=3)
 
     if today.weekday() == 0:
         weekTop = dict(sorted(existingWeekly.items(), key=lambda item: float(item[0]), reverse=True)[:10])
-        with open("/var/data/monthly.json", "r") as f:
+        with open("monthly.json", "r") as f:
             existingMonthly = json.load(f)
 
         existingMonthly.update(weekTop)
         existingMonthly = dict(sorted(existingMonthly.items(), key=lambda item: float(item[0]), reverse=True))
-        with open("/var/data/monthly.json", "w") as f:
+        with open("monthly.json", "w") as f:
             json.dump(existingMonthly, f, indent=3)
 
     if today.day == 1:
+        with open("monthly.json", "r") as f:
+            existingMonthly = json.load(f)
+
         monthTop = dict(sorted(existingMonthly.items(), key=lambda item: float(item[0]), reverse=True)[:5])
-        with open("/var/data/yearly.json", "r") as f:
+        with open("yearly.json", "r") as f:
             existingYearly = json.load(f)
 
         existingYearly.update(monthTop)
         existingYearly = dict(sorted(existingYearly.items(), key=lambda item: float(item[0]), reverse=True))
-        with open("/var/data/yearly.json", "w") as f:
+        with open("yearly.json", "w") as f:
             json.dump(existingYearly, f, indent=3)
 
 
 def initialize():
     global channelDF, service, yesterday, today, Videos, searchedChannels, channels, curPageToken
-    channelDF = pd.read_csv("/var/data/channels.csv")
+    channelDF = pd.read_csv("channels.csv")
     today = datetime.date.today()
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
     API_KEY = os.environ.get("YT_API_KEY")

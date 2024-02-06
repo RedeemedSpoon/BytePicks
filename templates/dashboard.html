@@ -14,7 +14,7 @@
       <div>
          <label>Language :</label>
          <select id="language">
-            {% for optionValue, optionLabel in [('EN', '🇬🇧 English'), ('FR', '🇫🇷 French'), ('ES', '🇪🇸 Spanish'), ('DE', '🇩🇪 Deutsch'), ('PT', '🇵🇹 Portuguese'), ('RU', '🇷🇺 Russian'), ('HI', '🇮🇳 Hindi')] %}
+            {% for optionValue, optionLabel in [('EN', '🇬🇧 English'), ('FR', '🇫🇷 French'), ('ES', '🇪🇸 Spanish'), ('RU', '🇷🇺 Russian'), ('HI', '🇮🇳 Hindi')] %}
             <option value="{{ optionValue }}" {% if language == optionValue %}selected{% endif %}>{{ optionLabel }}</option>
             {% endfor %}
          </select>
