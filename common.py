@@ -83,6 +83,9 @@ def updateToken():
 
     if currentTime >= expiryTime:
         newTokenInfo = getNewToken(tokenInfo["refresh_token"], tokenInfo["client_id"], tokenInfo["client_secret"])
-        if newTokenInfo["refresh_token"]:
-            with open("/var/data/token.json", "w") as JsonFile:
-                json.dump(newTokenInfo, JsonFile, indent=2)
+        try:
+            if newTokenInfo["refresh_token"]:
+                with open("/var/data/token.json", "w") as JsonFile:
+                    json.dump(newTokenInfo, JsonFile, indent=2)
+        except:
+            pass

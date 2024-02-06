@@ -1,11 +1,11 @@
 from googleapiclient.discovery import build
 import os, datetime, isodate, json, sys
-from math import sqrt, log
+from math import log
 import pandas as pd
 
 MIN_DUR = isodate.parse_duration("PT30S")
 MAX_DUR = isodate.parse_duration("PT10H")
-LANGUAGE = ["EN", "FR", "ES", "DE", "PT", "RU", "HI"]
+LANGUAGE = ["EN", "FR", "ES", "RU", "HI"]
 FIELDS = "items(snippet(title,publishedAt,channelTitle,channelId,thumbnails/medium/url), contentDetails(upload/videoId))"
 
 CAPTION_MAPPING = {None: 0.975}
@@ -201,6 +201,9 @@ def storeVideos():
             json.dump(existingMonthly, f, indent=3)
 
     if today.day == 1:
+        with open("/var/data/monthly.json", "r") as f:
+            existingMonthly = json.load(f)
+            
         monthTop = dict(sorted(existingMonthly.items(), key=lambda item: float(item[0]), reverse=True)[:5])
         with open("/var/data/yearly.json", "r") as f:
             existingYearly = json.load(f)
