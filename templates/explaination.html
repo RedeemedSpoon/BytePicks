@@ -250,11 +250,24 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
    <h4>How we automate both our newsletter and this ?</h4>
    <p>
       Using cron jobs, simple right? Render has such functionality in their service, so we took advantage of it. If you don't know what cron is, well, you should. The cron command-line utility is a job scheduler on Unix OSes. It is often used to set
-      up and maintain software environments because of how simple it is to schedule jobs like running commands or sending emails. And this is exactly what we did. Every day at 11 PM 50 Min, it runs two Python files, one of them fetching the YouTube Data and
-      the other following it by sending an email containing that information. Lovely Linux never ceases to impress.
+      up and maintain software environments because of how simple it is to schedule jobs like running commands or sending emails. And this is exactly what we did. Every day at 11 PM 50 Min, it runs a bash file that, collect the active database of our newsletter, run two Python files, one of them fetching YouTube Data and manipulating it and
+      the other following it by sending the newsletter, afterward, if no errors where met, it copy the new json data to the production server. Lovely Unix never ceases to impress.
    </p>
    <pre class="code"><code>
-50 23 * * * python youtube.py && python newsletter.py
+<span class="comment">#!/bin/bash</span>
+
+<span class="var">fileList</span><span class="operator">=</span><span class="str">"daily.json weekly.json monthly.json yearly.json token.json channels.csv"</span>
+<span class="var">remoteDir</span><span class="operator">=</span><span class="str">"/opt/render/project/src"</span>
+
+<span class="function">scp -s </span><span class="var">$SERVER_NAME</span><span class="str">@ssh.oregon.render.com:</span><span class="var">$remoteDir</span><span class="str">/newsletter.db</span> <span class="str">.</span>
+<span class="function">python</span> <span class="str">youtube.py </span><span class="operator">&&</span> <span class="function">python</span> <span class="str">newsletter.py</span>
+
+<span class="keyword">if</span> [[ <span class="var">$?</span> <span class="operator">-ne</span> <span class="int">0</span> ]]; <span class="keyword">then</span>
+  <span class="function">echo</span> <span class="str">"Error: Script(s) exited with non-zero code."</span> <span class="operator">>></span> <span class="str">youtube.log</span>
+<span class="keyword">else</span>
+  <span class="function">scp -s </span><span class="var">$fileList $SERVER_NAME</span><span class="str">@ssh.oregon.render.com:</span><span class="var">$remoteDir</span>
+<span class="keyword">fi</span>
+
 </code></pre>
    <div class="small-screen-message">
       <p>Your screen is too small to display the code.</p>

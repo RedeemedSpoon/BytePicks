@@ -4,24 +4,20 @@ from datetime import datetime
 import json, secrets, string
 from common import *
 
-
 TIME = ["daily", "weeky", "monthy", "yearly"]
 LANGUAGE = ["EN", "FR", "ES", "RU", "HI"]
 app = Flask(__name__)
 copyright_year = datetime.now().year
 
-
 @app.teardown_request
 def teardown_request(exception=None):
     session.close()
-
 
 @app.route("/")
 def home():
     with open("daily.json", "r") as file:
         homeThumbnails = json.load(file)["EN"]
     return render_template("home.html", year=copyright_year, videos=homeThumbnails)
-
 
 @app.route("/Dashboard")
 def dashboard():
@@ -33,11 +29,9 @@ def dashboard():
         formatDuration=formatDuration, formatViewCount=formatViewCount,
     )
 
-
 @app.route("/Api-Docs")
 def api():
     return render_template("api.html", year=copyright_year)
-
 
 @app.route("/api/request")
 def apiRequest():
@@ -55,7 +49,6 @@ def apiRequest():
         response = {"Result": "You send an invalid request."}
 
     return jsonify(response)
-
 
 @app.route("/Newsletter", methods=["GET", "POST"])
 def newsletter():
@@ -76,7 +69,6 @@ def newsletter():
 
     return render_template("newsletter.html", year=copyright_year, message=message, email="")
 
-
 @app.route("/Edit", methods=["GET", "POST"])
 def edit():
     token = request.args.get("token", default=None)
@@ -96,7 +88,6 @@ def edit():
     
     return render_template("newsletter.html", year=copyright_year, message=message, email=email)
 
-
 @app.route("/Drop", methods=["GET", "POST"])
 def drop():
     token = request.args.get("token", default=None)
@@ -113,26 +104,21 @@ def drop():
             message = "Incorrect Token or Email"
     return render_template("newsletter.html", year=copyright_year, message=message, email="")
 
-
 @app.route("/Download")
 def download():
 	return send_file("channels.csv", as_attachment=True)
-
 
 @app.route("/Explaination")
 def explaination():
     return render_template("explaination.html", year=copyright_year)
 
-
 @app.route("/Privacy-Policy")
 def privacy_policy():
     return render_template("privacy-policy.html", year=copyright_year)
 
-
 @app.route("/About-Us")
 def about_us():
     return render_template("about-us.html", year=copyright_year)
-
 
 @app.route("/Contact", methods=["GET", "POST"])
 def contact():
@@ -146,7 +132,6 @@ def contact():
         message = "Thank you for contacting us!"
 
     return render_template("contact.html", year=copyright_year, message=message)
-
 
 if __name__ == "__main__":
     app.run()
