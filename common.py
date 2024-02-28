@@ -8,7 +8,6 @@ from datetime import datetime, timezone
 from sqlalchemy.orm import sessionmaker
 import json, base64, os, requests
 
-
 engine = create_engine("sqlite:///newsletter.db", echo=True)
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
@@ -53,9 +52,9 @@ def sendEmail(body, subject, receiver, sender):
 
     service = build("gmail", "v1", credentials=creds)
     rawMessage = f"Content-Type: text/html; charset=utf-8\nFrom: {sender}\nTo: {receiver}\nSubject: {subject}\n\n{body}"
-    encoded_message = base64.urlsafe_b64encode(rawMessage.encode()).decode("utf-8")
+    encodedMessage = base64.urlsafe_b64encode(rawMessage.encode()).decode("utf-8")
 
-    service.users().messages().send(userId="me", body={"raw": encoded_message}).execute()
+    service.users().messages().send(userId="me", body={"raw": encodedMessage}).execute()
     service.close()
 
 def updateToken():

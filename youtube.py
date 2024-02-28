@@ -5,8 +5,7 @@ from langdetect import detect
 from math import log
 import pandas as pd
 
-
-MIN_DUR = isodate.parse_duration("PT1M")
+MIN_DUR = isodate.parse_duration("PT1M5S")
 LANGUAGE = ["EN", "FR", "ES", "RU", "HI"]
 FIELDS = "items(snippet(title,publishedAt,channelTitle,channelId,thumbnails/medium/url), contentDetails(upload/videoId))"
 CAPTION_MAPPING = {None: 0.975}
@@ -84,8 +83,8 @@ def updateInfoChannels():
 
             if channelInfo["SubscriberCount"] > 10_000:
                 channels.append(channelInfo)
-        except Exception as e:
-            print(f"Skipped Channel : {e}")
+        except:
+            pass
 
     df = sortAndFilter(pd.DataFrame(channels))
     df.to_csv("channels.csv", index=False)
@@ -178,8 +177,8 @@ def fetchNewVideos():
                     videoRating = allMightyAlgorithm(fullVideoDetails, duration, subcriberCount)
                     Videos[language][videoRating] = fullVideoDetails
                     videosIds.append(videoId)
-            except Exception as e:
-                print(f"Skipped Activities : {e}")
+            except:
+                pass
 
 def getNewData(video):
     global quotaUsage
@@ -209,8 +208,8 @@ def getNewData(video):
        }
 
        return fullVideoDetails
-    except Exception as e:
-       print(f"Skipped An Activities : {e}")
+    except:
+       pass
 
 def checkOldVideos(time, date):
     threshold = {"weekly": 7, "monthly": 30, "yearly": 365}

@@ -10,9 +10,9 @@ for index, row in df[num:].iterrows():
     columnValue = row["ChannelUrl"]
     driver.execute_script(f"window.open('{columnValue}/videos', '_blank');")
     driver.switch_to.window(driver.window_handles[1])
-    validation = input(f"{index}, Delete or not: ")
+    validation = input(f"{index}, Delete Or Pass: ")
 
-    if validation.strip().lower() == "d":
+    if validation.strip().lower()[:1] == "d":
         print("Row deleted.")
         df.drop(index, inplace=True)
     elif validation.strip().lower() == "q":
