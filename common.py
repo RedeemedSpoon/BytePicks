@@ -1,17 +1,18 @@
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from googleapiclient.discovery import build
+from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from googleapiclient.errors import HttpError
+from googleapiclient.discovery import build
 from datetime import datetime, timezone
+from sqlalchemy.orm import sessionmaker
 import json, base64, os, requests
+
 
 engine = create_engine("sqlite:///newsletter.db", echo=True)
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
 session = Session()
-
 
 class User(Base):
     __tablename__ = "users"
@@ -21,24 +22,21 @@ class User(Base):
     time = Column(String)
     language = Column(String)
 
-
 def getVideos(time, language):
     with open(f"{time}.json", "r") as file:
         timeVideos = json.load(file)
 
-    return {key: value for key, value in timeVideos.items() if value["language"][:2] == language}
-
+    return timeVideos[language]
 
 def formatViewCount(number):
-    if number / 1_000 > 1:
-        return str(round(number / 1_000, 1)) + "K"
+    if number / 1_000_000_000 > 1:
+        return str(round(number / 1_000_000_000, 1)) + "B"
     elif number / 1_000_000 > 1:
         return str(round(number / 1_000_000, 1)) + "M"
-    elif number > 1_000_000_000:
-        return str(round(number / 1_000_000_000, 1)) + "B"
+    elif number / 1_000 > 1:
+        return str(round(number / 1_000, 1)) + "K"
     else:
         return str(number)
-
 
 def formatDuration(duration):
     hours, minutes, seconds = map(int, duration.split(":"))
@@ -48,7 +46,6 @@ def formatDuration(duration):
         return f"{minutes:02d}:{seconds:02d}"
     else:
         return duration
-
 
 def sendEmail(body, subject, receiver, sender):
     SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
@@ -61,31 +58,12 @@ def sendEmail(body, subject, receiver, sender):
     service.users().messages().send(userId="me", body={"raw": encoded_message}).execute()
     service.close()
 
-
-def getNewToken(refresh_token, client_id, client_secret):
-    token_endpoint = "https://oauth2.googleapis.com/token"
-    payload = {
-        "client_id": client_id,
-        "client_secret": client_secret,
-        "refresh_token": refresh_token,
-        "grant_type": "refresh_token",
-    }
-    response = requests.post(token_endpoint, data=payload)
-    return response.json()
-
-
 def updateToken():
-    with open("token.json", "r") as JsonFile:
-        tokenInfo = json.load(JsonFile)
+    with open('token.json', 'r') as token:
+        credsData = json.load(token)
+        creds = Credentials.from_authorized_user_info(credsData)
 
-    expiryTime = datetime.fromisoformat(tokenInfo["expiry"]).replace(tzinfo=timezone.utc)
-    currentTime = datetime.now(timezone.utc)
-
-    if currentTime >= expiryTime:
-        newTokenInfo = getNewToken(tokenInfo["refresh_token"], tokenInfo["client_id"], tokenInfo["client_secret"])
-        try:
-            if newTokenInfo["refresh_token"]:
-                with open("token.json", "w") as JsonFile:
-                    json.dump(newTokenInfo, JsonFile, indent=2)
-        except:
-            pass
+        if creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+            with open('token.json', 'w') as token:
+                token.write(creds.to_json())

@@ -80,6 +80,11 @@ a:hover {
    text-decoration: underline;
 }
 
+button {
+	font-family: "Lato", sans-serif;
+	font-weight: 100;
+}
+
 h1 {
    font-size: 3.5rem;
    font-weight: 300;
@@ -386,7 +391,7 @@ section.activated {
 #selecters {
    display: flex;
    justify-content: space-evenly;
-   font-size: 1.25rem;
+	font-size: 1.25rem;
 }
 
 label {
@@ -394,8 +399,8 @@ label {
 }
 
 select {
-   padding: 5px;
-   font-size: 1rem;
+   padding: 7px;
+   font-size: 1.15rem;
    color: rgb(30, 30, 30);
    background-color: rgb(240, 245, 245);
    border: #303030 solid 1px;
@@ -405,7 +410,7 @@ select {
 #allvideos {
    display: flex;
    justify-content: center;
-   row-gap: 4rem;
+   row-gap: 2rem;
    column-gap: 1rem;
    flex-wrap: wrap;
 }
@@ -422,7 +427,7 @@ select {
 .video:hover {
    scale: 1.0125;
    cursor: pointer;
-   background-color: rgb(100, 200, 200);
+   background-color: #c7d6d6;
    transition: 0.5s ease;
    text-decoration: none;
 }

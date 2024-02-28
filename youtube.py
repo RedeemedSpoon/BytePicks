@@ -1,17 +1,24 @@
+import os, datetime, isodate, json, sys, logging
 from googleapiclient.discovery import build
-import os, datetime, isodate, json, sys
+from collections import defaultdict, OrderedDict
+from langdetect import detect
 from math import log
 import pandas as pd
 
-MIN_DUR = isodate.parse_duration("PT30S")
-MAX_DUR = isodate.parse_duration("PT10H")
+
+MIN_DUR = isodate.parse_duration("PT1M")
 LANGUAGE = ["EN", "FR", "ES", "RU", "HI"]
 FIELDS = "items(snippet(title,publishedAt,channelTitle,channelId,thumbnails/medium/url), contentDetails(upload/videoId))"
-
 CAPTION_MAPPING = {None: 0.975}
 RATING_MAPPING = {None: 1}
 DEFINITION_MAPPING = {"sd": 0.90, "fhd": 1.025, "uhd": 1.05}
-SUBSCRIBER_MAPPING = {10_000: 1.05, 100_000: 1.025, 500_000: 1, 1_000_000: 0.975, 5_000_000: 0.95}
+SUBSCRIBER_MAPPING = {
+    10_000: 1.0375,
+    100_000: 1.025,
+    500_000: 1,
+    1_000_000: 0.975,
+    5_000_000: 0.9625,
+}
 DURATIONS_MAPPING = [
     (isodate.parse_duration("PT2M"), 0.500),
     (isodate.parse_duration("PT7M"), 0.950),
@@ -21,11 +28,11 @@ DURATIONS_MAPPING = [
     (isodate.parse_duration("PT1H"), 1.050),
 ]
 
-
 def search():
     global curPageToken
+    quotaUsage -= 100
     request = service.search().list(
-        q="programming | coding | computer science | tech | ai | cloud computing | computer",
+        q="Programming | Tech | Computer Science",
         type="channel",
         part="id",
         maxResults=50,
@@ -46,11 +53,20 @@ def search():
     if curPageToken is not None:
         search()
 
+def sortAndFilter(df):
+    df.drop_duplicates(subset=["ChannelID"], inplace=True)
+    df.dropna(inplace=True)
+    df.sort_values(by=['SubscriberCount'], ascending=False, inplace=True)
+    return df
 
 def updateInfoChannels():
-    for channel in searchedChannels:
+    global quotaUsage
+    channels = []
+    channelList = searchedChannels if searchedChannels else channelDF["ChannelID"]
+    for channel in channelList:
         request = service.channels().list(part=["snippet", "statistics", "brandingSettings"], id=channel)
         response = request.execute()
+        quotaUsage -= 1
 
         try:
             channelInfo = {
@@ -63,56 +79,51 @@ def updateInfoChannels():
                 "VideoCount": int(response["items"][0]["statistics"]["videoCount"]),
                 "ViewCount": int(response["items"][0]["statistics"]["viewCount"]),
                 "Country": response["items"][0]["snippet"].get("country", "Unknown"),
-                "Language": response["items"][0]["snippet"].get("defaultLanguage", "Unknown"),
+                "Language": response["items"][0]["snippet"].get("defaultLanguage", "Unknown")
             }
 
             if channelInfo["SubscriberCount"] > 10_000:
                 channels.append(channelInfo)
-        except:
-            pass
+        except Exception as e:
+            print(f"Skipped Channel : {e}")
 
-    df = pd.DataFrame(channels)
-    df = pd.concat([channelDF, df], ignore_index=True)
-    df.drop_duplicates(inplace=True)
-    df.dropna(inplace=True)
-    to_drop = df["SubscriberCount"] < 10000
-    df.drop(df[to_drop].index, inplace=True)
+    df = sortAndFilter(pd.DataFrame(channels))
     df.to_csv("channels.csv", index=False)
-
 
 def allMightyAlgorithm(video: json, vidDuration: isodate, SubscriberCount: str) -> int:
     NRLLikeCount = log(video["LikeCount"] + 1)
     NRLCommentCount = log(video["CommentCount"] + 1)
     NRLViewCount = log(video["ViewCount"] + 1)
 
-    viewRate = NRLViewCount / 3.50
+    viewRate = NRLViewCount / 3.25
     likeRate = NRLLikeCount / NRLViewCount
-    commentRate = NRLCommentCount / NRLViewCount * 1.25
+    commentRate = (NRLCommentCount / NRLViewCount) * 1.25
 
     defQuality = DEFINITION_MAPPING.get(video["Definition"], 1)
     capQuality = CAPTION_MAPPING.get(video["Caption"], 1)
     ratQuality = RATING_MAPPING.get(video["ContentRating"], 0.925)
-    durQuality = next((quality for duration, quality in DURATIONS_MAPPING if vidDuration < duration), 0.90)
-    subBalance = next((balance for channel, balance in SUBSCRIBER_MAPPING.items() if SubscriberCount < channel), 0.925)
+    durQuality = next((quality for duration, quality in DURATIONS_MAPPING if vidDuration < duration),0.90)
+    subBalance = next((balance for channel, balance in SUBSCRIBER_MAPPING.items() if SubscriberCount < channel),0.925)
 
     qualityMultiplier = float(subBalance * defQuality * capQuality * ratQuality * durQuality)
     rating = round((viewRate + likeRate + commentRate) * qualityMultiplier * 100, 3)
     return rating
 
-
 def fetchNewVideos():
+    global quotaUsage
     videosIds = []
     for channel in channelDF["ChannelID"]:
         subcriberCount = channelDF[channelDF["ChannelID"] == channel]["SubscriberCount"].values[0]
         request = service.activities().list(
             part=["snippet", "id", "contentDetails"],
             channelId=channel,
-            publishedAfter=yesterday.isoformat() + "T00:00:00Z",
+            publishedAfter=today.isoformat() + "T00:00:00Z",
             maxResults=5,
             fields=FIELDS,
         )
 
         response = request.execute()
+        quotaUsage -= 1
         for item in response["items"]:
             try:
                 channelName = item["snippet"]["channelTitle"]
@@ -124,6 +135,7 @@ def fetchNewVideos():
 
                 request = service.videos().list(id=videoId, part=["statistics", "snippet", "contentDetails"])
                 response = request.execute()
+                quotaUsage -= 1
 
                 viewCount = int(response["items"][0]["statistics"]["viewCount"])
                 likeCount = int(response["items"][0]["statistics"]["likeCount"])
@@ -134,12 +146,14 @@ def fetchNewVideos():
                 duration = isodate.parse_duration(response["items"][0]["contentDetails"]["duration"])
                 caption = response["items"][0]["contentDetails"]["caption"]
                 language = str(
-                    response["items"][0]["snippet"].get(
-                        "defaultLanguage", response["items"][0]["snippet"].get("defaultAudioLanguage")
-                    )
+                    response["items"][0]["snippet"].get("defaultLanguage",
+                    response["items"][0]["snippet"].get("defaultAudioLanguage", "NONE"))
                 ).upper()
+                language = "HI" if "HI" in language else language[:2]
+                language = "HI" if channelDF[channelDF["ChannelID"] == channelId]["Language"].values[0] == "HI"  else language
+                language = detect(videoTitle).upper() if language in ['NONE', 'ZXX'] else language
 
-                if videoId not in videosIds and viewCount > 1000 and MIN_DUR < duration < MAX_DUR and language[:2] in LANGUAGE:
+                if videoId not in videosIds and viewCount > 750 and MIN_DUR < duration and language in LANGUAGE:
                     fullVideoDetails = {
                         "ChannelName": channelName,
                         "ChannelId": channelId,
@@ -158,90 +172,138 @@ def fetchNewVideos():
                         "ViewCount": int(viewCount),
                         "LikeCount": int(likeCount),
                         "CommentCount": int(commentCount),
-                        "CategoryId": int(categoryId),
+                        "CategoryId": int(categoryId)
                     }
 
                     videoRating = allMightyAlgorithm(fullVideoDetails, duration, subcriberCount)
-                    Videos[videoRating] = fullVideoDetails
+                    Videos[language][videoRating] = fullVideoDetails
                     videosIds.append(videoId)
-            except:
-                pass
+            except Exception as e:
+                print(f"Skipped Activities : {e}")
 
+def getNewData(video):
+    global quotaUsage
+    try:
+       request = service.videos().list(id=video["VideoId"], part=["statistics", "snippet", "contentDetails"])
+       response = request.execute()
+       quotaUsage -= 1
+       fullVideoDetails = {
+           "ChannelName": video["ChannelName"],
+           "ChannelId": video["ChannelId"],
+           "ChannelIcon": video["ChannelIcon"],
+           "ChannelUrl": video["ChannelUrl"],
+           "VideoUrl": video["VideoUrl"],
+           "VideoTitle": response["items"][0]["snippet"]["title"],
+           "VideoId": video["VideoId"],
+           "PublishedDate": video["PublishedDate"],
+           "Thumbnail": response["items"][0]["snippet"]["thumbnails"]["medium"]["url"],
+           "Duration": video["Duration"],
+           "Definition": video["Definition"],
+           "language": video["language"],
+           "Caption": False if ["items"][0]["contentDetails"]["caption"] == "false" else True,
+           "ContentRating": False if not response["items"][0]["contentDetails"]["contentRating"] else True,
+           "ViewCount": int(response["items"][0]["statistics"]["viewCount"]),
+           "LikeCount": int(response["items"][0]["statistics"]["likeCount"]),
+           "CommentCount": int(response["items"][0]["statistics"].get("commentCount", 0)),
+           "CategoryId": int(video["CategoryId"])
+       }
 
-def deleteOldVideos():
-    if today.weekday() == 0:
-        with open("weekly.json", "w") as f:
-            json.dump({}, f)
+       return fullVideoDetails
+    except Exception as e:
+       print(f"Skipped An Activities : {e}")
 
-    if today.day == 1:
-        with open("monthly.json", "w") as f:
-            json.dump({}, f)
+def checkOldVideos(time, date):
+    threshold = {"weekly": 7, "monthly": 30, "yearly": 365}
+    timeline = datetime.timedelta(days=threshold[time])
+    date = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M")
+    return (datetime.datetime.now() - date) > timeline
 
-    if today.day == 1 and today.month == 1:
-        with open("yearly.json", "w") as f:
-            json.dump({}, f)
+def updateVideos(allVideos, time):
+    result = {}
+    for video in allVideos.items():
+        if checkOldVideos(time, video[1]["PublishedDate"]):
+            video = getNewData(video[1])
+            subcriberCount = channelDF[channelDF["ChannelID"] == video['ChannelId']]["SubscriberCount"].values[0]
+            videoRating = allMightyAlgorithm(video, video["Duration"], subcriberCount)
+            result[videoRating] = fullVideoDetails
+    return result
 
+def sortAccordingly(allVideos):
+    existingChannels = []
+    filteredVideos = {}
+    allVideos = OrderedDict(sorted(allVideos.items(), key=lambda item: float(item[0]), reverse=True))
+    for video in allVideos.items():
+        if video[1]["ChannelId"] in existingChannels:
+            rating = float(video[0]) * 0.80
+            filteredVideos[rating] = video[1]
+        else:
+            existingChannels.append(video[1]["ChannelId"])
+    return OrderedDict(sorted(allVideos.items(), key=lambda item: float(item[0]), reverse=True))
 
 def storeVideos():
-    bestVideo = dict(sorted(Videos.items(), key=lambda item: float(item[0]), reverse=True)[:25])
-    with open("daily.json", "w") as f:
-        json.dump(bestVideo, f, indent=3)
+    topDay, topWeek, topMonth = {}, {}, {}
+    for lang, videos in Videos.items():
+        for time in ["daily", "weekly", "monthly", "yearly"]:
+            with open(f"{time}.json", "r") as f:
+                data = json.load(f)
 
-    dayTop = dict(list(bestVideo.items())[:5])
-    with open("weekly.json", "r") as f:
-        existingWeekly = json.load(f)
+            if time == "daily":
+                topDay = OrderedDict(sorted(videos.items(), key=lambda item: float(item[0]), reverse=True))
+                data[lang] = OrderedDict(list(topDay.items())[:40])
 
-    existingWeekly.update(dayTop)
-    existingWeekly = dict(sorted(existingWeekly.items(), key=lambda item: float(item[0]), reverse=True))
-    with open("weekly.json", "w") as f:
-        json.dump(existingWeekly, f, indent=3)
+            elif time == "weekly":
+                topWeek = updateVideos(data[lang], time)
+                topWeek.update(OrderedDict(list(topDay.items())[:5]))
+                topWeek = sortAccordingly(topWeek)
+                data[lang] = topWeek
 
-    if today.weekday() == 0:
-        weekTop = dict(sorted(existingWeekly.items(), key=lambda item: float(item[0]), reverse=True)[:10])
-        with open("monthly.json", "r") as f:
-            existingMonthly = json.load(f)
+            elif time == "monthly":
+                if today.weekday() == 0:
+                    topMonth = updateVideos(data[lang], time)
+                    topMonth.update(OrderedDict(list(topWeek.items())[:10]))
+                    topMonth = sortAccordingly(topMonth)
+                    data[lang] = topMonth
 
-        existingMonthly.update(weekTop)
-        existingMonthly = dict(sorted(existingMonthly.items(), key=lambda item: float(item[0]), reverse=True))
-        with open("monthly.json", "w") as f:
-            json.dump(existingMonthly, f, indent=3)
+            elif time == "yearly":
+                if today.day == 1:
+                    if today.weekday() != 0:
+                        with open("monthly.json", "r") as f:
+                            newData = json.load(f)
+                            topMonth = newData[lang]
 
-    if today.day == 1:
-        with open("monthly.json", "r") as f:
-            existingMonthly = json.load(f)
+                topYear = updateVideos(data[lang], time)
+                topYear.update(OrderedDict(list(topMonth.items())[:5]))
+                data[lang] = sortAccordingly(topYear)
 
-        monthTop = dict(sorted(existingMonthly.items(), key=lambda item: float(item[0]), reverse=True)[:5])
-        with open("yearly.json", "r") as f:
-            existingYearly = json.load(f)
+            with open(f"{time}.json", "w") as f:
+                json.dump(data, f, indent=4)
 
-        existingYearly.update(monthTop)
-        existingYearly = dict(sorted(existingYearly.items(), key=lambda item: float(item[0]), reverse=True))
-        with open("yearly.json", "w") as f:
-            json.dump(existingYearly, f, indent=3)
-
-
-def initialize():
-    global channelDF, service, yesterday, today, Videos, searchedChannels, channels, curPageToken
+def main():
+    global channelDF, service, today, Videos, quotaUsage, searchedChannels, curPageToken
+    logging.basicConfig(filename='youtube.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     channelDF = pd.read_csv("channels.csv")
-    today = datetime.date.today()
-    yesterday = datetime.date.today() - datetime.timedelta(days=1)
     API_KEY = os.environ.get("YT_API_KEY")
     service = build("youtube", "v3", developerKey=API_KEY)
+    today = datetime.date.today()
+    Videos = defaultdict(dict)
+    quotaUsage = 10_000
     searchedChannels = []
     curPageToken = None
-    channels = []
-    Videos = {}
-
-
-if __name__ == "__main__":
-    initialize()
-
+    
     if len(sys.argv) > 1 and sys.argv[1] == "search":
         search()
         updateInfoChannels()
         exit(0)
 
-    updateInfoChannels() if yesterday.day % 9 == 0 else None
-    fetchNewVideos()
-    deleteOldVideos()
-    storeVideos()
+    try:
+        updateInfoChannels() if (today.day % 8 == 0 and today.weekday != 0) else None
+        fetchNewVideos()
+        storeVideos()
+
+    except Exception as e:
+        logging.error(f"An error occurred: {e}")
+    else:
+        logging.info(f"Remaining quota for this day : {quotaUsage}")
+
+if __name__ == "__main__":
+    main()
