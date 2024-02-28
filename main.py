@@ -1,7 +1,9 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, send_file
+from collections import OrderedDict
 from datetime import datetime
 import json, secrets, string
 from common import *
+
 
 TIME = ["daily", "weeky", "monthy", "yearly"]
 LANGUAGE = ["EN", "FR", "ES", "RU", "HI"]
@@ -17,7 +19,7 @@ def teardown_request(exception=None):
 @app.route("/")
 def home():
     with open("daily.json", "r") as file:
-        homeThumbnails = json.load(file)
+        homeThumbnails = json.load(file)["EN"]
     return render_template("home.html", year=copyright_year, videos=homeThumbnails)
 
 
@@ -44,14 +46,13 @@ def apiRequest():
     top = request.args.get("top", default=25, type=int)
 
     if time in TIME and language in LANGUAGE and top > 0:
-        requestedVideos = list(getVideos(time, language).values())[:top]
         response = {
             "Request": f"The top {top} {time} videos in {language}",
             "Date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
-            "Result": requestedVideos,
+            "Result": OrderedDict(list(getVideos(time, language).items())[:top]),
         }
     else:
-        response = {"Result": "You gave an invalid request."}
+        response = {"Result": "You send an invalid request."}
 
     return jsonify(response)
 
@@ -67,30 +68,55 @@ def newsletter():
 
         user = session.query(User).filter_by(email=email).first()
         if user:
-            user.time, user.language, user.token, message = time, language, token, "User info updated!"
+                message = "This Email is Already Registered"
         else:
             session.add(User(email=email, time=time, language=language, token=token))
-            message = "Thank you for subscribing!"
-        session.commit()
+            session.commit()
+            message = "Thank You For Subscribing!"
 
-    return render_template("newsletter.html", year=copyright_year, message=message)
+    return render_template("newsletter.html", year=copyright_year, message=message, email="")
 
 
-@app.route("/drop/user")
+@app.route("/Edit", methods=["GET", "POST"])
+def edit():
+    token = request.args.get("token", default=None)
+    email = request.args.get("user", default="")
+    message = None
+    if request.method == "POST":
+        if token is None or email == "":
+            message = "Missing Token or Email"
+        else:
+            user = session.query(User).filter_by(token=token, email=email).first()
+            if user:
+                user.time = request.form["time"]
+                user.language = request.form["language"]
+                message = "User Preference Updated!"
+            else:
+                message = "Incorrect Token or Email"
+    
+    return render_template("newsletter.html", year=copyright_year, message=message, email=email)
+
+
+@app.route("/Drop", methods=["GET", "POST"])
 def drop():
     token = request.args.get("token", default=None)
-    if token is None:
-        message = "Missing token"
+    email = request.args.get("user", default="")
+    if token is None or email == "":
+        message = "Missing Token or Email"
     else:
-        user = session.query(User).filter_by(token=token).first()
+        user = session.query(User).filter_by(token=token, email=email).first()
         if user:
             session.delete(user)
             session.commit()
-            message = "User deleted"
+            message = "User Deleted!"
         else:
-            message = "User not found"
+            message = "Incorrect Token or Email"
+    return render_template("newsletter.html", year=copyright_year, message=message, email="")
 
-    return render_template("newsletter.html", year=copyright_year, message=message)
+
+@app.route("/Download")
+def download():
+	return send_file("channels.csv", as_attachment=True)
 
 
 @app.route("/Explaination")

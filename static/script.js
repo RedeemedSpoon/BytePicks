@@ -11,7 +11,7 @@ $(document).ready(function () {
       const welcomeImg = $(".welcome img");
       const sections = $("section");
       const typetext = $("#welcome_text");
-      const textList = ["Your Gateway to Wonders!", "Discover, Learn, and Thrive.", "Quality Over Quantity.", "Tech Vibes, No Limits!", "Masterpieces at Your Fingertips!", "Elevate Your Online Experience!", "Where Ideas Take Flight!"];
+      const textList = ["Your Gateway to Wonders!", "Discover, Learn, and Thrive.", "Quality Over Quantity.", "Tech Vibes, No Limits!", "Masterpieces at Your Fingertips!", "Elevate Your Online Experience!", "Where Curiosity Take Flight!"];
       let index = 0;
       let charIndex = 0;
       let isDeleting = false;
@@ -117,7 +117,7 @@ $(document).ready(function () {
             behavior: "smooth",
          });
       });
-   } else if (window.location.pathname === "/Newsletter" || window.location.pathname === "/drop/user" || window.location.pathname === "/Contact") {
+   } else if (window.location.pathname === "/Newsletter" || window.location.pathname === "/Drop" || window.location.pathname === "/Edit" || window.location.pathname === "/Contact") {
       const subBtn = $(".subscribe");
       const cancelBtn = $("#cancel");
       const popUp = $(".popup");

@@ -61,9 +61,9 @@ for user in session.query(User).all():
 
         <p>Welcome to Byte Picks, your go-to source for the latest and greatest tech videos scattered across YouTube.</p>
 
-        <p>To customize your preferences, please visit our <a href="https://bytepicks.com/Newsletter">Newsletter</a> page, enter your email, and choose your preferred time and language, it's that simple!</p>
+        <p>To change your preferences, please click <a href="https://bytepicks.com/Edit?user={user.email}&token={user.token}">Here</a> and choose your preferred time and language, it's that simple!</p>
 
-        <p>If you wish to unsubscribe, click <a href="https://bytepicks.com/drop/user?token={user.token}">here</a>. (Proceed with caution!)</p>
+        <p>If you wish to unsubscribe, click <a href="https://bytepicks.com/Drop?user={user.email}&token={user.token}">Here</a>. (Proceed with caution!)</p>
 
         <p>Without further ado, here's your {user.time} tech video in {user.language}. Enjoy!</p><br>
 
