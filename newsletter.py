@@ -83,9 +83,4 @@ for user in session.query(User).all():
 
         recipientEmail = user.email
         subject = f"{str(user.time).title()} Tech Highlights: {datetime.now().date()}"
-
-        try:
-            sendEmail(body, subject, recipientEmail, "newsletter@bytepicks.com")
-        except HttpError:
-            session.delete(user)
-            session.commit()
+        sendEmail(body, subject, recipientEmail, "newsletter@bytepicks.com")

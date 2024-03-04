@@ -1,0 +1,16 @@
+#!/bin/bash
+
+fileList="daily.json weekly.json monthly.json yearly.json token.json channels.csv newsletter.db"
+remoteDir="/opt/render/project/src"
+
+scp -s $SERVER_NAME@ssh.oregon.render.com:$remoteDir/newsletter.db .
+if [[ $? -eq 0 ]]; then
+   python youtube.py 
+   if [[ $? -eq 0 ]]; then
+      python newsletter.py
+      if [[ $? -eq 0 ]]; then
+         scp -s $fileList $SERVER_NAME@ssh.oregon.render.com:$remoteDir
+      fi
+   fi 
+fi
+
