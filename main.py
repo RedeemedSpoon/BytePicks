@@ -7,7 +7,7 @@ from common import *
 TIME = ["daily", "weeky", "monthy", "yearly"]
 LANGUAGE = ["EN", "FR", "ES", "RU", "HI"]
 app = Flask(__name__)
-copyright_year = datetime.now().year
+copyrightYear = datetime.now().year
 
 @app.teardown_request
 def teardown_request(exception=None):
@@ -17,21 +17,21 @@ def teardown_request(exception=None):
 def home():
     with open("daily.json", "r") as file:
         homeThumbnails = json.load(file)["EN"]
-    return render_template("home.html", year=copyright_year, videos=homeThumbnails)
+    return render_template("home.html", year=copyrightYear, videos=homeThumbnails)
 
 @app.route("/Dashboard")
 def dashboard():
     time = request.args.get("time", default="daily")
     language = request.args.get("lang", default="EN")
     specificVideos = getVideos(time, language)
-    return render_template("dashboard.html", year=copyright_year,
+    return render_template("dashboard.html", year=copyrightYear,
         videos=specificVideos, time=time,language=language,
         formatDuration=formatDuration, formatViewCount=formatViewCount,
     )
 
 @app.route("/Api-Docs")
 def api():
-    return render_template("api.html", year=copyright_year)
+    return render_template("api.html", year=copyrightYear)
 
 @app.route("/api/request")
 def apiRequest():
@@ -58,16 +58,45 @@ def newsletter():
         time = request.form["time"]
         language = request.form["language"]
         token = "".join(secrets.choice(string.ascii_letters + string.digits) for _ in range(20))
-
         user = session.query(User).filter_by(email=email).first()
         if user:
-                message = "This Email is Already Registered"
+            message = "This Email is Already Registered"
         else:
-            session.add(User(email=email, time=time, language=language, token=token))
-            session.commit()
-            message = "Thank You For Subscribing!"
+            user = session.query(PendingUser).filter_by(email=email).first()
+            if user:
+                message = "This User is on the Pending List"
+            else:
+                session.add(PendingUser(email=email, time=time, language=language, token=token))
+                session.commit()
 
-    return render_template("newsletter.html", year=copyright_year, message=message, email="")
+                message = getMessage(email, time, language, token)
+                sendEmail(message, "BytePicks : Please Confirm Your Email", email, "newsletter@bytepicks.com")
+                message = "Please Check Your Inbox!"
+
+    return render_template("newsletter.html", year=copyrightYear, message=message, email="")
+
+@app.route("/Submit", methods=["GET", "POST"])
+def submit():
+    token = request.args.get("token", default=None)
+    email = request.args.get("user", default="")
+    message = None
+    if token is None or email == "":
+        message = "Missing Token or Email"
+    else:
+        user = session.query(User).filter_by(token=token, email=email).first()
+        if user:
+            message = "User Already Exists"
+        else:
+            user = session.query(PendingUser).filter_by(email=email).first()
+            if user:
+                session.add(User(email=user.email, time=user.time, language=user.language, token=user.token))
+                session.delete(user)
+                session.commit()
+                message = "Thank You for Subscribing!"
+            else:
+                message = "This User Does not Exist"
+
+    return render_template("newsletter.html", year=copyrightYear, message=message, email="")
 
 @app.route("/Edit", methods=["GET", "POST"])
 def edit():
@@ -86,7 +115,7 @@ def edit():
             else:
                 message = "Incorrect Token or Email"
     
-    return render_template("newsletter.html", year=copyright_year, message=message, email=email)
+    return render_template("newsletter.html", year=copyrightYear, message=message, email=email)
 
 @app.route("/Drop", methods=["GET", "POST"])
 def drop():
@@ -102,7 +131,7 @@ def drop():
             message = "User Deleted!"
         else:
             message = "Incorrect Token or Email"
-    return render_template("newsletter.html", year=copyright_year, message=message, email="")
+    return render_template("newsletter.html", year=copyrightYear, message=message, email="")
 
 @app.route("/Download")
 def download():
@@ -110,15 +139,15 @@ def download():
 
 @app.route("/Explaination")
 def explaination():
-    return render_template("explaination.html", year=copyright_year)
+    return render_template("explaination.html", year=copyrightYear)
 
 @app.route("/Privacy-Policy")
 def privacy_policy():
-    return render_template("privacy-policy.html", year=copyright_year)
+    return render_template("privacy-policy.html", year=copyrightYear)
 
 @app.route("/About-Us")
 def about_us():
-    return render_template("about-us.html", year=copyright_year)
+    return render_template("about-us.html", year=copyrightYear)
 
 @app.route("/Contact", methods=["GET", "POST"])
 def contact():
@@ -131,7 +160,7 @@ def contact():
         sendEmail(message, subject, "contact@bytepicks.com", "contact@bytepicks.com")
         message = "Thank you for contacting us!"
 
-    return render_template("contact.html", year=copyright_year, message=message)
+    return render_template("contact.html", year=copyrightYear, message=message)
 
 if __name__ == "__main__":
     app.run()

@@ -199,7 +199,7 @@ def getNewData(video):
            "Duration": video["Duration"],
            "Definition": video["Definition"],
            "language": video["language"],
-           "Caption": False if ["items"][0]["contentDetails"]["caption"] == "false" else True,
+           "Caption": False if response["items"][0]["contentDetails"]["caption"] == "false" else True,
            "ContentRating": False if not response["items"][0]["contentDetails"]["contentRating"] else True,
            "ViewCount": int(response["items"][0]["statistics"]["viewCount"]),
            "LikeCount": int(response["items"][0]["statistics"]["likeCount"]),
@@ -207,7 +207,7 @@ def getNewData(video):
            "CategoryId": int(video["CategoryId"])
        }
 
-       return fullVideoDetails
+       return fullVideoDetails, isodate.parse_duration(response["items"][0]["contentDetails"]["duration"])
     except:
        pass
 
@@ -215,16 +215,17 @@ def checkOldVideos(time, date):
     threshold = {"weekly": 7, "monthly": 30, "yearly": 365}
     timeline = datetime.timedelta(days=threshold[time])
     date = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M")
-    return (datetime.datetime.now() - date) > timeline
+    return (datetime.datetime.now() - date) < timeline
 
 def updateVideos(allVideos, time):
     result = {}
     for video in allVideos.items():
-        if checkOldVideos(time, video[1]["PublishedDate"]):
-            video = getNewData(video[1])
+        if checkOldVideos(time, video[1]["PublishedDate"]): 
+            video, duration = getNewData(video[1])
             subcriberCount = channelDF[channelDF["ChannelID"] == video['ChannelId']]["SubscriberCount"].values[0]
-            videoRating = allMightyAlgorithm(video, video["Duration"], subcriberCount)
-            result[videoRating] = fullVideoDetails
+            videoRating = allMightyAlgorithm(video, duration, subcriberCount)
+            result[videoRating] = video
+
     return result
 
 def sortAccordingly(allVideos):
@@ -270,9 +271,9 @@ def storeVideos():
                             newData = json.load(f)
                             topMonth = newData[lang]
 
-                topYear = updateVideos(data[lang], time)
-                topYear.update(OrderedDict(list(topMonth.items())[:5]))
-                data[lang] = sortAccordingly(topYear)
+                    topYear = updateVideos(data[lang], time)
+                    topYear.update(OrderedDict(list(topMonth.items())[:5]))
+                    data[lang] = sortAccordingly(topYear)
 
             with open(f"{time}.json", "w") as f:
                 json.dump(data, f, indent=4)
@@ -283,7 +284,7 @@ def main():
     channelDF = pd.read_csv("channels.csv")
     API_KEY = os.environ.get("YT_API_KEY")
     service = build("youtube", "v3", developerKey=API_KEY)
-    today = datetime.date.today()
+    today = datetime.date.today() - datetime.timedelta(days=1)
     Videos = defaultdict(dict)
     quotaUsage = 10_000
     searchedChannels = []

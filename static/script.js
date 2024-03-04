@@ -1,9 +1,5 @@
 $(document).ready(function () {
-   function toggleMenu() {
-      $(".nav-links").toggleClass("visible");
-   }
-
-   $(".hamburger-menu").click(toggleMenu);
+   $(".hamburger-menu").click(() => $(".nav-links").toggleClass("visible"));
    if (window.location.pathname === "/") {
       const altHeader = $("header");
       const logo = $("header img");
@@ -11,10 +7,10 @@ $(document).ready(function () {
       const welcomeImg = $(".welcome img");
       const sections = $("section");
       const typetext = $("#welcome_text");
-      const textList = ["Your Gateway to Wonders!", "Discover, Learn, and Thrive.", "Quality Over Quantity.", "Tech Vibes, No Limits!", "Masterpieces at Your Fingertips!", "Elevate Your Online Experience!", "Where Curiosity Take Flight!"];
       let index = 0;
       let charIndex = 0;
       let isDeleting = false;
+      const textList = ["Your Gateway to Wonders!", "Discover, Learn, and Thrive.", "Quality Over Quantity.", "Tech Vibes, No Limits!", "Masterpieces at Your Fingertips!", "Elevate Your Online Experience!", "Where Curiosity Take Flight!"];
 
       function typeText() {
          let currentText = textList[index];
@@ -117,7 +113,7 @@ $(document).ready(function () {
             behavior: "smooth",
          });
       });
-   } else if (window.location.pathname === "/Newsletter" || window.location.pathname === "/Drop" || window.location.pathname === "/Edit" || window.location.pathname === "/Contact") {
+   } else if (["/Newsletter", "/Drop", "/Edit", "/Submit", "/Contact"].includes(window.location.pathname)) {
       const subBtn = $(".subscribe");
       const cancelBtn = $("#cancel");
       const popUp = $(".popup");

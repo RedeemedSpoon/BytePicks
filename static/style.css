@@ -644,14 +644,15 @@ ul * {
    left: 50%;
    transform: translate(-50%, -50%);
    background-color: #f9f9f9;
-   padding: 2rem;
+   padding: 1rem;
    border-radius: 3rem;
 }
 
 .popup-content img {
-   width: 40%;
+   width: 35%;
    display: flex;
    align-self: center;
+   margin-bottom: -20px;
 }
 
 input[name="user_email"] {
@@ -684,7 +685,7 @@ input[name="user_email"] {
    transition: 0.5s ease;
    font-size: 1.5rem;
    padding: 10px 15px;
-   margin-left: 2rem;
+   margin-left: 1rem;
 }
 
 #cancel:hover {
@@ -702,11 +703,11 @@ input[name="user_email"] {
 }
 
 .popup-content label {
-   font-size: 1.5rem;
+   font-size: 1.4rem;
 }
 
 .popup-content select {
-   scale: 1.1;
+   scale: 1;
    background-color: #f9f9f9;
 }
 
@@ -1014,7 +1015,7 @@ textarea {
    }
 
    .popup-content > form {
-      row-gap: 1.5rem;
+      row-gap: 0.5rem;
    }
 
    .popup-content > form > div {
@@ -1025,8 +1026,9 @@ textarea {
    }
 
    .popup-content img {
-      width: 30%;
+      width: 25%;
       margin-top: 20px;
+      margin-bottom: -20px;
    }
 
    .primarybtn {
@@ -1038,6 +1040,7 @@ textarea {
       font-size: 1.25rem;
       padding: 8px 12px;
       margin-left: 0rem;
+      margin-top: -5px;
    }
 
    .popup-content label {
@@ -1297,7 +1300,7 @@ textarea {
    }
 
    .popup-content > form {
-      row-gap: 1.5rem;
+      row-gap: 1rem;
    }
 
    .popup-content > form > div {
@@ -1310,6 +1313,7 @@ textarea {
    .popup-content img {
       width: 30%;
       margin-top: 20px;
+      margin-bottom: -20px
    }
 
    .primarybtn {
@@ -1321,6 +1325,7 @@ textarea {
       font-size: 1.25rem;
       padding: 8px 12px;
       margin-left: 0rem;
+      margin-top: -5px
    }
 
    .popup-content label {
@@ -1494,8 +1499,8 @@ textarea {
       right: 5rem;
    }
 
-   .popup-content {
-      width: 70%;
+   .popup-content > form {
+      row-gap: 1rem;
    }
 
    .popup-content > form > div {
@@ -1503,6 +1508,21 @@ textarea {
       flex-direction: column;
       align-items: center;
       justify-content: center;
+   }
+
+   .popup-content img {
+      width: 40%;
+      margin-top: 20px;
+      margin-bottom: -20px
+   }
+
+   #cancel {
+      margin-left: -1rem;
+   }
+
+   .popup-content label {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
    }
 
    .news_btn {
@@ -1640,6 +1660,35 @@ textarea {
       flex-direction: column;
       align-items: center;
       justify-content: center;
+   }
+
+   .popup-content > form {
+      row-gap: 1rem;
+   }
+
+   .popup-content img {
+      width: 40%;
+      margin-top: 20px;
+      margin-bottom: -20px
+   }
+
+   .popup-content label {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+   }
+
+   .news_btn {
+      display: block !important;
+   }
+
+   .plain_text {
+      margin: 7.5rem;
+      gap: 20px;
+   }
+
+   #explaination {
+      margin: 7.5rem 5rem;
+      gap: 3rem;
    }
 
    .news_btn {
