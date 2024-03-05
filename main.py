@@ -4,7 +4,7 @@ from datetime import datetime
 import json, secrets, string
 from common import *
 
-TIME = ["daily", "weeky", "monthy", "yearly"]
+TIME = ["daily", "weekly", "monthly", "yearly"]
 LANGUAGE = ["EN", "FR", "ES", "RU", "HI"]
 app = Flask(__name__)
 copyrightYear = datetime.now().year

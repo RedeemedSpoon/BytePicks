@@ -146,13 +146,13 @@ header a {
    margin: 0 10px;
 }
 
-.alt_header {
+.alt-header {
    background-color: transparent;
    color: rgb(210, 225, 225);
    transition: 0.5s ease;
 }
 
-.new_alt_header {
+.new-alt-header {
    background-color: rgb(210, 225, 225);
    color: #252525;
 }
@@ -521,7 +521,7 @@ ul * {
    gap: 3px;
 }
 
-.programming_language {
+.programming-language {
    background-color: #282c33;
    color: #c9ced6;
    border: none;
@@ -530,8 +530,12 @@ ul * {
    padding: 13px;
 }
 
-.programming_language:hover {
+.programming-language:hover {
    cursor: pointer;
+}
+
+.api-call-example {
+	display: none;
 }
 
 .selected {
@@ -969,7 +973,7 @@ textarea {
       gap: 3px;
    }
 
-   .programming_language {
+   .programming-language {
       font-size: 1.25rem;
       padding: 10px;
    }
@@ -1230,7 +1234,7 @@ textarea {
       gap: 3px;
    }
 
-   .programming_language {
+   .programming-language {
       font-size: 1.25rem;
       padding: 10px;
    }
