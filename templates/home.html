@@ -1,11 +1,30 @@
 {% extends "base.html" %} {% block title %}
 <title>Byte Picks - Home</title>
-{% endblock %} {% block content %}
+{% endblock %}
+{% block header %}
+      <header class="alt-header"">
+         <a href="{{ url_for('home') }}">
+            <img src="{{ url_for('static', filename='Assets/Byte Picks.svg') }}" alt="brand logo" style="filter: invert(90%)"/>
+         </a>
+         <div class="nav-links" style="margin-right: 20px;">
+            <a href="{{ url_for('dashboard') }}">DashBoard</a>
+            <a href="{{ url_for('newsletter') }}">Newsletter</a>
+            <a href="{{ url_for('api') }}">Api Docs</a>
+            <a href="{{ url_for('contact') }}">Contact</a>
+         </div>
+         <div class="hamburger-menu">
+            <div class="bar" style="background-color: rgb(215, 230, 230)"></div>
+            <div class="bar" style="background-color: rgb(215, 230, 230)"></div>
+            <div class="bar" style="background-color: rgb(215, 230, 230)"></div>
+         </div>
+      </header>
+{% endblock %}
+{% block content %}
 <main>
    <div id="start">
       <img id="stylish" src="{{ url_for('static', filename='Assets/welcome.png') }}" alt="Welcome Image" draggable="false" />
       <div class="text-container">
-         <h2>> <span id="welcome_text"></span><span class="cursor">_</span></h2>
+         <h2>> <span id="welcome-text"></span><span class="cursor">_</span></h2>
       </div>
    </div>
 
