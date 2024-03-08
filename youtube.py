@@ -110,7 +110,6 @@ def allMightyAlgorithm(video: json, vidDuration: isodate, SubscriberCount: str) 
 
 def fetchNewVideos():
     global quotaUsage
-    videosIds = []
     for channel in channelDF["ChannelID"]:
         subcriberCount = channelDF[channelDF["ChannelID"] == channel]["SubscriberCount"].values[0]
         request = service.activities().list(
@@ -185,6 +184,7 @@ def getNewData(video):
     try:
        request = service.videos().list(id=video["VideoId"], part=["statistics", "snippet", "contentDetails"])
        response = request.execute()
+       videosIds.append(video["VideoId"])
        quotaUsage -= 1
        fullVideoDetails = {
            "ChannelName": video["ChannelName"],
@@ -220,7 +220,7 @@ def checkOldVideos(time, date):
 def updateVideos(allVideos, time):
     result = {}
     for video in allVideos.items():
-        if checkOldVideos(time, video[1]["PublishedDate"]): 
+        if checkOldVideos(time, video[1]["PublishedDate"]) and video[1]["VideoId"] not in videosIds: 
             video, duration = getNewData(video[1])
             subcriberCount = channelDF[channelDF["ChannelID"] == video['ChannelId']]["SubscriberCount"].values[0]
             videoRating = allMightyAlgorithm(video, duration, subcriberCount)
@@ -279,15 +279,16 @@ def storeVideos():
                 json.dump(data, f, indent=4)
 
 def main():
-    global channelDF, service, today, Videos, quotaUsage, searchedChannels, curPageToken
+    global channelDF, service, today, Videos, videosIds, quotaUsage, searchedChannels, curPageToken
     logging.basicConfig(filename='youtube.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     channelDF = pd.read_csv("channels.csv")
     API_KEY = os.environ.get("YT_API_KEY")
     service = build("youtube", "v3", developerKey=API_KEY)
-    today = datetime.date.today() - datetime.timedelta(days=1)
+    today = datetime.date.today()
     Videos = defaultdict(dict)
     quotaUsage = 10_000
     searchedChannels = []
+    videosIds = []
     curPageToken = None
     
     if len(sys.argv) > 1 and sys.argv[1] == "search":
@@ -296,7 +297,7 @@ def main():
         exit(0)
 
     try:
-        updateInfoChannels() if (today.day % 8 == 0 and today.weekday != 0) else None
+        updateInfoChannels()
         fetchNewVideos()
         storeVideos()
 
