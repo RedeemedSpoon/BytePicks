@@ -29,22 +29,20 @@ $(document).ready(function () {
             $("header img").css("filter", "invert(90%)");
          }
          
-		let sectionTriggers = Array($("section").length).fill(false);
-		$("section").each((index, section) => {
-		  const triggerPosition = $(section).offset().top;
-		  const offset = index <= 3 ? index * 100 - 1000 : 0;
-		  if (!sectionTriggers[index] && $(window).scrollTop() - offset > triggerPosition) {
-			 $(section).addClass("activated");
-			 sectionTriggers[index] = true;
-		  }
-		});
-      
-         $("section").each((index, section) => sectionTriggers[index] = activateSection($(section), $(section).offset().top, index <= 3 ? index * 100 - 1000 : 0, sectionTriggers[index]));
-      });
+         let sectionTriggers = Array($("section").length).fill(false);
+         $("section").each((index, section) => {
+           const triggerPosition = $(section).offset().top;
+           const offset = index <= 3 ? index * 100 - 1000 : 0;
+           if (!sectionTriggers[index] && $(window).scrollTop() - offset > triggerPosition) {
+             $(section).addClass("activated");
+             sectionTriggers[index] = true;
+           }
+         });
+   });
    } else if (window.location.pathname === "/Dashboard") {
    	$("select").change(() => window.location.href=`${window.location.pathname}?time=${$("#time").val()}&lang=${$("#language").val()}`)
    } else if (window.location.pathname === "/Api-Docs") {
-   	$('a[href^="#"]').click(function(e){e.preventDefault();$($(this).attr("href"))[0].scrollIntoView({behavior:"smooth"})});
+   	$('a[href^="#"]').click(function(e) {e.preventDefault(); $($(this).attr("href"))[0].scrollIntoView({behavior:"smooth"})});
       $(".programming-language").click(function() {
       	$(".programming-language").removeClass("selected") && $(this).addClass("selected");
       	$(".api-call-example").css("display", "none") && $(".api-call-example").filter("." + $(this).attr("id")).css("display", "block");
@@ -52,7 +50,7 @@ $(document).ready(function () {
    } else if (["/Newsletter", "/Drop", "/Edit", "/Submit", "/Contact"].includes(window.location.pathname)) {
       $(".subscribe").click(() => $("body").css("overflow", "hidden") && $(".popup").show());
       $("#cancel").click(() => $("body").css("overflow", "auto") && $(".popup").hide());
-		$(".popup").click((e) => !$(e.target).closest("#sub .popup-content").length && $("body").css("overflow", "auto") && $(".popup").hide());
+      $(".popup").click((e) => {if (!$(e.target).closest("#sub .popup-content").length) $("body").css("overflow", "auto") && $(".popup").hide()})
       $("#closebtn").click(() => popUp.hide());
    }
 });

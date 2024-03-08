@@ -10,7 +10,7 @@
 {% endif %}
 <div id="sub" class="popup">
    <div class="popup-content">
-      <h3 style="margin-top: 2rem">Subcribe to our Newsletter</h3>
+      <h3 style="margin-top: 2rem">Subscribe to our Newsletter</h3>
       <img src="{{ url_for('static', filename='Assets/envelope.png') }}" alt="mail image" />
       <form action="{% if request.path == '/Edit' %}{{ url_for('edit', token=request.args.get('token'), user=request.args.get('user')) }}{% else %}{{ url_for('newsletter') }}{% endif %}" method="post">
          <div>
