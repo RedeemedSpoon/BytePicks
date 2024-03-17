@@ -75,67 +75,57 @@ def updateToken():
                 token.write(creds.to_json())
                 
 def getMessage(email, time, language, token):
-	return f"""
-	        <html>
-        <head>
-            <style>
-                body {{
-                    font-family: 'Verdana', sans-serif;
-                    margin: 20px;
-                    padding: 20px;
-                }}
-
-                p {{
-                    font-size: 18px;
-                    margin-bottom: 15px;
-                }}
-
-                a {{
-                    color: #007bff;
-                    text-decoration: none;
-                    font-weight: bold;
-                }}
-
-                a:hover {{
-                    text-decoration: underline;
-                    color: #0056b3;
-                }}
-                
-                button {{
-						  background-color: #0b89a8;
-						  color: #f9f9f9;
-						  border-radius: 5px;
-						  transition: 0.5s ease;
-						  font-size: 20px;
-						  padding: 8px 13px;
-						  margin: 10px 100px;
-						  border: none;
-                }}
-                
-                button:hover {{
-   					  cursor: pointer;
-   					  background-color: #157a94;
- 						  color: #f0f0f0;
-   				     scale: 1.075;
-   					  transition: 0.5s ease;
-					 }}
-            </style>
-        </head>
-        <body>
-        <center>
-            <p>Hello there!</p>
-
-            <p>We spotted you peeking into the exciting world of Byte Picks, and guess what? We're thrilled to have you join!</p>
-
-            <p>One final step before you embark on your Byte Picks journey: confirm your email address by clicking the button below. It's very simple.</p>
-            
-            <p>if you haven't signed up. This email might have found its way to you by mistake. Just disregard it and continue your day with the wind in your sails (or Wi-Fi signal, whichever you prefer).</p>
-            
-            <a href='https://bytepicks.com/Submit?user={email}&token={token}'><button>Confirm My Email!</button></a>
-
-            <br><p>We can't wait to have you on board!</p>
-        </center>
-        </body>
-        </html>
-		"""
-	
+   return f"""
+	<!DOCTYPE html>
+	<html lang="en-US">
+	<head>
+	  <style>
+		 body {{
+		   font-family: 'Verdana', sans-serif;
+		   margin: 20px;
+		   padding: 20px;
+		 }}
+		 p {{
+		   font-size: 18px;
+		   margin-bottom: 15px;
+		 }}
+		 a {{
+		   color: #007bff;
+		   text-decoration: none;
+		   font-weight: bold;
+		 }}
+		 a:hover {{
+		   text-decoration: underline;
+		   color: #0056b3;
+		 }}
+		 button {{
+		   background-color: #0b89a8;
+		   color: #f9f9f9;
+		   border-radius: 5px;
+		   transition: 0.5s ease;
+		   font-size: 20px;
+		   padding: 8px 13px;
+		   margin: 10px 100px;
+		   border: none;
+		 }}
+		 button:hover {{
+		   cursor: pointer;
+		   background-color: #157a94;
+		   color: #f0f0f0;
+		   scale: 1.075;
+		   transition: 0.5s ease;
+		 }}
+	  </style>
+	</head>
+	<body>
+	  <center>
+		 <p>Hello there!</p>
+		 <p>We spotted you peeking into the exciting world of Byte Picks, and guess what? We're thrilled to have you join!</p>
+		 <p>One final step before you embark on your Byte Picks journey: confirm your email address by clicking the button below. It's very simple.</p>
+		 <p>if you haven't signed up. This email might have found its way to you by mistake. Just disregard it and continue your day with the wind in your sails (or Wi-Fi signal, whichever you prefer).</p>
+		 <a href='https://bytepicks.com/submit?user={email}&token={token}'><button>Confirm My Email!</button></a>
+		 <br><p>We can't wait to have you on board!</p>
+	  </center>
+	</body>
+	</html>
+   """

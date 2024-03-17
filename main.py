@@ -6,6 +6,7 @@ from common import *
 
 TIME = ["daily", "weekly", "monthly", "yearly"]
 LANGUAGE = ["EN", "FR", "ES", "RU", "HI"]
+AMOUNT = {"daily": 50, "weekly": 75, "monthly": 100, "yearly": 150}
 app = Flask(__name__)
 copyrightYear = datetime.now().year
 
@@ -19,17 +20,18 @@ def home():
         homeThumbnails = json.load(file)["EN"]
     return render_template("home.html", year=copyrightYear, videos=homeThumbnails)
 
-@app.route("/Dashboard")
+@app.route("/dashboard")
 def dashboard():
     time = request.args.get("time", default="daily")
     language = request.args.get("lang", default="EN")
-    specificVideos = getVideos(time, language)
+    specificRawVideos = getVideos(time, language).items()
+    chosenVideos = OrderedDict(list(specificRawVideos)[:AMOUNT[time]])
     return render_template("dashboard.html", year=copyrightYear,
-        videos=specificVideos, time=time,language=language,
+        videos=chosenVideos, time=time,language=language,
         formatDuration=formatDuration, formatViewCount=formatViewCount,
     )
 
-@app.route("/Api-Docs")
+@app.route("/api-docs")
 def api():
     return render_template("api.html", year=copyrightYear)
 
@@ -50,7 +52,7 @@ def apiRequest():
 
     return jsonify(response)
 
-@app.route("/Newsletter", methods=["GET", "POST"])
+@app.route("/newsletter", methods=["GET", "POST"])
 def newsletter():
     message = None
     if request.method == "POST":
@@ -75,7 +77,7 @@ def newsletter():
 
     return render_template("newsletter.html", year=copyrightYear, message=message, email="")
 
-@app.route("/Submit", methods=["GET", "POST"])
+@app.route("/submit", methods=["GET", "POST"])
 def submit():
     token = request.args.get("token", default=None)
     email = request.args.get("user", default="")
@@ -98,7 +100,7 @@ def submit():
 
     return render_template("newsletter.html", year=copyrightYear, message=message, email="")
 
-@app.route("/Edit", methods=["GET", "POST"])
+@app.route("/edit", methods=["GET", "POST"])
 def edit():
     token = request.args.get("token", default=None)
     email = request.args.get("user", default="")
@@ -117,7 +119,7 @@ def edit():
     
     return render_template("newsletter.html", year=copyrightYear, message=message, email=email)
 
-@app.route("/Drop", methods=["GET", "POST"])
+@app.route("/drop", methods=["GET", "POST"])
 def drop():
     token = request.args.get("token", default=None)
     email = request.args.get("user", default="")
@@ -133,23 +135,23 @@ def drop():
             message = "Incorrect Token or Email"
     return render_template("newsletter.html", year=copyrightYear, message=message, email="")
 
-@app.route("/Download")
+@app.route("/download")
 def download():
 	return send_file("channels.csv", as_attachment=True)
 
-@app.route("/Explaination")
+@app.route("/explaination")
 def explaination():
     return render_template("explaination.html", year=copyrightYear)
 
-@app.route("/Privacy-Policy")
-def privacy_policy():
+@app.route("/privacy-policy")
+def privacyPolicy():
     return render_template("privacy-policy.html", year=copyrightYear)
 
-@app.route("/About-Us")
-def about_us():
+@app.route("/about-us")
+def aboutUs():
     return render_template("about-us.html", year=copyrightYear)
 
-@app.route("/Contact", methods=["GET", "POST"])
+@app.route("/contact", methods=["GET", "POST"])
 def contact():
     message = None
     if request.method == "POST":

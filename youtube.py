@@ -10,26 +10,25 @@ LANGUAGE = ["EN", "FR", "ES", "RU", "HI"]
 FIELDS = "items(snippet(title,publishedAt,channelTitle,channelId,thumbnails/medium/url), contentDetails(upload/videoId))"
 CAPTION_MAPPING = {None: 0.975}
 RATING_MAPPING = {None: 1}
-DEFINITION_MAPPING = {"sd": 0.90, "fhd": 1.025, "uhd": 1.05}
+DEFINITION_MAPPING = {"sd": 0.90, "fhd": 1.0125, "uhd": 1.025}
 SUBSCRIBER_MAPPING = {
-    10_000: 1.0375,
+    10_000: 1.05,
     100_000: 1.025,
     500_000: 1,
     1_000_000: 0.975,
-    5_000_000: 0.9625,
+    5_000_000: 0.95,
 }
 DURATIONS_MAPPING = [
-    (isodate.parse_duration("PT2M"), 0.500),
-    (isodate.parse_duration("PT7M"), 0.950),
-    (isodate.parse_duration("PT15M"), 0.975),
-    (isodate.parse_duration("PT30M"), 1),
-    (isodate.parse_duration("PT45M"), 1.025),
-    (isodate.parse_duration("PT1H"), 1.050),
+    (isodate.parse_duration("PT2M"), 0.950),
+    (isodate.parse_duration("PT7M"), 0.975),
+    (isodate.parse_duration("PT15M"), 1),
+    (isodate.parse_duration("PT30M"), 1.025),
+    (isodate.parse_duration("PT45M"), 1.050),
+    (isodate.parse_duration("PT1H"), 1.075),
 ]
 
-def search():
-    global curPageToken
-    quotaUsage -= 100
+def search(token):
+    global quotaUsage
     request = service.search().list(
         q="Programming | Tech | Computer Science",
         type="channel",
@@ -37,20 +36,18 @@ def search():
         maxResults=50,
         order="relevance",
         relevanceLanguage="en",
-        pageToken=curPageToken,
+        pageToken=token,
     )
 
     response = request.execute()
+    quotaUsage -= 100
     for item in response.get("items", []):
-        try:
-            tempId = item["id"]["channelId"]
-            searchedChannels.append(tempId)
-        except:
-            pass
+        try: searchedChannels.append(item["id"]["channelId"])
+        except: pass
 
     curPageToken = response.get("nextPageToken")
     if curPageToken is not None:
-        search()
+        search(curPageToken)
 
 def sortAndFilter(df):
     df.drop_duplicates(subset=["ChannelID"], inplace=True)
@@ -81,7 +78,7 @@ def updateInfoChannels():
                 "Language": response["items"][0]["snippet"].get("defaultLanguage", "Unknown")
             }
 
-            if channelInfo["SubscriberCount"] > 10_000:
+            if channelInfo["SubscriberCount"] > 7500:
                 channels.append(channelInfo)
         except:
             pass
@@ -94,15 +91,15 @@ def allMightyAlgorithm(video: json, vidDuration: isodate, SubscriberCount: str) 
     NRLCommentCount = log(video["CommentCount"] + 1)
     NRLViewCount = log(video["ViewCount"] + 1)
 
-    viewRate = NRLViewCount / 3.25
+    viewRate = NRLViewCount / 3.675
     likeRate = NRLLikeCount / NRLViewCount
-    commentRate = (NRLCommentCount / NRLViewCount) * 1.25
+    commentRate = (NRLCommentCount / NRLViewCount) * 1.375
 
     defQuality = DEFINITION_MAPPING.get(video["Definition"], 1)
     capQuality = CAPTION_MAPPING.get(video["Caption"], 1)
-    ratQuality = RATING_MAPPING.get(video["ContentRating"], 0.925)
-    durQuality = next((quality for duration, quality in DURATIONS_MAPPING if vidDuration < duration),0.90)
-    subBalance = next((balance for channel, balance in SUBSCRIBER_MAPPING.items() if SubscriberCount < channel),0.925)
+    ratQuality = RATING_MAPPING.get(video["ContentRating"], 0.95)
+    durQuality = next((quality for duration, quality in DURATIONS_MAPPING if vidDuration < duration),0.9125)
+    subBalance = next((balance for channel, balance in SUBSCRIBER_MAPPING.items() if SubscriberCount < channel),0.9375)
 
     qualityMultiplier = float(subBalance * defQuality * capQuality * ratQuality * durQuality)
     rating = round((viewRate + likeRate + commentRate) * qualityMultiplier * 100, 3)
@@ -151,7 +148,7 @@ def fetchNewVideos():
                 language = "HI" if channelDF[channelDF["ChannelID"] == channelId]["Language"].values[0] == "HI"  else language
                 language = detect(videoTitle).upper() if language in ['NONE', 'ZXX'] else language
 
-                if videoId not in videosIds and viewCount > 750 and MIN_DUR < duration and language in LANGUAGE:
+                if videoId not in videosIds and viewCount > 500 and MIN_DUR < duration and language in LANGUAGE:
                     fullVideoDetails = {
                         "ChannelName": channelName,
                         "ChannelId": channelId,
@@ -220,25 +217,28 @@ def checkOldVideos(time, date):
 def updateVideos(allVideos, time):
     result = {}
     for video in allVideos.items():
-        if checkOldVideos(time, video[1]["PublishedDate"]) and video[1]["VideoId"] not in videosIds: 
-            video, duration = getNewData(video[1])
-            subcriberCount = channelDF[channelDF["ChannelID"] == video['ChannelId']]["SubscriberCount"].values[0]
-            videoRating = allMightyAlgorithm(video, duration, subcriberCount)
-            result[videoRating] = video
-
+        try:
+           if checkOldVideos(time, video[1]["PublishedDate"]) and video[1]["VideoId"] not in videosIds: 
+              video, duration = getNewData(video[1])
+              subcriberCount = channelDF[channelDF["ChannelID"] == video['ChannelId']]["SubscriberCount"].values[0]
+              videoRating = allMightyAlgorithm(video, duration, subcriberCount)
+              result[videoRating] = video
+        except:
+           pass
     return result
 
 def sortAccordingly(allVideos):
-    existingChannels = []
-    filteredVideos = {}
+    existingChannels = []; filteredVideos = {}
     allVideos = OrderedDict(sorted(allVideos.items(), key=lambda item: float(item[0]), reverse=True))
     for video in allVideos.items():
         if video[1]["ChannelId"] in existingChannels:
-            rating = float(video[0]) * 0.80
-            filteredVideos[rating] = video[1]
+           rating = float(video[0]) * 0.675
         else:
-            existingChannels.append(video[1]["ChannelId"])
-    return OrderedDict(sorted(allVideos.items(), key=lambda item: float(item[0]), reverse=True))
+           existingChannels.append(video[1]["ChannelId"])
+           rating = video[0]
+
+        filteredVideos[rating] = video[1]
+    return OrderedDict(sorted(filteredVideos.items(), key=lambda item: float(item[0]), reverse=True))
 
 def storeVideos():
     topDay, topWeek, topMonth = {}, {}, {}
@@ -249,18 +249,18 @@ def storeVideos():
 
             if time == "daily":
                 topDay = OrderedDict(sorted(videos.items(), key=lambda item: float(item[0]), reverse=True))
-                data[lang] = OrderedDict(list(topDay.items())[:40])
+                data[lang] = OrderedDict(list(topDay.items()))
 
             elif time == "weekly":
                 topWeek = updateVideos(data[lang], time)
-                topWeek.update(OrderedDict(list(topDay.items())[:5]))
+                topWeek.update(OrderedDict(list(topDay.items()[:50])))
                 topWeek = sortAccordingly(topWeek)
                 data[lang] = topWeek
 
             elif time == "monthly":
                 if today.weekday() == 0:
                     topMonth = updateVideos(data[lang], time)
-                    topMonth.update(OrderedDict(list(topWeek.items())[:10]))
+                    topMonth.update(OrderedDict(list(topWeek.items())[:250]))
                     topMonth = sortAccordingly(topMonth)
                     data[lang] = topMonth
 
@@ -272,27 +272,26 @@ def storeVideos():
                             topMonth = newData[lang]
 
                     topYear = updateVideos(data[lang], time)
-                    topYear.update(OrderedDict(list(topMonth.items())[:5]))
+                    topYear.update(OrderedDict(list(topMonth.items())[:375]))
                     data[lang] = sortAccordingly(topYear)
 
             with open(f"{time}.json", "w") as f:
                 json.dump(data, f, indent=4)
 
-def main():
-    global channelDF, service, today, Videos, videosIds, quotaUsage, searchedChannels, curPageToken
+if __name__ == "__main__":
+    global quotaUsage, channelDF, service, today, Videos, videosIds, searchedChannels, quotaUsage
     logging.basicConfig(filename='youtube.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     channelDF = pd.read_csv("channels.csv")
     API_KEY = os.environ.get("YT_API_KEY")
     service = build("youtube", "v3", developerKey=API_KEY)
-    today = datetime.date.today()
+    today = datetime.date.today() - datetime.timedelta(days=1)
     Videos = defaultdict(dict)
     quotaUsage = 10_000
     searchedChannels = []
     videosIds = []
-    curPageToken = None
-    
+
     if len(sys.argv) > 1 and sys.argv[1] == "search":
-        search()
+        search(None)
         updateInfoChannels()
         exit(0)
 
@@ -300,11 +299,7 @@ def main():
         updateInfoChannels()
         fetchNewVideos()
         storeVideos()
-
     except Exception as e:
         logging.error(f"An error occurred: {e}")
     else:
         logging.info(f"Remaining quota for this day : {quotaUsage}")
-
-if __name__ == "__main__":
-    main()

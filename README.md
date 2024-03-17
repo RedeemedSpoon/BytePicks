@@ -12,15 +12,15 @@ In the online world flooded with content, Byte Picks steps up to provide a comfy
 
 ### Dashboard
 
-Check out our dashboard for a straightforward tech experience. You'll find a regularly updated, curated collection of the best videos. Click [here](https://bytepicks.com/Dashboard) to jump in and start exploring the content that may sparks your interest.
+Check out our dashboard for a straightforward tech experience. You'll find a regularly updated, curated collection of the best videos. Click [here](https://bytepicks.com/dashboard) to jump in and start exploring the content that may sparks your interest.
 
 ### API
 
-Calling all developers! Boost your applications by easily integrating our API. Easy to use, no account or API key required. Dive into our API documentation [here](https://bytepicks.com/Api-Docs) and elevate your apps with quality tech videos.
+Calling all developers! Boost your applications by easily integrating our API. Easy to use, no account or API key required. Dive into our API documentation [here](https://bytepicks.com/api-docs) and elevate your apps with quality tech videos.
 
 ### Newsletter
 
-Don't miss out on the latest tech insights. Subscribe to our newsletter [here](https://bytepicks.com/Newsletter) to get awsome videos sent straight to your inbox regularly. Stay connected and stay informed about the tech trends that matter.
+Don't miss out on the latest tech insights. Subscribe to our newsletter [here](https://bytepicks.com/newsletter) to get awsome videos sent straight to your inbox regularly. Stay connected and stay informed about the tech trends that matter.
 
 ## Our Highs & Lows
 
@@ -28,7 +28,7 @@ Byte Picks is a labor of love crafted by a small, passionate team. We're committ
 
 ## Collaboration
 
-Discover an issue and have the time and skill to fix it? Why not lend a hand in crafting a superior product? Join us in our collaborative efforts to enhance Byte Picks and create a better experience for all. You can explore our [behind-the-scenes](https://bytepicks.com/Explaination) for a closer look at how we operate.
+Discover an issue and have the time and skill to fix it? Why not lend a hand in crafting a superior product? Join us in our collaborative efforts to enhance Byte Picks and create a better experience for all. You can explore our [behind-the-scenes](https://bytepicks.com/explaination) for a closer look at how we operate.
 
 ## License
 
@@ -36,6 +36,6 @@ Byte Picks is an open-source project, licensed under [CC BY 4.0](https://creativ
 
 ## Contact
 
-Questions, suggestions, or just want to chat? We're here and excited to hear from you. Shoot us an email at [contact@bytepicks.com](mailto:contact@bytepicks.com). Your thoughts matter, and we appreciate the lively community that makes Byte Picks a cool spot for tech exploration.
+Questions, suggestions, or just want to chat? We're here and excited to hear from you. Shoot us an email at [contact@bytepicks.com](mailto:contact@bytepicks.com) or just visit or contact page [here](https://bytepicks.com/contact). Your thoughts matter, and we appreciate the lively community that makes Byte Picks a cool spot for tech exploration.
 
 Thanks for choosing [Byte Picks](https://bytepicks.com) to be your tech companion!
