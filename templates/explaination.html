@@ -244,7 +244,7 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
             <span class="var">topWeek</span> <span class="operator">=</span> <span class="import">OrderedDict</span>(<span class="function">sorted</span>(<span class="var">topWeek</span>.<span class="function">items</span>(), <span class="var">key</span><span class="operator">=</span><span class="keyword">lambda</span> <span class="var">item</span>: <span class="import">float</span>(<span class="var">item</span>[<span class="int">0</span>]), <span class="var">reverse</span><span class="operator">=</span><span class="const">True</span>))
             <span class="var">data</span>[<span class="var">lang</span>] <span class="operator">=</span> <span class="var">topWeek</span>
 
-	    <span class="comment"># Same thing for monthy & yearly videos</span>
+	<span class="comment"># Same thing for monthy & yearly videos</span>
 
          <span class="keyword">with</span> <span class="function">open</span>(<span class="keyword">f</span><span class="str">"{time}.json"</span>, <span class="str">"w"</span>) <span class="keyword">as</span> <span class="var">f</span>:
             <span class="var">json</span>.<span class="function">dump</span>(<span class="var">data</span>, <span class="var">f</span>, <span class="var">indent</span><span class="operator">=</span><span class="int">4</span>)
@@ -267,7 +267,7 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
 <span class="function">scp</span> <span class="var">$SERVER_NAME</span>@<span class="str">ssh.oregon.render.com:</span><span class="var">$remoteDir</span>/<span class="var">newsletter.db</span> <span class="operator">.</span>
 
 <span class="keyword">if</span> [[ <span class="var">$?</span> <span class="operator">-eq</span> <span class="int">0</span> ]]; <span class="keyword">then</span>
-  <span class="function">python</span> <span class="int">youtube.py</span>
+  <span class="function">python</span> <span class="str">youtube.py</span>
   <span class="keyword">if</span> [[ <span class="var">$?</span> <span class="operator">-eq</span> <span class="int">0</span> ]]; <span class="keyword">then</span>
     <span class="function">python</span> <span class="str">newsletter.py</span>
     <span class="keyword">if</span> [[ <span class="var">$?</span> <span class="operator">-eq</span> <span class="int">0</span> ]]; <span class="keyword">then</span>
