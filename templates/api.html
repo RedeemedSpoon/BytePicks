@@ -54,7 +54,7 @@
    <h5 id="route">What Are the URL & Parameters ?</h5>
    <h6>Uniform Resource Locator (URL) :</h6>
    <div class="code" style="padding: 15px">
-      <code>https://bytepicks.com/api/request</code>
+      <code>https://bytepicks.com/api-request</code>
    </div>
    <h6 style="margin-bottom: -25px">Parameters :</h6>
    <ul>
@@ -106,7 +106,7 @@
       <pre class="code"><code>
 <span class="keyword">import</span> <span class="import">requests</span>
 
-<span class="var">url</span><span class="operator"> = </span>"<span class="str">https://bytepicks.com/api/request</span>"
+<span class="var">url</span><span class="operator"> = </span>"<span class="str">https://bytepicks.com/api-request</span>"
 <span class="var">params</span> <span class="operator"> = </span> {
    <span class="str">'time'</span>: '<span class="str">daily</span>',
    <span class="str">'lang'</span>: '<span class="str">EN</span>',
@@ -129,7 +129,7 @@
       <pre class="code"><code>
 <span class="keyword">const</span> <span class="var">axios</span> <span class="operator">=</span> <span class="function">require</span>('<span class="str">axios</span>');
 
-<span class="keyword">const</span> <span class="const">url</span> <span class="operator">=</span> <span class="str">'https://bytepicks.com/api/request'</span>;
+<span class="keyword">const</span> <span class="const">url</span> <span class="operator">=</span> <span class="str">'https://bytepicks.com/api-request'</span>;
 <span class="keyword">const</span> <span class="const">params</span> <span class="operator">=</span> {
    <span class="str">'time'</span>: '<span class="str">daily</span>',
    <span class="str">'lang'</span>: '<span class="str">EN</span>',
@@ -153,7 +153,7 @@
 <span class="keyword">require</span> <span class="str">'net/http'</span>
 <span class="keyword">require</span> <span class="str">'json'</span>
 
-<span class="var">url</span> <span class="operator">=</span> <span class="import">URI</span>.<span class="function">parse</span>(<span class="str">'https://bytepicks.com/api/request'</span>)
+<span class="var">url</span> <span class="operator">=</span> <span class="import">URI</span>.<span class="function">parse</span>(<span class="str">'https://bytepicks.com/api-request'</span>)
 <span class="var">params</span> <span class="operator">=</span> {
    <span class="str">'time'</span> => '<span class="str">daily</span>',
    <span class="str">'lang'</span> => '<span class="str">EN</span>',
@@ -184,7 +184,7 @@
 {
    <span class="keyword">static</span> <span class="keyword">async</span> <span class="class">Task</span> <span class="function">Main</span>()
    {
-      <span class="keyword">var</span> <span class="var">url</span> <span class="operator">=</span> "<span class="str">https://bytepicks.com/api/request</span>";
+      <span class="keyword">var</span> <span class="var">url</span> <span class="operator">=</span> "<span class="str">https://bytepicks.com/api-request</span>";
       <span class="keyword">var</span> <span class="var">parameters</span> <span class="operator">=</span> $<span class="str">"time=daily&lang=EN&top=30"</span>;
 
       <span class="keyword">using</span> (<span class="keyword">var</span> <span class="var">client</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="function">HttpClient</span>())

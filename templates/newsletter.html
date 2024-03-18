@@ -1,9 +1,9 @@
 {% extends "base.html" %} {% block title %}
 <title>Byte Picks - Newsletter</title>
 {% endblock %} {% block content %} {% if message %}
-<div class="popup" style="display: block">
+<div class="popup alt-popup" style="display: block">
    <div class="popup-content">
-      <h3 style="margin: 2rem">{{ message }}</h3>
+      <h3 style="margin: 2rem; text-align: center">{{ message }}</h3>
       <button class="primarybtn" id="closebtn" style="margin-bottom: 2rem; scale: 1.25">Close</button>
    </div>
 </div>
@@ -12,7 +12,7 @@
    <div class="popup-content">
       <h3 style="margin-top: 2rem">Subscribe to our Newsletter</h3>
       <img src="{{ url_for('static', filename='Assets/envelope.png') }}" alt="mail image" />
-      <form action="{% if request.path == '/Edit' %}{{ url_for('edit', token=request.args.get('token'), user=request.args.get('user')) }}{% else %}{{ url_for('newsletter') }}{% endif %}" method="post">
+      <form action="{% if request.path == '/edit' %}{{ url_for('edit', token=request.args.get('token'), user=request.args.get('user')) }}{% else %}{{ url_for('newsletter') }}{% endif %}" method="post">
          <div>
             <label>Email Address :</label>
             <input name="user_email" type="email" required value="{{ email }}"/>

@@ -35,12 +35,11 @@ def dashboard():
 def api():
     return render_template("api.html", year=copyrightYear)
 
-@app.route("/api/request")
+@app.route("/api-request")
 def apiRequest():
     time = request.args.get("time", default="daily")
     language = request.args.get("lang", default="EN")
     top = request.args.get("top", default=25, type=int)
-
     if time in TIME and language in LANGUAGE and top > 0:
         response = {
             "Request": f"The top {top} {time} videos in {language}",
@@ -111,18 +110,19 @@ def edit():
         else:
             user = session.query(User).filter_by(token=token, email=email).first()
             if user:
-                user.time = request.form["time"]
-                user.language = request.form["language"]
-                message = "User Preference Updated!"
+               user.time = request.form["time"]
+               user.language = request.form["language"]
+               message = "User Preference Updated!"
             else:
-                message = "Incorrect Token or Email"
-    
+               message = "Incorrect Token or Email"
+
     return render_template("newsletter.html", year=copyrightYear, message=message, email=email)
 
 @app.route("/drop", methods=["GET", "POST"])
 def drop():
     token = request.args.get("token", default=None)
     email = request.args.get("user", default="")
+    message = None
     if token is None or email == "":
         message = "Missing Token or Email"
     else:
@@ -133,6 +133,7 @@ def drop():
             message = "User Deleted!"
         else:
             message = "Incorrect Token or Email"
+
     return render_template("newsletter.html", year=copyrightYear, message=message, email="")
 
 @app.route("/download")

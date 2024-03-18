@@ -161,7 +161,7 @@ def fetchNewVideos():
                         "Thumbnail": thumbnailUrl,
                         "Duration": str(duration).split(", ")[1] if ", " in str(duration) else str(duration),
                         "Definition": str(definition).upper(),
-                        "language": language,
+                        "Language": language,
                         "Caption": False if caption == "false" else True,
                         "ContentRating": False if not contentRating else True,
                         "ViewCount": int(viewCount),
@@ -195,7 +195,7 @@ def getNewData(video):
            "Thumbnail": response["items"][0]["snippet"]["thumbnails"]["medium"]["url"],
            "Duration": video["Duration"],
            "Definition": video["Definition"],
-           "language": video["language"],
+           "Language": video["Language"],
            "Caption": False if response["items"][0]["contentDetails"]["caption"] == "false" else True,
            "ContentRating": False if not response["items"][0]["contentDetails"]["contentRating"] else True,
            "ViewCount": int(response["items"][0]["statistics"]["viewCount"]),
@@ -253,7 +253,7 @@ def storeVideos():
 
             elif time == "weekly":
                 topWeek = updateVideos(data[lang], time)
-                topWeek.update(OrderedDict(list(topDay.items()[:50])))
+                topWeek.update(OrderedDict(list(topDay.items())[:50]))
                 topWeek = sortAccordingly(topWeek)
                 data[lang] = topWeek
 
@@ -284,7 +284,7 @@ if __name__ == "__main__":
     channelDF = pd.read_csv("channels.csv")
     API_KEY = os.environ.get("YT_API_KEY")
     service = build("youtube", "v3", developerKey=API_KEY)
-    today = datetime.date.today() - datetime.timedelta(days=1)
+    today = datetime.date.today()
     Videos = defaultdict(dict)
     quotaUsage = 10_000
     searchedChannels = []
