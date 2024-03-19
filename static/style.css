@@ -245,28 +245,23 @@ footer p {
 
 /* ----- Home Page ----- */
 
-#start {
-   width: 100%;
-   box-sizing: border-box;
-   overflow: hidden !important;
-   object-fit: cover;
-}
-
 #stylish {
+   width: 100vw;
+   min-height: 35vh;
    filter: brightness(0.85);
    overflow: hidden;
 }
 
 .text-container {
    position: absolute;
-   top: 35%;
-   left: 50%;
+   top: 17.5vw;
+   left: 50vw;
    display: flex;
    text-align: center;
    user-select: none;
    outline: none;
    flex-wrap: wrap;
-   max-width: 625px;
+   max-width: 32.5vw;
    transform: translate(-50%, -50%);
    color: rgb(210, 225, 225);
 }
@@ -913,12 +908,15 @@ textarea {
    }
 
    #stylish {
-      width: 100vh;
-      margin-left: -50%;
+      min-height: 20vh; 
    }
 
    .text-container {
-      top: 17.5%;
+      top: 20vw;
+   }
+
+   .text-container h2 {
+      font-size: 1.15rem
    }
 
    .introductory * {
@@ -1175,12 +1173,11 @@ textarea {
    }
 
    #stylish {
-      width: 140vh;
-      margin-left: -40%;
+      min-height: 25vh; 
    }
 
    .text-container {
-      top: 22.5%;
+      top: 19vw;
    }
 
    .introductory * {
@@ -1428,13 +1425,13 @@ textarea {
       font-size: 1rem;
    }
 
-   #stylish {
-      width: 165vh;
-      margin-left: -35%;
+   .text-container {
+      max-width: 40vw;
+      top: 19vw;
    }
 
-   .text-container {
-      top: 27.5%;
+   .text-container h2 {
+      font-size: 1.75rem;
    }
 
    .welcome {
@@ -1597,15 +1594,6 @@ textarea {
       font-size: 1.125rem;
    }
 
-   #stylish {
-      width: 190vh;
-      margin-left: -30%;
-   }
-
-   .text-container {
-      top: 32.5%;
-   }
-
    .welcome {
       margin: 5rem 7.5rem;
    }
@@ -1719,10 +1707,6 @@ textarea {
 
 /* Extra large devices */
 @media only screen and (min-width: 1375px) and (max-width: 1700px) {
-   #stylish {
-      margin-left: -10%;
-   }
-
    .welcome img {
       height: 22.5rem;
    }

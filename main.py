@@ -1,12 +1,11 @@
 from flask import Flask, render_template, jsonify, request, send_file
-from collections import OrderedDict
 from datetime import datetime
 import json, secrets, string
 from common import *
 
 TIME = ["daily", "weekly", "monthly", "yearly"]
 LANGUAGE = ["EN", "FR", "ES", "RU", "HI"]
-AMOUNT = {"daily": 50, "weekly": 75, "monthly": 100, "yearly": 150}
+
 app = Flask(__name__)
 copyrightYear = datetime.now().year
 
@@ -24,10 +23,9 @@ def home():
 def dashboard():
     time = request.args.get("time", default="daily")
     language = request.args.get("lang", default="EN")
-    specificRawVideos = getVideos(time, language).items()
-    chosenVideos = OrderedDict(list(specificRawVideos)[:AMOUNT[time]])
+    videos = getVideos(time, language)
     return render_template("dashboard.html", year=copyrightYear,
-        videos=chosenVideos, time=time,language=language,
+        videos=videos, time=time,language=language,
         formatDuration=formatDuration, formatViewCount=formatViewCount,
     )
 
@@ -44,7 +42,7 @@ def apiRequest():
         response = {
             "Request": f"The top {top} {time} videos in {language}",
             "Date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
-            "Result": OrderedDict(list(getVideos(time, language).items())[:top]),
+            "Result": getVideos(time, language),
         }
     else:
         response = {"Result": "You send an invalid request."}
@@ -56,23 +54,26 @@ def newsletter():
     message = None
     if request.method == "POST":
         email = request.form["user_email"]
-        time = request.form["time"]
-        language = request.form["language"]
-        token = "".join(secrets.choice(string.ascii_letters + string.digits) for _ in range(20))
         user = session.query(User).filter_by(email=email).first()
         if user:
-            message = "This Email is Already Registered"
+            message = "This Email is Already Registered."
         else:
             user = session.query(PendingUser).filter_by(email=email).first()
             if user:
-                message = "This User is on the Pending List"
+                message = "This Email is on the Pending List."
             else:
-                session.add(PendingUser(email=email, time=time, language=language, token=token))
-                session.commit()
-
-                message = getMessage(email, time, language, token)
-                sendEmail(message, "BytePicks : Please Confirm Your Email", email, "newsletter@bytepicks.com")
-                message = "Please Check Your Inbox!"
+                try:
+                    time = request.form["time"]
+                    language = request.form["language"]
+                    token = "".join(secrets.choice(string.ascii_letters + string.digits) for _ in range(20))
+                    message = getMessage(email, time, language, token)
+                    sendEmail(message, "Byte Picks : Please Confirm Your Email", email, "newsletter@bytepicks.com")
+                except:
+                    message = "You Gave An Invalid Email."
+                else:
+                    message = "Please Check Your Inbox!"
+                    session.add(PendingUser(email=email, time=time, language=language, token=token))
+                    session.commit()
 
     return render_template("newsletter.html", year=copyrightYear, message=message, email="")
 
@@ -82,11 +83,11 @@ def submit():
     email = request.args.get("user", default="")
     message = None
     if token is None or email == "":
-        message = "Missing Token or Email"
+        message = "Missing Token or Email."
     else:
         user = session.query(User).filter_by(token=token, email=email).first()
         if user:
-            message = "User Already Exists"
+            message = "Email Already Registered!"
         else:
             user = session.query(PendingUser).filter_by(email=email).first()
             if user:
@@ -95,7 +96,7 @@ def submit():
                 session.commit()
                 message = "Thank You for Subscribing!"
             else:
-                message = "This User Does not Exist"
+                message = "This Email Does not Exist."
 
     return render_template("newsletter.html", year=copyrightYear, message=message, email="")
 
@@ -106,15 +107,15 @@ def edit():
     message = None
     if request.method == "POST":
         if token is None or email == "":
-            message = "Missing Token or Email"
+            message = "Missing Token or Email."
         else:
             user = session.query(User).filter_by(token=token, email=email).first()
             if user:
                user.time = request.form["time"]
                user.language = request.form["language"]
-               message = "User Preference Updated!"
+               message = "Preference Updated!"
             else:
-               message = "Incorrect Token or Email"
+               message = "Incorrect Token or Email."
 
     return render_template("newsletter.html", year=copyrightYear, message=message, email=email)
 
@@ -124,15 +125,15 @@ def drop():
     email = request.args.get("user", default="")
     message = None
     if token is None or email == "":
-        message = "Missing Token or Email"
+        message = "Missing Token or Email."
     else:
         user = session.query(User).filter_by(token=token, email=email).first()
         if user:
             session.delete(user)
             session.commit()
-            message = "User Deleted!"
+            message = "Sucessfully Unsubscribed!"
         else:
-            message = "Incorrect Token or Email"
+            message = "Incorrect Token or Email."
 
     return render_template("newsletter.html", year=copyrightYear, message=message, email="")
 

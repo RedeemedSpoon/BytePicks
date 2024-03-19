@@ -6,7 +6,11 @@ from googleapiclient.errors import HttpError
 from googleapiclient.discovery import build
 from datetime import datetime, timezone
 from sqlalchemy.orm import sessionmaker
+from collections import OrderedDict
 import json, base64, os, requests
+
+AMOUNT = {"daily": 50, "weekly": 75, "monthly": 100, "yearly": 150}
+SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
 engine = create_engine("sqlite:///newsletter.db", echo=True)
 Session = sessionmaker(bind=engine)
@@ -31,8 +35,10 @@ class PendingUser(Base):
 
 def getVideos(time, language):
     with open(f"{time}.json", "r") as file:
-        timeVideos = json.load(file)
-    return timeVideos[language]
+        rawVideos = json.load(file)
+        allVideos = rawVideos[language].items()
+
+    return OrderedDict(list(allVideos)[:AMOUNT[time]])
 
 def formatViewCount(number):
     if number / 1_000_000_000 > 1:
@@ -54,7 +60,6 @@ def formatDuration(duration):
         return duration
 
 def sendEmail(body, subject, receiver, sender):
-    SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
     creds = Credentials.from_authorized_user_file("token.json", scopes=SCOPES)
 
     service = build("gmail", "v1", credentials=creds)
