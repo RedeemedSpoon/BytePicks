@@ -14,36 +14,53 @@ for user in session.query(User).all():
         for videoId, video in allVideos.items():
             videoTitle = video["VideoTitle"]
             videoLink = video["VideoUrl"]
+            videoThumbnail = video['Thumbnail']
             channelName = video["ChannelName"]
             channelLink = video["ChannelUrl"]
-            duration = formatDuration(video["Duration"])
+            channelIcon = video["ChannelIcon"]
+            videoDuration = formatDuration(video["Duration"])
             viewCount = formatViewCount(video["ViewCount"])
-            videoInfo = f"<div class='video'><img src='{video['Thumbnail']}'><br><strong>Video :</strong> <a href='{videoLink}'>{videoTitle}</a><br><strong>Channel :</strong> <a href='{channelLink}'>{channelName}</a><br><strong>Duration :</strong> {duration}<br><strong>Views :</strong> {viewCount}</div>"
+            
+            videoInfo = f"""
+            <div class='video'>
+              <img class='thumbnail' src='{videoThumbnail}'>
+              <div class='details'>
+                <p><b>Video :</b><a href='{videoLink}'> {videoTitle}</a><p>
+                <p><b>Channel :</b><a href='{channelLink}'> {channelName}</a><p>
+                <p><b>Duration :</b> {videoDuration}</p>
+                <p><b>Views :</b> {viewCount}</p>
+              </div>
+            </div>
+            """
+            
             videoList.append(videoInfo)
-
-        videos = "<br><br>".join(videoList)
+        videos = ''.join(videoList)
         body = f"""
         <html>
         <head>
           <style>
             body {{
               font-family: 'Verdana', sans-serif;
-              margin: 20px;
-              padding: 20px;
+              margin: 30px;
             }}
-            p {{
-              font-size: 18px;
+            center > p {{
+              font-size: 20px;
               margin-bottom: 15px;
             }}
-            img {{
+            .video {{
+              font-size: 16px;
+              margin: 50px;
+            }}
+            .details {{
+              diplay: flex;
+              flex-direction: column;
+              max-width: 450px;
+            }}
+            .thumbnail {{
+              height : 200px;
               border-radius: 10px;
               border: 2px solid #1e1e1e;
-              box-shadow: 2px 2px 5px #0a0a0a;
               margin-bottom: 20px;
-            }}
-            .video {{
-              margin: 20px;
-              font-size: 15px;
             }}
             a {{
               color: #007bff;
@@ -57,16 +74,18 @@ for user in session.query(User).all():
           </style>
         </head>
         <body>
-          <p>Hello there!</p>
-          <p>Welcome to Byte Picks, your go-to source for the latest and greatest tech videos scattered across YouTube.</p>
-          <p>To change your preferences, please click <a href="https://bytepicks.com/edit?user={user.email}&token={user.token}">Here</a> and choose your preferred time and language, it's that simple!</p>
-          <p>If you wish to unsubscribe, click <a href="https://bytepicks.com/drop?user={user.email}&token={user.token}">Here</a>. (Proceed with caution!)</p>
-          <p>Without further ado, here's your {user.time} tech video in {user.language}. Enjoy!</p><br>
-          {videos}
-          <br><p>Thanks for choosing Byte Picks!</p>
+          <center>
+            <p>Hello there!</p>
+            <p>Welcome to Byte Picks, your go-to source for the latest and greatest tech videos scattered across YouTube.</p>
+            <p>To change your preferences, please click <a href="https://bytepicks.com/edit?user={user.email}&token={user.token}">Here</a> and choose your preferred time and language, it's that simple!</p>
+            <p>If you wish to unsubscribe, click <a href="https://bytepicks.com/drop?user={user.email}&token={user.token}">Here</a>. (Proceed with caution!)</p>
+            <p>Without further ado, here's your {user.time} tech video in {user.language}. Enjoy!</p>
+            <br>{videos}<br>
+            <p>Thanks for choosing Byte Picks!</p>
+          </center>
         </body>
         </html>
         """
-        
+
         subject = f"{str(user.time).title()} Tech Highlights: {datetime.now().date()}"
         sendEmail(body, subject, user.email, "newsletter@bytepicks.com")
