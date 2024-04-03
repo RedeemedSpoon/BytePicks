@@ -1,5 +1,5 @@
 {% extends "base.html" %} {% block title %}
-<title>Byte Picks - DashBoard</title>
+<title>BytePicks - DashBoard</title>
 {% endblock %} {% block content %}
 <main id="videolist">
    <div id="selecters">
@@ -22,17 +22,17 @@
    </div>
 
    <div id="allvideos">
-      {% for video_id, video in videos.items() %}
-      <div class="video">
-         <img onclick="window.location.href='{{ video.VideoUrl }}'" class="yt_thumbnail" alt="YT Thumbnail" src="{{ video.Thumbnail }}" />
-         <img onclick="window.location.href='{{ video.ChannelUrl }}'" class="yt_channel" alt="YT Channel" src="{{ video.ChannelIcon }}" />
-         <p class="duration" onclick="window.location.href='{{ video.VideoUrl }}'">{{ formatDuration(video.Duration) }}</p>
+      {% for id, video in videos.items() %}
+      <a href="{{ video.VideoUrl }}" class="video">
+         <img class="yt_thumbnail" alt="YT Thumbnail" src="{{ video.Thumbnail }}" />
+         <img class="yt_channel" alt="YT Channel" src="{{ video.ChannelIcon }}" />
+         <p class="duration">{{ format_duration(video.Duration) }}</p>
          <div class="yt_info">
-            <p onclick="window.location.href='{{ video.VideoUrl }}'" style="font-size: 1.15rem">{{ video.VideoTitle }}</p>
-            <p onclick="window.location.href='{{ video.ChannelUrl }}'" style="font-weight: bold">{{ video.ChannelName }}</p>
-            <p onclick="window.location.href='{{ video.VideoUrl }}'" style="font-size: 1rem">{{ formatViewCount(video.ViewCount) }} Views</p>
+            <p style="font-size: 1.15rem">{{ video.VideoTitle }}</p>
+            <p style="font-weight: bold">{{ video.ChannelName }}</p>
+            <p style="font-size: 1rem">{{ format_view_count(video.ViewCount) }} Views</p>
          </div>
-      </div>
+      </a>
       {% endfor %}
    </div>
 </main>

@@ -1,7 +1,10 @@
 from common import *
 
-updateToken()
-date = datetime.now()
+with open('token.json', 'r') as token:
+    creds_data = json.load(token)
+    date = datetime.now()
+    update_token(creds_data)
+
 for user in session.query(User).all():
     if (
         user.time == "daily" or
@@ -9,32 +12,31 @@ for user in session.query(User).all():
         (user.time == "monthly" and date.day == 1) or
         (user.time == "yearly" and (date.day == 1 and date.month == 1))
     ):
-        videoList = []
-        allVideos = getVideos(user.time, user.language)
-        for videoId, video in allVideos.items():
-            videoTitle = video["VideoTitle"]
-            videoLink = video["VideoUrl"]
-            videoThumbnail = video['Thumbnail']
-            channelName = video["ChannelName"]
-            channelLink = video["ChannelUrl"]
-            channelIcon = video["ChannelIcon"]
-            videoDuration = formatDuration(video["Duration"])
-            viewCount = formatViewCount(video["ViewCount"])
-            
-            videoInfo = f"""
+        video_list = []
+        all_videos = getVideos(user.time, user.language)
+        for rating, video in all_videos.items():
+            video_title = video["VideoTitle"]
+            video_link = video["VideoUrl"]
+            video_thumbnail = video['Thumbnail']
+            channel_name = video["ChannelName"]
+            channel_link = video["ChannelUrl"]
+            video_duration = format_duration(video["Duration"])
+            view_count = format_view_count(video["ViewCount"])
+
+            video_template = f"""
             <div class='video'>
-              <img class='thumbnail' src='{videoThumbnail}'>
+              <img class='thumbnail' src='{video_thumbnail}'>
               <div class='details'>
-                <p><b>Video :</b><a href='{videoLink}'> {videoTitle}</a><p>
-                <p><b>Channel :</b><a href='{channelLink}'> {channelName}</a><p>
-                <p><b>Duration :</b> {videoDuration}</p>
-                <p><b>Views :</b> {viewCount}</p>
+                <p><b>Video :</b><a href='{video_link}'> {video_title}</a><p>
+                <p><b>Channel :</b><a href='{channel_link}'> {channel_name}</a><p>
+                <p><b>Duration :</b> {video_duration}</p>
+                <p><b>Views :</b> {view_count}</p>
               </div>
             </div>
             """
-            
-            videoList.append(videoInfo)
-        videos = ''.join(videoList)
+
+            video_list.append(video_template)
+        videos = ''.join(video_list)
         body = f"""
         <html>
         <head>
@@ -88,4 +90,4 @@ for user in session.query(User).all():
         """
 
         subject = f"{str(user.time).title()} Tech Highlights: {datetime.now().date()}"
-        sendEmail(body, subject, user.email, "newsletter@bytepicks.com")
+        send_email(body, subject, user.email, "newsletter@bytepicks.com")

@@ -1,5 +1,5 @@
 {% extends "base.html" %} {% block title %}
-<title>Byte Picks - Contact</title>
+<title>BytePicks - Contact</title>
 {% endblock %} {% block content %} {% if message %}
 <div class="popup" style="display: block">
    <div class="popup-content">
@@ -10,7 +10,7 @@
 {% endif %}
 <main class="contact">
    <h1>Contact Us</h1>
-   <h6 style="margin: -2rem 0">Whether you have a question, feedback, or want to recommend a new creator for Byte Picks, We'd love to hear from you! Please use the form below to get in touch.</h6>
+   <h6 style="margin: -2rem 0">Whether you have a question, feedback, or want to recommend a new creator for BytePicks, We'd love to hear from you! Please use the form below to get in touch.</h6>
    <form action="{{ url_for('contact')}}" method="post">
       <div class="form-group">
          <div>

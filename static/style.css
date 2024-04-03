@@ -302,7 +302,7 @@ footer p {
    display: flex;
    align-items: center;
    justify-content: center;
-   background: url("./Assets/abstactaBG.svg");
+   background: url("./assets/background.svg");
    background-color: #02596e;
    filter: brightness(0.8125);
    border: 5px solid rgb(10, 10, 10);
@@ -387,7 +387,7 @@ section.activated {
 #selecters {
    display: flex;
    justify-content: space-evenly;
-	font-size: 1.25rem;
+   font-size: 1.25rem;
 }
 
 label {
@@ -395,8 +395,8 @@ label {
 }
 
 select {
-   padding: 7px;
-   font-size: 1.15rem;
+   padding: 8px 13px;
+   font-size: 1.175rem;
    color: rgb(30, 30, 30);
    background-color: rgb(240, 245, 245);
    border: #303030 solid 1px;
@@ -407,24 +407,22 @@ select {
    display: flex;
    justify-content: center;
    row-gap: 2rem;
-   column-gap: 1rem;
+   column-gap: 1.5rem;
    flex-wrap: wrap;
 }
 
 .video {
    display: grid;
    grid-template-rows: 210px auto;
-   grid-template-columns: 60px 300px;
+   grid-template-columns: 60px 290px;
    font-family: "Lato", sans-serif;
    transition: 0.5s ease;
-   padding-bottom: 25px;
-   border-radius: 20px;
+   padding-bottom: 30px;
+   border-radius: 10px;
 }
 
 .video:hover {
-   scale: 1.0125;
-   cursor: pointer;
-   background-color: rgb(200, 215, 215);
+   background-color: rgb(215, 230, 230);
    transition: 0.5s ease;
    text-decoration: none;
 }
@@ -796,9 +794,9 @@ textarea {
    transition: 0.5s ease;
 }
 
-/* ----- Explaination Page ----- */
+/* ----- Behind the Scene Page ----- */
 
-#explaination {
+#behind-the-scene {
    display: flex;
    align-items: center;
    justify-content: center;
@@ -808,11 +806,11 @@ textarea {
    gap: 5rem;
 }
 
-#explaination h4 {
+#behind-the-scene h4 {
    margin: -1.5rem;
 }
 
-#explaination p {
+#behind-the-scene p {
    margin: -1.25rem;
 }
 
@@ -1059,16 +1057,16 @@ textarea {
       gap: 20px;
    }
 
-   #explaination {
+   #behind-the-scene {
       margin: 6.5rem 3rem;
       gap: 3rem;
    }
 
-   #explaination h4 {
+   #behind-the-scene h4 {
       margin: -0.5rem;
    }
 
-   #explaination p {
+   #behind-the-scene p {
       margin: -0.25rem;
    }
 
@@ -1343,16 +1341,16 @@ textarea {
       gap: 20px;
    }
 
-   #explaination {
+   #behind-the-scene {
       margin: 6.5rem 4rem;
       gap: 3rem;
    }
 
-   #explaination h4 {
+   #behind-the-scene h4 {
       margin: -0.5rem;
    }
 
-   #explaination p {
+   #behind-the-scene p {
       margin: -0.25rem;
    }
 
@@ -1535,7 +1533,7 @@ textarea {
       gap: 20px;
    }
 
-   #explaination {
+   #behind-the-scene {
       margin: 7.5rem 5rem;
       gap: 3rem;
    }
@@ -1678,7 +1676,7 @@ textarea {
       gap: 20px;
    }
 
-   #explaination {
+   #behind-the-scene {
       margin: 7.5rem 5rem;
       gap: 3rem;
    }
@@ -1691,7 +1689,7 @@ textarea {
       margin: 10rem 15rem;
    }
 
-   #explaination {
+   #behind-the-scene {
       margin: 7.5rem;
    }
 

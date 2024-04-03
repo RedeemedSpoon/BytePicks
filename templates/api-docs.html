@@ -1,19 +1,19 @@
 {% extends "base.html" %} {% block title %}
-<title>Byte Picks - Api Docs</title>
+<title>BytePicks - Api Docs</title>
 {% endblock %} {% block content %}
 <div id="partition">
    <h3>Sections :</h3>
    <a href="#overview">Overview</a>
    <a href="#details">Details</a>
    <a href="#key">API Key</a>
-   <a href="#route">URL & Parameters</a>
+   <a href="#route">EndPoints & Parameters</a>
    <a href="#example">Code Example</a>
    <a href="#output">Output Example</a>
    <a href="#notice">Notice</a>
 </div>
 
 <main id="api">
-   <h2>Byte Picks API Documentation</h2>
+   <h2>BytePicks API Documentation</h2>
 
    <h5 id="overview">What Do The Api Provide ?</h5>
    <p>
@@ -43,16 +43,16 @@
       <li>Video Comment Count <span style="color: #bd9c17">(int)</span></li>
       <li>Video Category ID <span style="color: #bd9c17">(int)</span></li>
    </ul>
-   <p>The Videos will be sorted automatically by relevance & quality using our <a href="{{ url_for('explaination')}}">Algorithms</a> and displayed in descending order.</p>
+   <p>The Videos will be sorted automatically by relevance & quality using our <a href="{{ url_for('behind_the_scene')}}">Algorithms</a> and displayed in descending order.</p>
 
    <h5 id="key">What About the API Key ?</h5>
    <p>
-      No API key is required to access the Byte Picks API. We believe in providing an open and free service without the need for user accounts or monetary transactions. This makes it easier for developers to integrate and explore our API without any
+      No API key is required to access the BytePicks API. We believe in providing an open and free service without the need for user accounts or monetary transactions. This makes it easier for developers to integrate and explore our API without any
       barriers or paywalls.
    </p>
 
-   <h5 id="route">What Are the URL & Parameters ?</h5>
-   <h6>Uniform Resource Locator (URL) :</h6>
+   <h5 id="route">What Are the EndPoints & Parameters ?</h5>
+   <h6>EndPoints :</h6>
    <div class="code" style="padding: 15px">
       <code>https://bytepicks.com/api-request</code>
    </div>
@@ -244,6 +244,6 @@
       its availability.
    </p>
 
-   <p>Feel free to explore the Byte Picks API and discover the best in tech content. If you have any questions or need assistance, please refer to our <a href="{{ url_for('contact') }}">contact page</a>. Happy coding!</p>
+   <p>Feel free to explore the BytePicks API and discover the best in tech content. If you have any questions or need assistance, please refer to our <a href="{{ url_for('contact') }}">contact page</a>. Happy coding!</p>
 </main>
 {% endblock %}

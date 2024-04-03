@@ -7,7 +7,7 @@ TIME = ["daily", "weekly", "monthly", "yearly"]
 LANGUAGE = ["EN", "FR", "ES", "RU", "HI"]
 
 app = Flask(__name__)
-copyrightYear = datetime.now().year
+copyright_year = datetime.now().year
 
 @app.teardown_request
 def teardown_request(exception=None):
@@ -16,25 +16,25 @@ def teardown_request(exception=None):
 @app.route("/")
 def home():
     with open("daily.json", "r") as file:
-        homeThumbnails = json.load(file)["EN"]
-    return render_template("home.html", year=copyrightYear, videos=homeThumbnails)
+        home_thumbnails = json.load(file)["EN"]
+    return render_template("home.html", year=copyright_year, videos=home_thumbnails)
 
 @app.route("/dashboard")
 def dashboard():
     time = request.args.get("time", default="daily")
     language = request.args.get("lang", default="EN")
-    videos = getVideos(time, language)
-    return render_template("dashboard.html", year=copyrightYear,
+    videos = get_videos(time, language)
+    return render_template("dashboard.html", year=copyright_year,
         videos=videos, time=time,language=language,
-        formatDuration=formatDuration, formatViewCount=formatViewCount,
+        format_duration=format_duration, format_view_count=format_view_count,
     )
 
 @app.route("/api-docs")
-def api():
-    return render_template("api.html", year=copyrightYear)
+def api_docs():
+    return render_template("api-docs.html", year=copyright_year)
 
 @app.route("/api-request")
-def apiRequest():
+def api_request():
     time = request.args.get("time", default="daily")
     language = request.args.get("lang", default="EN")
     top = request.args.get("top", default=25, type=int)
@@ -42,7 +42,7 @@ def apiRequest():
         response = {
             "Request": f"The top {top} {time} videos in {language}",
             "Date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
-            "Result": getVideos(time, language),
+            "Result": get_videos(time, language),
         }
     else:
         response = {"Result": "You send an invalid request."}
@@ -67,7 +67,7 @@ def newsletter():
                     language = request.form["language"]
                     token = "".join(secrets.choice(string.ascii_letters + string.digits) for _ in range(20))
                     message = getMessage(email, time, language, token)
-                    sendEmail(message, "Byte Picks : Please Confirm Your Email", email, "newsletter@bytepicks.com")
+                    send_email(message, "Byte Picks : Please Confirm Your Email", email, "newsletter@bytepicks.com")
                 except:
                     message = "You Gave An Invalid Email."
                 else:
@@ -75,7 +75,7 @@ def newsletter():
                     session.add(PendingUser(email=email, time=time, language=language, token=token))
                     session.commit()
 
-    return render_template("newsletter.html", year=copyrightYear, message=message, email="")
+    return render_template("newsletter.html", year=copyright_year, message=message, email="")
 
 @app.route("/submit", methods=["GET", "POST"])
 def submit():
@@ -98,7 +98,7 @@ def submit():
             else:
                 message = "This Email Does not Exist."
 
-    return render_template("newsletter.html", year=copyrightYear, message=message, email="")
+    return render_template("newsletter.html", year=copyright_year, message=message, email="")
 
 @app.route("/edit", methods=["GET", "POST"])
 def edit():
@@ -117,7 +117,7 @@ def edit():
             else:
                message = "Incorrect Token or Email."
 
-    return render_template("newsletter.html", year=copyrightYear, message=message, email=email)
+    return render_template("newsletter.html", year=copyright_year, message=message, email=email)
 
 @app.route("/drop", methods=["GET", "POST"])
 def drop():
@@ -135,23 +135,23 @@ def drop():
         else:
             message = "Incorrect Token or Email."
 
-    return render_template("newsletter.html", year=copyrightYear, message=message, email="")
+    return render_template("newsletter.html", year=copyright_year, message=message, email="")
 
 @app.route("/download")
 def download():
 	return send_file("channels.csv", as_attachment=True)
 
-@app.route("/explaination")
-def explaination():
-    return render_template("explaination.html", year=copyrightYear)
+@app.route("/behind-the-scene")
+def behind_the_scene():
+    return render_template("behind-the-scene.html", year=copyright_year)
 
 @app.route("/privacy-policy")
-def privacyPolicy():
-    return render_template("privacy-policy.html", year=copyrightYear)
+def privacy_policy():
+    return render_template("privacy-policy.html", year=copyright_year)
 
 @app.route("/about-us")
-def aboutUs():
-    return render_template("about-us.html", year=copyrightYear)
+def about_us():
+    return render_template("about-us.html", year=copyright_year)
 
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
@@ -161,10 +161,10 @@ def contact():
         sender = "Anonymous Person" if request.form["email"] == "" else request.form["email"]
         message = f"{request.form['message']}<br><br>This message was sent by : {sender}"
 
-        sendEmail(message, subject, "contact@bytepicks.com", "contact@bytepicks.com")
+        send_email(message, subject, "contact@bytepicks.com", "contact@bytepicks.com")
         message = "Thank you for contacting us!"
 
-    return render_template("contact.html", year=copyrightYear, message=message)
+    return render_template("contact.html", year=copyright_year, message=message)
 
 if __name__ == "__main__":
     app.run()

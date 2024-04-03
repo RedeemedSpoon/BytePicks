@@ -6,26 +6,26 @@
       <meta name="keywords" content="tech, youtube, yt, api, newsletter, email, top, best tech, technology, influencer, content creator, quality, trending" />
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
       {% block title %}
-      <title>Byte Picks</title>
+      <title>BytePicks</title>
       {% endblock %}
       <meta name="description" content="We filter out the junk in the tech influencer world to show you only the best there is for you, for free." />
       <meta name="robots" content="index, follow, max-snippet: -1, max-image-preview:large, max-video-preview: -1" />
       <meta name="google-site-verification" content="None" />
       <meta name="yandex-verification" content="None" />
       <meta name="generator" content="None" />
-      <meta name="msapplication-TileImage" content="{{ url_for('static', filename='Assets/Logo.svg') }}" />
+      <meta name="msapplication-TileImage" content="{{ url_for('static', filename='assets/logo.svg') }}" />
       <meta property="og:locale" content="en_US" />
       <meta property="og:type" content="website" />
       <meta property="og:title" content="Find The Best Picks In The Tech World" />
       <meta property="og:description" content="We filter out the junk in the tech influencer world to show you only the best there is for you, for free." />
       <meta property="og:url" content="https://www.BytePicks.com" />
-      <meta property="og:site_name" content="Byte Picks" />
-      <meta property="og:image" content="{{ url_for('static', filename='Assets/Logo.svg') }}" />
-      <meta property="og:image:secure_url" content="{{ url_for('static', filename='Assets/Logo.svg') }}" />
+      <meta property="og:site_name" content="BytePicks" />
+      <meta property="og:image" content="{{ url_for('static', filename='assets/logo.svg') }}" />
+      <meta property="og:image:secure_url" content="{{ url_for('static', filename='assets/logo.svg') }}" />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="660" />
-      <link rel="icon" href="{{ url_for('static', filename='Assets/Logo.svg') }}" />
-      <link rel="apple-touch-icon-precomposed" href="{{ url_for('static', filename='Assets/Logo.svg') }}" />
+      <link rel="icon" href="{{ url_for('static', filename='assets/logo.svg') }}" />
+      <link rel="apple-touch-icon-precomposed" href="{{ url_for('static', filename='assets/logo.svg') }}" />
       <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" media="all" />
       <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
       <script src="{{ url_for('static', filename='script.js') }}" async defer></script>
@@ -34,12 +34,12 @@
    {% block header %} 
       <header>
          <a href="{{ url_for('home') }}">
-            <img src="{{ url_for('static', filename='Assets/Byte Picks.svg') }}" alt="brand logo" />
+            <img src="{{ url_for('static', filename='assets/bytepicks.svg') }}" alt="brand logo" />
          </a>
          <div class="nav-links" style="margin-right: 20px;">
             <a href="{{ url_for('dashboard') }}">DashBoard</a>
             <a href="{{ url_for('newsletter') }}">Newsletter</a>
-            <a href="{{ url_for('api') }}">Api Docs</a>
+            <a href="{{ url_for('api_docs') }}">Api Docs</a>
             <a href="{{ url_for('contact') }}">Contact</a>
          </div>
          <div class="hamburger-menu">
@@ -52,16 +52,16 @@
       {% block content %} {% endblock %}
       <footer>
          <a href="{{ url_for('home') }}" id="g1">
-            <img src="{{ url_for('static', filename='Assets/Byte Picks.svg') }}" alt="brand logo" />
+            <img src="{{ url_for('static', filename='assets/bytepicks.svg') }}" alt="brand logo" />
          </a>
          <a href="{{ url_for('dashboard') }}" id="g2">DashBoard</a>
          <a href="{{ url_for('newsletter') }}" id="g3">Newsletter</a>
-         <a href="{{ url_for('api') }}" id="g4">Api Docs</a>
+         <a href="{{ url_for('api_docs') }}" id="g4">Api Docs</a>
          <a href="{{ url_for('contact') }}" id="g5">Contact</a>
-         <a href="{{ url_for('explaination') }}" id="g6">Behind The Scene</a>
-         <a href="{{ url_for('privacyPolicy') }}" id="g7">Privacy Policy</a>
-         <a href="{{ url_for('aboutUs') }}" id="g8">About Us</a>
-         <p id="g9">© {{year}} Byte Picks. All content on this website is licensed under the <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International</a> (CC BY 4.0)</p>
+         <a href="{{ url_for('behind_the_scene') }}" id="g6">Behind The Scene</a>
+         <a href="{{ url_for('privacy_policy') }}" id="g7">Privacy Policy</a>
+         <a href="{{ url_for('about_us') }}" id="g8">About Us</a>
+         <p id="g9">© {{year}} BytePicks. All content on this website is licensed under the <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International</a> (CC BY 4.0)</p>
       </footer>
    </body>
 </html>
