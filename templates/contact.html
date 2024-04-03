@@ -4,7 +4,7 @@
 <div class="popup" style="display: block">
    <div class="popup-content">
       <h3 style="margin: 2rem 2rem 4rem 2rem">{{ message }}</h3>
-      <button class="primarybtn" id="closebtn" style="margin-bottom: 1rem; scale: 1.25">Close</button>
+      <button class="primary-btn" id="close-btn" style="margin-bottom: 1rem; scale: 1.25">Close</button>
    </div>
 </div>
 {% endif %}
@@ -17,7 +17,7 @@
             <label for="email">(Optional) Email :</label>
             <small>Provide your email if you'd like a response.</small>
          </div>
-         <input type="email" id="email" name="email" />
+         <input type="email" id="email" name="opt-email" />
       </div>
       <div class="form-group">
          <div>
@@ -33,7 +33,7 @@
          </div>
          <textarea id="message" name="message" required></textarea>
       </div>
-      <button type="submit" class="submitbtn">Submit</button>
+      <button type="submit" class="submit-btn">Submit</button>
    </form>
 </main>
 {% endblock %}

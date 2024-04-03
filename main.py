@@ -53,7 +53,7 @@ def api_request():
 def newsletter():
     message = None
     if request.method == "POST":
-        email = request.form["user_email"]
+        email = request.form["email"]
         user = session.query(User).filter_by(email=email).first()
         if user:
             message = "This Email is Already Registered."
@@ -158,7 +158,7 @@ def contact():
     message = None
     if request.method == "POST":
         subject = request.form["subject"]
-        sender = "Anonymous Person" if request.form["email"] == "" else request.form["email"]
+        sender = "Anonymous Person" if request.form["opt-email"] == "" else request.form["opt-email"]
         message = f"{request.form['message']}<br><br>This message was sent by : {sender}"
 
         send_email(message, subject, "contact@bytepicks.com", "contact@bytepicks.com")

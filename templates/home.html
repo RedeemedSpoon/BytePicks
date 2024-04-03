@@ -31,7 +31,7 @@
    <div class="introductory">
       <h1>Welcome to BytePicks!</h1>
       <h6>Say Goodbye to Endless YouTube Scrolling, We Have Your Shortcut to Excellence.</h6>
-      <h3 style="margin: -5px 0">We've Cracked the<span class="alt_text">Code!</span></h3>
+      <h3 style="margin: -5px 0">We've Cracked the<span class="alt-text">Code!</span></h3>
       <h5>Dive Straight Into Tech's Finest, no Fluff or Fuss.</h5>
    </div>
 
@@ -39,13 +39,13 @@
       <img src="{{ url_for('static', filename='assets/grunge.jpg') }}" alt="Grunge" draggable="false" />
       <div style="display: flex">
          {% for video_id, video in videos.items() %}
-         <img draggable="false" alt="All YT Thumbnail" src="{{ video.Thumbnail }}" />
+         <img draggable="false" alt="Thumbnail" src="{{ video.Thumbnail }}" />
          {% endfor %}
       </div>
    </div>
 
    <section class="welcome">
-      <img src="{{ url_for('static', filename='assets/leader.jpg') }}" alt="Best Product" />
+      <img src="{{ url_for('static', filename='assets/leader.jpg') }}" alt="Best Service" />
       <div>
          <h1>Unparalleled Excellence</h1>
          <p>
@@ -67,7 +67,7 @@
    </section>
 
    <section class="welcome">
-      <img src="{{ url_for('static', filename='assets/developer.jpg') }}" alt="Api request" />
+      <img src="{{ url_for('static', filename='assets/developer.jpg') }}" alt="Api Request" />
       <div>
          <h1>Seamless Integration for Developers</h1>
          <p>
@@ -78,7 +78,7 @@
    </section>
 
    <section class="welcome">
-      <img style="grid-area: 1 / 2 / 1 / 2 !important" src="{{ url_for('static', filename='assets/recommendation.jpg') }}" alt="Share" />
+      <img style="grid-area: 1 / 2 / 1 / 2 !important" src="{{ url_for('static', filename='assets/recommendation.jpg') }}" alt="Share With Us" />
       <div style="grid-area: 1 / 1 / 1 / 1 !important">
          <h1>Got a Recommendation? Let's Hear It!</h1>
          <p>
@@ -91,7 +91,7 @@
    <div class="introductory">
       <h3>Enough Waiting Around!</h3>
       <h4 style="margin: 30px">We're free, friendly, and fiercely focused on quality.</h4>
-      <h2 style="margin: -10px 0 75px 0">Ready to<a href="{{ url_for('dashboard') }}" class="alt_text">Dive In?</a></h2>
+      <h2 style="margin: -10px 0 75px 0">Ready to<a href="{{ url_for('dashboard') }}" class="alt-text">Dive In?</a></h2>
    </div>
 </main>
 {% endblock %}
