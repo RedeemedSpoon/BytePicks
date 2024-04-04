@@ -1,15 +1,15 @@
 /* ----- General ----- */
 
 @font-face {
-   font-family: "Levenim_MT";
-   src: url("Levenim_MT.ttf") format("truetype");
+   font-family: "levenim-MT";
+   src: url("levenim-MT.ttf") format("truetype");
    font-weight: normal;
    font-style: normal;
 }
 
 @font-face {
-   font-family: "Lato";
-   src: url("Lato-Regular.ttf") format("truetype");
+   font-family: "lato";
+   src: url("lato.ttf") format("truetype");
    font-weight: normal;
    font-style: normal;
 }
@@ -65,7 +65,7 @@
 }
 
 body {
-   font-family: "Levenim_MT", fallback_font_family, sans-serif;
+   font-family: "levenim-MT", fallback_font_family, sans-serif;
    background-color: rgb(240, 245, 245);
    scroll-behavior: smooth;
    color: #252525;
@@ -81,7 +81,7 @@ a:hover {
 }
 
 button {
-   font-family: "Lato", sans-serif;
+   font-family: "lato", sans-serif;
    font-weight: 100;
 }
 
@@ -415,7 +415,7 @@ select {
    display: grid;
    grid-template-rows: 210px auto;
    grid-template-columns: 60px 290px;
-   font-family: "Lato", sans-serif;
+   font-family: "lato", sans-serif;
    transition: 0.5s ease;
    padding-bottom: 30px;
    border-radius: 10px;
@@ -439,7 +439,7 @@ select {
 .video-duration {
    position: absolute;
    margin-top: 9.5rem;
-   margin-left: 17rem;
+   margin-left: 16rem;
    font-size: 14px;
    grid-area: 1 / 1 / 1 / 3;
    background-color: rgba(0, 0, 0, 0.75);
@@ -598,6 +598,7 @@ ul * {
    text-align: center;
    flex-direction: column;
    margin: 8.5rem 22.5rem;
+   scale: 0.95;
    gap: 4rem;
 }
 
@@ -714,8 +715,8 @@ input[name="email"] {
    justify-content: center;
    text-align: center;
    flex-direction: column;
-   margin: 5rem 20rem;
-   scale: 0.9;
+   margin: 6rem 20rem;
+   scale: 0.95;
    gap: 3rem;
 }
 
@@ -754,7 +755,7 @@ form {
 
 input,
 textarea {
-   font-family: "Lato", sans-serif;
+   font-family: "lato", sans-serif;
    color: #303030;
    font-size: 20px;
    min-width: 55rem;
@@ -1271,7 +1272,7 @@ textarea {
 
    .video-duration {
       margin-top: 7.5rem;
-      margin-left: 14rem;
+      margin-left: 13rem;
    }
 
    .youtube-channel {

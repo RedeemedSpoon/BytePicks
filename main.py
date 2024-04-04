@@ -1,7 +1,7 @@
 from flask import Flask, render_template, jsonify, request, send_file
 from datetime import datetime
 import json, secrets, string
-from common import *
+from utils import *
 
 TIME = ["daily", "weekly", "monthly", "yearly"]
 LANGUAGE = ["EN", "FR", "ES", "RU", "HI"]
@@ -66,7 +66,7 @@ def newsletter():
                     time = request.form["time"]
                     language = request.form["language"]
                     token = "".join(secrets.choice(string.ascii_letters + string.digits) for _ in range(20))
-                    message = getMessage(email, time, language, token)
+                    message = get_message(email, time, language, token)
                     send_email(message, "Byte Picks : Please Confirm Your Email", email, "newsletter@bytepicks.com")
                 except:
                     message = "You Gave An Invalid Email."

@@ -1,6 +1,6 @@
 import os, datetime, isodate, json, sys, logging
-from googleapiclient.discovery import build
 from collections import defaultdict, OrderedDict
+from googleapiclient.discovery import build
 from langdetect import detect
 from math import log
 import pandas as pd
@@ -28,9 +28,9 @@ DURATIONS_MAPPING = [
     (isodate.parse_duration("PT1H"), 1.075),
 ]
 
-def search(cur_page_token = None):
+def search(cur_page_token = None, first_time = True):
     global quota_usage; searched_channels = []
-    while cur_page_token:
+    while cur_page_token or first_time:
         request = service.search().list(
             q="Programming | Tech | Computer Science",
             type="channel",
@@ -38,7 +38,7 @@ def search(cur_page_token = None):
             maxResults=50,
             order="relevance",
             relevanceLanguage="en",
-            pageToken=token,
+            pageToken=cur_page_token,
         )
 
         response = request.execute()
@@ -48,6 +48,7 @@ def search(cur_page_token = None):
 
         cur_page_token = response.get("nextPageToken")
         quota_usage -= 100
+        first_time = False
 
     return searched_channels
 
@@ -57,9 +58,9 @@ def sort_and_filter(df):
     df.sort_values(by=['SubscriberCount'], ascending=False, inplace=True)
     return df
 
-def update_channels(channel_ids):
+def update_channels():
     global quota_usage; channels = []
-    for channel in channel_ids:
+    for channel in channel_df['ChannelID']:
         request = service.channels().list(part=["snippet", "statistics", "brandingSettings"], id=channel)
         response = request.execute()
         quota_usage -= 1
@@ -276,7 +277,7 @@ def store_videos():
 
 if __name__ == "__main__":
     global quota_usage, channel_df, service, today, videos, viewed_videos
-    logging.basicConfig(filename='youtube.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig(filename='youtube.log', level=logging.WARN, format='%(asctime)s - %(levelname)s - %(message)s')
     channel_df = pd.read_csv("channels.csv")
     API_KEY = os.environ.get("YT_API_KEY")
     service = build("youtube", "v3", developerKey=API_KEY)
@@ -287,14 +288,14 @@ if __name__ == "__main__":
 
     if len(sys.argv) > 1 and sys.argv[1] == "search":
         new_channels = search()
-        update_channels(new_channels)
-        exit(0)
-
-    try:
-        update_channels(channel_df["ChannelID"])
-        fetch_new_videos()
-        store_videos()
-    except Exception as e:
-        logging.error(f"An error occurred: {e}")
+        with open("channels.csv", "a") as f:
+            f.writelines(f"{channel_id}\n" for channel_id in new_channels)
     else:
-        logging.info(f"Remaining quota for this day : {quota_usage}")
+        try:
+            update_channels()
+            fetch_new_videos()
+            store_videos()
+        except Exception as e:
+            logging.error(f"An error occurred: {e}")
+        else:
+            logging.warning(f"Remaining quota for this day : {quota_usage}")

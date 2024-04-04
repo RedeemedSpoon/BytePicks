@@ -24,7 +24,7 @@ Don't miss out on the latest tech insights. Subscribe to our newsletter [here](h
 
 ## Our Highs & Lows
 
-BytePicks is a labor of love crafted by a small, passionate team. We're committed to keeping things free and open-source, believing in an internet that's free from sneaky bloated stuff. Our journey isn't about big plans for making money, it's about experimenting and improving. Our algorithms are a work in progress, and the channels we think are worth your time might change as we figure things out.
+BytePicks is a labor of love crafted by a small, passionate person. We're committed to keeping things free and open-source, believing in an internet that's free from sneaky bloated stuff. Our journey isn't about big plans for making money, it's about experimenting and improving. Thus, the channels we think are worth your time might change as we figure things out.
 
 ## Collaboration
 

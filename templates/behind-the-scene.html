@@ -25,15 +25,14 @@
    </p>
    <p>
       Notably, <a href="https://SQLite.org">SQLite</a> steps in as the guardian of sensitive information, safeguarding user email, channels Information and preferences. A sprinkle of additional libraries, such as
-      <a href="https://jquery.com/">jQuery</a> and python isodate, datetime, sys, os join the ensemble to enhance functionality and interactivity. And all of this isn't even remotely complicated or impressive for today's standards for web development, which will make some sure pee their pants.
+      <a href="https://jquery.com/">jQuery</a> and python isodate, datetime, googleapiclient join the ensemble to enhance functionality and interactivity. And all of this isn't even remotely complicated or impressive for today's standards for web development, which will make some sure pee their pants.
    </p>
 
    <h4>How we collect YouTube data ?</h4>
    <p>
-      Thanks to the robust infrastructure provided by Google (obviously they are Google), we tap into the <a href="https://developers.google.com/youtube/v3">YouTube API</a> with finesse, wielding nothing more than an API key and a few lines of code. Simplifying this process even further is the Google API client library for Python, aptly named <a href="https://pypi.org/project/google-api-python-client/">googleapiclient</a> offering us simple functions to call and some parameters. I just need to have an api key that I got in the!<a href="https://console.cloud.google.com">google cloud console</a> with over a 10,000 quota points which is more then enough for me. Here is a code snippet example:
+      Thanks to the robust infrastructure provided by Google (obviously they are Google), we tap into the <a href="https://developers.google.com/youtube/v3">YouTube API</a> with finesse, wielding nothing more than an API key and a few lines of code. Simplifying this process even further is the Google API client library for Python, aptly named <a href="https://pypi.org/project/google-api-python-client/">googleapiclient</a> offering us simple functions to call and some parameters. We just need to have an api key that we got in the <a href="https://console.cloud.google.com">google cloud console</a> . It comes with over 10,000 quota points which is more then enough for us. Here is a code snippet example:
    </p>
    <pre class="code"><code>
-<span class="keyword">import</span> <span class="import">os</span>
 <span class="keyword">from</span> <span class="import">googleapiclient</span>.<span class="import">discovery</span> <span class="keyword">import</span> <span class="function">build</span>
 
 <span class="keyword">if</span> <span class="var">__name__</span> <span class="operator">==</span> <span class="str">"__main__"</span>:
@@ -69,16 +68,16 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
 
 <span class="var">response</span> <span class="operator">=</span> <span class="var">request</span>.<span class="function">execute</span>()
 <span class="keyword">for</span> <span class="var">item</span> <span class="keyword">in</span> <span class="var">response</span>.<span class="function">get</span>(<span class="str">"items"</span>, []):
-   <span class="var">tempId</span> <span class="operator">=</span> <span class="var">item</span>[<span class="str">"id"</span>][<span class="str">"channelId"</span>]
-   <span class="var">searchedChannels</span>.<span class="function">append</span>(<span class="var">tempId</span>)
+   <span class="var">temp_id</span> <span class="operator">=</span> <span class="var">item</span>[<span class="str">"id"</span>][<span class="str">"channelId"</span>]
+   <span class="var">searched_channels</span>.<span class="function">append</span>(<span class="var">temp_id</span>)
 
 <span class="comment"># Other code...</span>    
 
-<span class="keyword">for</span> <span class="var">channel</span> <span class="keyword">in</span> <span class="var">searchedChannels</span>
+<span class="keyword">for</span> <span class="var">channel</span> <span class="keyword">in</span> <span class="var">searched_channels</span>:
    <span class="var">request</span> <span class="operator">=</span> <span class="var">service</span>.<span class="function">channels</span>().<span class="function">list</span>(<span class="var">part</span><span class="operator">=</span>[<span class="str">"snippet"</span>, <span class="str">"statistics"</span>, ... ], <span class="var">id</span><span class="operator">=</span><span class="var">channel</span>)
    <span class="var">response</span> <span class="operator">=</span> <span class="var">request</span>.<span class="function">execute</span>()
 
-   <span class="var">channelInfo</span> <span class="operator">=</span> {
+   <span class="var">channel_info</span> <span class="operator">=</span> {
       <span class="str">"ChannelID"</span>: <span class="var">response</span>[<span class="str">"items"</span>][<span class="int">0</span>][<span class="str">"id"</span>][<span class="str">"channelId"</span>],
       <span class="str">"ChannelURL"</span>: <span class="var">response</span>[<span class="str">"items"</span>][<span class="int">0</span>][<span class="str">"snippet"</span>][<span class="str">"customUrl"</span>],
       <span class="str">"ChannelName"</span>: <span class="var">response</span>[<span class="str">"items"</span>][<span class="int">0</span>][<span class="str">"snippet"</span>][<span class="str">"title"</span>],
@@ -86,44 +85,44 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
       <span class="comment"># Additional information about that channel</span> 
    }
 
-   <span class="var">channels</span>.<span class="function">append</span>(<span class="var">channelInfo</span>)
+   <span class="var">channels</span>.<span class="function">append</span>(<span class="var">channel_info</span>)
 
 <span class="var">df</span> <span class="operator"><span class="operator">=</span></span> <span class="var">pd</span>.<span class="class">DataFrame</span>(<span class="var">channels</span>)
-<span class="var">df</span> <span class="operator"><span class="operator">=</span></span> <span class="var">pd</span>.<span class="function">concat</span>([<span class="var">channelDF</span>, <span class="var">df</span>], <span class="var">ignore_index</span><span class="operator">=</span><span class="bool">True</span>)
+<span class="var">df</span> <span class="operator"><span class="operator">=</span></span> <span class="var">pd</span>.<span class="function">concat</span>([<span class="var">channel_df</span>, <span class="var">df</span>], <span class="var">ignore_index</span><span class="operator">=</span><span class="bool">True</span>)
 <span class="var">df</span>.<span class="function">drop_duplicates</span>(<span class="var">inplace</span><span class="operator">=</span><span class="bool">True</span>)
 <span class="var">df</span>.<span class="function">dropna</span>(<span class="var">inplace</span><span class="operator">=</span><span class="bool">True</span>)
-<span class="var">df</span>.<span class="function">to_csv</span>(<span class="str">"data/channels.csv"</span>, <span class="var">index</span><span class="operator">=</span><span class="bool">False</span>)
+<span class="var">df</span>.<span class="function">to_csv</span>(<span class="str">"channels.csv"</span>, <span class="var">index</span><span class="operator">=</span><span class="bool">False</span>)
    </code></pre>
    <div class="small-screen-message">
       <p>Your screen is too small to display the code.</p>
    </div>
 	<p>
-	In our latest update, we sought to refine and enhance our channel selection process, including discovering some previously overlooked ones. To achieve this, we developed a web scraper using <a href="https://www.selenium.dev/documentation/webdriver/">Selenium WebDriver</a>. Essentially, it performs a search for a random tech topic on YouTube, collects the channel URLs from the top results, clicks on random videos, and gathers the creators' information. This process is repeated at least 7 times or more. Subsequently, we utilize the <a href="https://www.streamweasels.com/tools/youtube-channel-id-and-user-id-convertor/">YouTube Channel ID Finder</a> to obtain the IDs associated with these channels. With the IDs in hand, we use then a slightly modified version of our updateChannelInfo() function to process the data. While the code is lengthy, here's a snippet:
+	In our latest update, we sought to refine and enhance our channel selection process, including discovering some previously overlooked ones. To achieve this, we developed a web scraper using <a href="https://www.selenium.dev/documentation/webdriver/">Selenium WebDriver</a>. Essentially, it performs a search for a random tech topic on YouTube, collects the channel URLs from the top results, clicks on random videos, and gathers the creators' information. This process is repeated at least 7 times or more. Subsequently, we utilize the <a href="https://www.streamweasels.com/tools/youtube-channel-id-and-user-id-convertor/">YouTube Channel ID Finder</a> to obtain the IDs associated with these channels. With the IDs, in hand, we use then a slightly modified version of our update_channels() function to process the data. While the code is lengthy, here's a snippet:
 	</p>
 	<pre class="code"><code>
 <span class="var">driver</span> <span class="operator">=</span> <span class="import">webdriver</span>.<span class="function">Firefox</span>(<span class="var">options</span><span class="operator">=</span><span class="var">options</span>)
-<span class="var">chosenTopic</span> <span class="operator">=</span> <span class="function">choice</span>(<span class="var">searchTerms</span>)
-<span class="var">searchTerms</span>.<span class="function">remove</span>(<span class="var">chosenTopic</span>)
-<span class="var">driver</span>.<span class="function">get</span>(<span class="str">f"https://www.youtube.com/results?search_query={chosenTopic}&lr=lang_en"</span>)
+<span class="var">chosen_topic</span> <span class="operator">=</span> <span class="function">choice</span>(<span class="var">search_terms</span>)
+<span class="var">search_terms</span>.<span class="function">remove</span>(<span class="var">chosen_topic</span>)
+<span class="var">driver</span>.<span class="function">get</span>(<span class="str">f"https://www.youtube.com/results?search_query={chosen_topic}"</span>)
 
-<span class="var">allRecommendedChannels</span> <span class="operator">=</span> <span class="var">driver</span>.<span class="function">find_elements</span>(<span class="import">By</span>.<span class="var">ID</span>, <span class="str">"channel-thumbnail"</span>)
-<span class="var">channels</span> <span class="operator">=</span> [<span class="var">channel</span>.<span class="function">get_attribute</span>(<span class="str">"href"</span>).<span class="function">split</span>(<span class="str">"@"</span>)[<span class="int">1</span>] <span class="keyword">for</span> <span class="var">channel</span> <span class="keyword">in</span> <span class="var">allRecommendedChannels</span>]
+<span class="var">all_recommended_channels</span> <span class="operator">=</span> <span class="var">driver</span>.<span class="function">find_elements</span>(<span class="import">By</span>.<span class="var">ID</span>, <span class="str">"channel-thumbnail"</span>)
+<span class="var">channels</span> <span class="operator">=</span> [<span class="var">channel</span>.<span class="function">get_attribute</span>(<span class="str">"href"</span>).<span class="function">split</span>(<span class="str">"@"</span>)[<span class="int">1</span>] <span class="keyword">for</span> <span class="var">channel</span> <span class="keyword">in</span> <span class="var">all_recommended_channels</span>]
 
-<span class="var">videoLinks</span> <span class="operator">=</span> <span class="import">driver</span>.<span class="function">find_elements</span>(<span class="import">By</span>.<span class="var">CSS_SELECTOR</span>, <span class="str">"a#video-title"</span>)
-<span class="function">choice</span>(<span class="var">videoLinks</span>[<span class="int">5</span>:]).<span class="function">click</span>()
+<span class="var">video_links</span> <span class="operator">=</span> <span class="import">driver</span>.<span class="function">find_elements</span>(<span class="import">By</span>.<span class="var">CSS_SELECTOR</span>, <span class="str">"a#video-title"</span>)
+<span class="function">choice</span>(<span class="var">video_links</span>[<span class="int">5</span>:]).<span class="function">click</span>()
 
 <span class="keyword">for</span> <span class="var">i</span> <span class="keyword">in</span> <span class="var">range</span>(<span class="int">7</span>):
-      <span class="var">recommendedChannel</span> <span class="operator">=</span> <span class="import">driver</span>.<span class="function">find_element</span>(<span class="import">By</span>.<span class="var">CSS_SELECTOR</span>, <span class="str">"a.ytd-video-owner-renderer"</span>)
-      <span class="var">recommendedVideo</span> <span class="operator">=</span> <span class="import">driver</span>.<span class="function">find_elements</span>(<span class="import">By</span>.<span class="var">TAG_NAME</span>, <span class="str">"ytd-compact-video-renderer"</span>)
-      <span class="function">choice</span>(<span class="var">recommendedVideo</span>[:<span class="int">5</span>]).<span class="function">click</span>()
-      <span class="var">channels</span>.<span class="function">append</span>(<span class="var">recommendedChannel</span>.<span class="function">get_attribute</span>(<span class="str">"href"</span>).<span class="function">split</span>(<span class="str">"@"</span>)[<span class="int">1</span>])
+      <span class="var">recommended_channel</span> <span class="operator">=</span> <span class="import">driver</span>.<span class="function">find_element</span>(<span class="import">By</span>.<span class="var">CSS_SELECTOR</span>, <span class="str">"a.ytd-video-owner-renderer"</span>)
+      <span class="var">recommended_video</span> <span class="operator">=</span> <span class="import">driver</span>.<span class="function">find_elements</span>(<span class="import">By</span>.<span class="var">TAG_NAME</span>, <span class="str">"ytd-compact-video-renderer"</span>)
+      <span class="function">choice</span>(<span class="var">recommended_video</span>[:<span class="int">5</span>]).<span class="function">click</span>()
+      <span class="var">channels</span>.<span class="function">append</span>(<span class="var">recommended_channel</span>.<span class="function">get_attribute</span>(<span class="str">"href"</span>).<span class="function">split</span>(<span class="str">"@"</span>)[<span class="int">1</span>])
       <span class="comment"># Visiting YouTube Channel ID Finder afterward to convert our URLs to channelIDs</span>
 	</code></pre>
    <div class="small-screen-message">
       <p>Your screen is too small to display the code.</p>
    </div>
 	<p>
-	 You can download our database of YouTube channels using the button at the bottom of this text. It provides the current channel information and many other details that make this service possible. 
+	 You can download our database of YouTube channels using the button at the bottom of this text. It provides all channels information and many other details that make this service possible. 
 	 Note that some cells may contain "Unknown" as the value because YouTube does not have information about them. You can also redownload this database at any time to update the list. If you want to add or delete channels,
 	 feel free to <a href="{{ url_for('contact')}}">contact us</a>. You are welcome to use this database anywhere. We believe that transparency and openness will only but bring more opportunities and trust :)
 	</p>
@@ -134,7 +133,7 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
       Remember our CSV with every tech channel in it? Using a simple for loop, we extract the channel ID to use in the Google API function `activities().list()`. This function showcases the recent activities of the channel, including uploaded videos, which is what we are looking for. We extract information for every video such as thumbnails, ID, title, who posted the video, and when it was posted. To dive deeper, we need another method, `videos().list()`. By specifying the video ID we obtained previously, we get the final missing part of the puzzle – statistics and content rating. Here is a code snippet of it :
    </p>
    <pre class="code"><code>
-<span class="keyword">for</span> <span class="var">channel</span> <span class="keyword">in</span> <span class="var">channelDF</span>[<span class="str">"ChannelID"</span>]:
+<span class="keyword">for</span> <span class="var">channel</span> <span class="keyword">in</span> <span class="var">channel_df</span>[<span class="str">"ChannelID"</span>]:
    <span class="var">request</span> <span class="operator">=</span> <span class="var">service</span>.<span class="function">activities</span>().<span class="function">list</span>(
       <span class="var">part</span><span class="operator">=</span>[<span class="str">"snippet"</span>, <span class="str">"id"</span>, <span class="str">"contentDetails"</span>],
       <span class="var">publishedAfter</span><span class="operator">=</span><span class="var">yesterday</span>.<span class="function">isoformat</span>() <span class="operator">+</span> <span class="str">"T00:00:00Z"</span>,
@@ -143,18 +142,18 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
 
    <span class="var">response</span> <span class="operator">=</span> <span class="var">request</span>.<span class="function">execute</span>()
       <span class="keyword">for</span> <span class="var">item</span> <span class="keyword">in</span> <span class="var">response</span>[<span class="str">"items"</span>]:
-         <span class="var">channelName</span> <span class="operator">=</span> <span class="var">item</span>[<span class="str">"snippet"</span>][<span class="str">"channelTitle"</span>]
-         <span class="var">channelId</span> <span class="operator">=</span> <span class="var">item</span>[<span class="str">"snippet"</span>][<span class="str">"channelId"</span>]
-         <span class="var">videoId</span> <span class="operator">=</span> <span class="var">item</span>[<span class="str">"contentDetails"</span>][<span class="str">"upload"</span>][<span class="str">"videoId"</span>]
+         <span class="var">channel_name</span> <span class="operator">=</span> <span class="var">item</span>[<span class="str">"snippet"</span>][<span class="str">"channelTitle"</span>]
+         <span class="var">channel_id</span> <span class="operator">=</span> <span class="var">item</span>[<span class="str">"snippet"</span>][<span class="str">"channelId"</span>]
+         <span class="var">video_id</span> <span class="operator">=</span> <span class="var">item</span>[<span class="str">"contentDetails"</span>][<span class="str">"upload"</span>][<span class="str">"videoId"</span>]
          <span class="comment"># Additional information...</span>
 
-         <span class="var">request</span> <span class="operator">=</span> <span class="var">service</span>.<span class="function">videos</span>().<span class="function">list</span>(<span class="var">id</span><span class="operator">=</span><span class="var">videoId</span>, <span class="var">part</span><span class="operator">=</span>[<span class="str">"statistics"</span>, <span class="str">"snippet"</span>, <span class="str">"contentDetails"]</span>)
+         <span class="var">request</span> <span class="operator">=</span> <span class="var">service</span>.<span class="function">videos</span>().<span class="function">list</span>(<span class="var">id</span><span class="operator">=</span><span class="var">video_id</span>, <span class="var">part</span><span class="operator">=</span>[<span class="str">"statistics"</span>, <span class="str">"snippet"</span>, <span class="str">"contentDetails"]</span>)
          <span class="var">response</span> <span class="operator">=</span> <span class="var">request</span>.<span class="function">execute</span>()
          
-         <span class="var">viewCount</span> <span class="operator">=</span> <span class="int">int</span>(<span class="var">response</span>[<span class="str">"items"</span>][<span class="int">0</span>][<span class="str">"statistics"</span>][<span class="str">"viewCount"</span>])
-         <span class="var">likeCount</span> <span class="operator">=</span> <span class="int">int</span>(<span class="var">response</span>[<span class="str">"items"</span>][<span class="int">0</span>][<span class="str">"statistics"</span>][<span class="str">"likeCount"</span>])
-         <span class="var">contentRating</span> <span class="operator">=</span> <span class="var">response</span>[<span class="str">"items"</span>][<span class="int">0</span>][<span class="str">"contentDetails"</span>][<span class="str">"contentRating"</span>]
-         <span class="var">duration</span> <span class="operator">=</span> <span class="import">isodate</span>.<span class="function">parse_duration</span>(<span class="var">response</span>[<span class="str">"items"</span>][<span class="int">0</span>][<span class="str">"contentDetails"</span>][<span class="str">"duration"</span>])
+         <span class="var">view_count</span> <span class="operator">=</span> <span class="int">int</span>(<span class="var">response</span>[<span class="str">"items"</span>][<span class="int">0</span>][<span class="str">"statistics"</span>][<span class="str">"viewCount"</span>])
+         <span class="var">like_count</span> <span class="operator">=</span> <span class="int">int</span>(<span class="var">response</span>[<span class="str">"items"</span>][<span class="int">0</span>][<span class="str">"statistics"</span>][<span class="str">"likeCount"</span>])
+         <span class="var">content_rating</span> <span class="operator">=</span> <span class="var">response</span>[<span class="str">"items"</span>][<span class="int">0</span>][<span class="str">"contentDetails"</span>][<span class="str">"contentRating"</span>]
+         <span class="var">video_duration</span> <span class="operator">=</span> <span class="import">isodate</span>.<span class="function">parse_duration</span>(<span class="var">response</span>[<span class="str">"items"</span>][<span class="int">0</span>][<span class="str">"contentDetails"</span>][<span class="str">"duration"</span>])
          <span class="comment"># Again, remaining additional information...</span>
 </code></pre>
    <div class="small-screen-message">
@@ -162,7 +161,7 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
    </div>
    <p>
       Now that we have everything we need, we can process the data and loop through the next ones. But before everything, we need to filter out unworthy content with an if statement, such as videos less than 30 seconds, those
-      with less than 1000 views, those not in our set languages, or don't have a category ID either of 27 or 28, which is the category for technological and educational videos. After handling all of this, we finally get the desired result in a JSON format. Again an exmple of a Fireship video here to demonstrate :
+      with less than 500 views, those not in our set languages, or don't have a category ID either of 27 or 28, which is the category for technological and educational videos. After handling all of this, we finally get the desired result in a JSON format. Again an exmple of a Fireship video here to demonstrate :
    </p>
    <pre class="code"><code>
 <span class="var">"ChannelName"</span>: <span class="str">"Fireship"</span>,
@@ -176,7 +175,7 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
 <span class="var">"Thumbnail"</span>: <span class="str">"https://i.ytimg.com/vi/gGWQfV1FCis/mqdefault.jpg"</span>,
 <span class="var">"Duration"</span>: <span class="str">"0:04:25"</span>,
 <span class="var">"Definition"</span>: <span class="str">"HD"</span>,
-<span class="var">"language"</span>: <span class="str">"EN"</span>,
+<span class="var">"Language"</span>: <span class="str">"EN"</span>,
 <span class="var">"Caption"</span>: <span class="bool">false</span>,
 <span class="var">"ContentRating"</span>: <span class="bool">false</span> ,
 <span class="var">"ViewCount"</span>: <span class="int"> 4091018</span>,
@@ -197,7 +196,7 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
       <p>Your screen is too small to display the formula.</p>
    </div>
    <p>
-      The first part is done. Moving on to the second part, we utilize video statistics, a crucial aspect that truly reflects the video's quality, especially factors like the like-rate. We consider three values: like-rate, comment-rate, and view-rate. To maintain balance, we normalize them using a logarithmic function. After normalization, we adjust the importance of each factor, multipling the view-rate by 0.675, like-rate by 1.125 and the comment-rate by 1.375. These adjusted values are then combined, multiplied by the QualityMultiplier, and scaled by 100 for readability. The final rating formula looks like this:
+      The first part is done. Moving on to the second part, we utilize video statistics, a crucial aspect that truly reflects the video's quality. We consider three values: like-rate, comment-rate, and view-rate. To maintain balance, we normalize them using a logarithmic function. After normalization, we adjust the importance of each factor, multipling the view-rate by 0.675, like-rate by 1.125 and the comment-rate by 1.375. These adjusted values are then combined, multiplied by the QualityMultiplier, and scaled by 100 for readability. The final rating formula looks like this:
    </p>
    <p class="math">\( \text{Rating} = (\text{ViewRate} + \text{LikeRate} + \text{CommentRate}) \times \text{QualityMultiplier} \times 100 \)</p>
    <div class="small-screen-message">
@@ -207,20 +206,20 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
       With the rating now complete, the final step is to sort and store the videos. We accomplish this using Python and the JSON format, employing dictionary methods, slicing, along with the `open("file.json") as file` and `json.dump()` methods. Now, it's just a matter of selecting the right number of videos for different timeframes: all gotten videos for the day, 350 max videos each week, 1000 max videos each month, and 4500 max videos each year. Below is the code snippet illustrating this:
    </p>
 <pre class="code"><code>
-<span class="keyword">for</span> <span class="var">lang</span>, <span class="var">videos</span> <span class="keyword">in</span> <span class="var">Videos</span>.<span class="function">items</span>():
+<span class="keyword">for</span> <span class="var">lang</span>, <span class="var">all_videos</span> <span class="keyword">in</span> <span class="var">videos</span>.<span class="function">items</span>():
     <span class="keyword">for</span> <span class="var">time</span> <span class="keyword">in</span> [<span class="str">"daily"</span>, <span class="str">"weekly"</span>, <span class="str">"monthly"</span>, <span class="str">"yearly"</span>]:
         <span class="keyword">with</span> <span class="function">open</span>(<span class="keyword">f</span><span class="str">"{time}.json"</span>, <span class="str">"r"</span>) <span class="keyword">as</span> <span class="var">f</span>:
             <span class="var">data</span> <span class="operator">=</span> <span class="var">json</span>.<span class="function">load</span>(<span class="var">f</span>)
 
         <span class="keyword">if</span> <span class="var">time</span> <span class="operator">==</span> <span class="str">"daily"</span>:
-            <span class="var">topDay</span> <span class="operator">=</span> <span class="import">OrderedDict</span>(<span class="function">sorted</span>(<span class="var">videos</span>.<span class="function">items</span>(), <span class="var">key</span><span class="operator">=</span><span class="keyword">lambda</span> <span class="var">item</span>: <span class="import">float</span>(<span class="var">item</span>[<span class="int">0</span>]), <span class="var">reverse</span><span class="operator">=</span><span class="const">True</span>))
-            <span class="var">data</span>[<span class="var">lang</span>] <span class="operator">=</span> <span class="import">OrderedDict</span>(<span class="function">list</span>(<span class="var">topDay</span>.<span class="function">items</span>()))
+            <span class="var">top_day</span> <span class="operator">=</span> <span class="import">OrderedDict</span>(<span class="function">sorted</span>(<span class="var">all_videos</span>.<span class="function">items</span>(), <span class="var">key</span><span class="operator">=</span><span class="keyword">lambda</span> <span class="var">item</span>: <span class="var">item</span>[<span class="int">0</span>], <span class="var">reverse</span><span class="operator">=</span><span class="const">True</span>))
+            <span class="var">data</span>[<span class="var">lang</span>] <span class="operator">=</span> <span class="import">OrderedDict</span>(<span class="function">list</span>(<span class="var">top_day</span>.<span class="function">items</span>()))
 
         <span class="keyword">elif</span> <span class="var">time</span> <span class="operator">==</span> <span class="str">"weekly"</span>:
-            <span class="var">topWeek</span> <span class="operator">=</span> <span class="function">updateVideos</span>(<span class="var">data</span>[<span class="var">lang</span>], <span class="var">time</span>)
-	    <span class="var">topWeek</span>.<span class="function">update</span>(<span class="import">OrderedDict</span>(<span class="function">list</span>(<span class="var">topDay</span>.<span class="function">items</span>())[:<span class="int">10</span>]))
-            <span class="var">topWeek</span> <span class="operator">=</span> <span class="import">OrderedDict</span>(<span class="function">sorted</span>(<span class="var">topWeek</span>.<span class="function">items</span>(), <span class="var">key</span><span class="operator">=</span><span class="keyword">lambda</span> <span class="var">item</span>: <span class="import">float</span>(<span class="var">item</span>[<span class="int">0</span>]), <span class="var">reverse</span><span class="operator">=</span><span class="const">True</span>))
-            <span class="var">data</span>[<span class="var">lang</span>] <span class="operator">=</span> <span class="var">topWeek</span>
+            <span class="var">top_week</span> <span class="operator">=</span> <span class="function">update_videos</span>(<span class="var">data</span>[<span class="var">lang</span>], <span class="var">time</span>)
+	    <span class="var">top_week</span>.<span class="function">update</span>(<span class="import">OrderedDict</span>(<span class="function">list</span>(<span class="var">top_day</span>.<span class="function">items</span>())[:<span class="int">50</span>]))
+            <span class="var">top_week</span> <span class="operator">=</span> <span class="function">sort_videos</span>(<span class="var">top_week</span>)
+            <span class="var">data</span>[<span class="var">lang</span>] <span class="operator">=</span> <span class="var">top_week</span>
 
 	<span class="comment"># Same thing for monthy & yearly videos</span>
 
@@ -237,17 +236,17 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
    <pre class="code"><code>
 <span class="comment">#!/bin/bash</span>
 
-<span class="var">fileList</span>=<span class="str">"daily.json weekly.json monthly.json yearly.json token.json channels.csv newsletter.db"</span>
-<span class="var">remoteDir</span>=<span class="str">"/opt/render/project/src"</span>
+<span class="var">file_list</span>=<span class="str">"daily.json weekly.json monthly.json yearly.json token.json channels.csv newsletter.db"</span>
+<span class="var">remote_dir</span>=<span class="str">"/opt/render/project/src"</span>
 
-<span class="function">scp</span> <span class="var">$SERVER_NAME</span>@<span class="str">ssh.oregon.render.com:</span><span class="var">$remoteDir</span>/<span class="var">newsletter.db</span> <span class="operator">.</span>
+<span class="function">scp</span> <span class="var">$SERVER_NAME</span>@<span class="str">ssh.oregon.render.com:</span><span class="var">$remote_dir</span><span class="str">/newsletter.db</span> <span class="operator">.</span> <span class="operator">>></span> <span class="str">/dev/null</span>
 
 <span class="keyword">if</span> [[ <span class="var">$?</span> <span class="operator">-eq</span> <span class="int">0</span> ]]; <span class="keyword">then</span>
-  <span class="function">python</span> <span class="str">youtube.py</span>
+  <span class="function">python</span> <span class="str">youtube.py</span> <span class="operator">&&</span> <span class="function">tail -n</span> <span class="int">1</span> <span class="str">youtube.log</span>
   <span class="keyword">if</span> [[ <span class="var">$?</span> <span class="operator">-eq</span> <span class="int">0</span> ]]; <span class="keyword">then</span>
-    <span class="function">python</span> <span class="str">newsletter.py</span>
+    <span class="function">python</span> <span class="str">newsletter.py</span> <span class="operator">>></span> <span class="str">/dev/null</span>
     <span class="keyword">if</span> [[ <span class="var">$?</span> <span class="operator">-eq</span> <span class="int">0</span> ]]; <span class="keyword">then</span>
-      <span class="function">scp</span> <span class="var">$fileList</span> <span class="var">$SERVER_NAME</span>@<span class="str">ssh.oregon.render.com:</span><span class="var">$remoteDir</span>
+      <span class="function">scp</span> <span class="var">$file_list</span> <span class="var">$SERVER_NAME</span>@<span class="str">ssh.oregon.render.com:</span><span class="var">$remote_dir</span>
     <span class="keyword">fi</span>
   <span class="keyword">fi</span>
 <span class="keyword">fi</span>

@@ -1,4 +1,4 @@
-from common import *
+from utils import *
 
 with open('token.json', 'r') as token:
     creds_data = json.load(token)
@@ -13,7 +13,7 @@ for user in session.query(User).all():
         (user.time == "yearly" and (date.day == 1 and date.month == 1))
     ):
         video_list = []
-        all_videos = getVideos(user.time, user.language)
+        all_videos = get_videos(user.time, user.language)
         for rating, video in all_videos.items():
             video_title = video["VideoTitle"]
             video_link = video["VideoUrl"]

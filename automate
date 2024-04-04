@@ -1,15 +1,15 @@
 #!/bin/bash
 
-fileList="daily.json weekly.json monthly.json yearly.json token.json channels.csv newsletter.db"
-remoteDir="/opt/render/project/src"
+file_list="daily.json weekly.json monthly.json yearly.json token.json channels.csv newsletter.db"
+remote_dir="/opt/render/project/src"
 
-scp $SERVER_NAME@ssh.oregon.render.com:$remoteDir/newsletter.db .
+scp $SERVER_NAME@ssh.oregon.render.com:$remote_dir/newsletter.db . >> /dev/null
 if [[ $? -eq 0 ]]; then
-   python youtube.py 
+   python youtube.py && tail -n 1 youtube.log
    if [[ $? -eq 0 ]]; then
-      python newsletter.py
+      python newsletter.py >> /dev/null
       if [[ $? -eq 0 ]]; then
-         scp $fileList $SERVER_NAME@ssh.oregon.render.com:$remoteDir
+         scp $file_list $SERVER_NAME@ssh.oregon.render.com:$remote_dir
       fi
    fi 
 fi
