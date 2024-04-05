@@ -290,12 +290,15 @@ if __name__ == "__main__":
         new_channels = search()
         with open("channels.csv", "a") as f:
             f.writelines(f"{channel_id}\n" for channel_id in new_channels)
+
+        logging.warning(f"Remaining quota after the search : {quota_usage}")
+        exit(0)
+
+    try:
+        update_channels()
+        fetch_new_videos()
+        store_videos()
+    except Exception as e:
+        logging.error(f"An error occurred: {e}")
     else:
-        try:
-            update_channels()
-            fetch_new_videos()
-            store_videos()
-        except Exception as e:
-            logging.error(f"An error occurred: {e}")
-        else:
-            logging.warning(f"Remaining quota for this day : {quota_usage}")
+        logging.warning(f"Remaining quota for this day : {quota_usage}")

@@ -66,7 +66,7 @@
 
 body {
    font-family: "levenim-MT", fallback_font_family, sans-serif;
-   background-color: rgb(240, 245, 245);
+   background-color: #f1f5f9;
    scroll-behavior: smooth;
    color: #252525;
 }
@@ -398,7 +398,7 @@ select {
    padding: 8px 13px;
    font-size: 1.175rem;
    color: rgb(30, 30, 30);
-   background-color: rgb(240, 245, 245);
+   background-color: #f1f5f9;
    border: #303030 solid 1px;
    border-radius: 5px;
 }
@@ -759,7 +759,7 @@ textarea {
    color: #303030;
    font-size: 20px;
    min-width: 55rem;
-   background-color: rgb(240, 245, 245);
+   background-color: #f1f5f9;
    border: 1px solid #a3a5a8;
    border-radius: 10px;
 }
@@ -788,7 +788,7 @@ textarea {
 }
 
 .submit-btn:hover {
-   background-color: rgb(240, 245, 245);
+   background-color: #f1f5f9;
    border: #0b89a8 1px solid;
    color: #0b89a8;
    cursor: pointer;
@@ -838,6 +838,30 @@ textarea {
    border: 3px solid #0b89a8;
    border-radius: 15px;
    margin-bottom: 15px;
+}
+
+
+/* ----- 404 Error Page ----- */
+
+#error-page {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   text-align: center;
+   margin: 10rem 37.5rem 5rem 37.5rem;
+   row-gap: 2rem;
+}
+
+#error-page img {
+   width : 60%;
+   user-select: none;
+}
+
+#error-page button {
+   margin-top: 1.5rem;
+   font-size: 30px;
+   padding: 20px 30px
 }
 
 /* ----- Media Queries ----- */
@@ -1111,6 +1135,21 @@ textarea {
       width: 25%;
       margin-top: 10px;
    }
+
+   #error-page {
+      margin: 7.5rem 5rem 5rem 5rem;
+   }
+
+   #error-page img {
+      width : 75%;
+   }
+
+   #error-page button {
+      margin-top: 0rem;
+      font-size: 20px;
+      padding: 10px 15px
+   }
+
 }
 
 /* Small devices */
@@ -1383,6 +1422,20 @@ textarea {
       font-size: 15px;
       min-width: 35rem;
    }
+
+   #error-page {
+      margin: 7.5rem 7.5rem 5rem 7.5rem;
+   }
+
+   #error-page img {
+      width : 75%;
+   }
+
+   #error-page button {
+      margin-top: 0.5rem;
+      font-size: 22px;
+      padding: 12px 17px
+   }
 }
 
 /* Medium devices  */
@@ -1553,6 +1606,20 @@ textarea {
    textarea {
       min-width: 45rem;
    }
+
+   #error-page {
+      margin: 7.5rem 15rem 5rem 15rem;
+   }
+
+   #error-page img {
+      width : 75%;
+   }
+
+   #error-page button {
+      margin-top: 1rem;
+      font-size: 25px;
+      padding: 15px 20px
+   }
 }
 
 /* Large devices */
@@ -1688,6 +1755,11 @@ textarea {
       flex-direction: column;
       column-gap: 5rem;
    }
+
+   #error-page {
+      margin: 7.5rem 20rem 5rem 20rem;
+   }
+
 }
 
 /* Extra large devices */
@@ -1708,5 +1780,9 @@ textarea {
 
    .decoration {
       height: 150px;
+   }
+
+   #error-page {
+      margin: 10rem 30rem 5rem 30rem;
    }
 }

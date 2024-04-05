@@ -23,6 +23,9 @@ def home():
 def dashboard():
     time = request.args.get("time", default="daily")
     language = request.args.get("lang", default="EN")
+    if time not in TIME or language not in LANGUAGE:
+        return render_template("error.html", year=copyright_year), 404
+
     videos = get_videos(time, language)
     return render_template("dashboard.html", year=copyright_year,
         videos=videos, time=time,language=language,
@@ -165,6 +168,10 @@ def contact():
         message = "Thank you for contacting us!"
 
     return render_template("contact.html", year=copyright_year, message=message)
+
+@app.errorhandler(404)
+def bad_request(e):
+    return render_template("error.html", year=copyright_year), 404
 
 if __name__ == "__main__":
     app.run()

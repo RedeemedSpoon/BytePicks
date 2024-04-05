@@ -1,0 +1,10 @@
+{% extends "base.html" %} {% block title %}
+<title>BytePicks - Page Not Found</title>
+{% endblock %} {% block content %}
+<main id="error-page">
+    <h2>Oops, look like you got lost!</h2>
+    <img src="{{ url_for('static', filename='assets/error.gif' ) }}" autoplay  alt="Error 404 gif"/>
+    <h4>That's fine, these kinds of things happen even to the best of us. Am I right?</h4>
+    <a href="{{ url_for('home') }}"><button class="primary-btn">Go Back &#8594;</button></a>
+</main>
+{% endblock %}
