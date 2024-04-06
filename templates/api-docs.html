@@ -52,7 +52,7 @@
    <h5 id="route">What Are the EndPoints & Parameters ?</h5>
    <h6>EndPoints :</h6>
    <div class="code" style="padding: 15px">
-      <code>https://bytepicks.com/api-request</code>
+      <code>https://bytepicks.com/api/request</code>
    </div>
    <h6 style="margin-bottom: -25px">Parameters :</h6>
    <ul>
@@ -104,7 +104,7 @@
       <pre class="code"><code>
 <span class="keyword">import</span> <span class="import">requests</span>
 
-<span class="var">url</span><span class="operator"> = </span>"<span class="str">https://bytepicks.com/api-request</span>"
+<span class="var">url</span><span class="operator"> = </span>"<span class="str">https://bytepicks.com/api/request</span>"
 <span class="var">params</span> <span class="operator"> = </span> {
    <span class="str">'time'</span>: '<span class="str">daily</span>',
    <span class="str">'lang'</span>: '<span class="str">EN</span>',
@@ -127,7 +127,7 @@
       <pre class="code"><code>
 <span class="keyword">const</span> <span class="var">axios</span> <span class="operator">=</span> <span class="function">require</span>('<span class="str">axios</span>');
 
-<span class="keyword">const</span> <span class="const">url</span> <span class="operator">=</span> <span class="str">'https://bytepicks.com/api-request'</span>;
+<span class="keyword">const</span> <span class="const">url</span> <span class="operator">=</span> <span class="str">'https://bytepicks.com/api/request'</span>;
 <span class="keyword">const</span> <span class="const">params</span> <span class="operator">=</span> {
    <span class="str">'time'</span>: '<span class="str">daily</span>',
    <span class="str">'lang'</span>: '<span class="str">EN</span>',
@@ -151,7 +151,7 @@
 <span class="keyword">require</span> <span class="str">'net/http'</span>
 <span class="keyword">require</span> <span class="str">'json'</span>
 
-<span class="var">url</span> <span class="operator">=</span> <span class="import">URI</span>.<span class="function">parse</span>(<span class="str">'https://bytepicks.com/api-request'</span>)
+<span class="var">url</span> <span class="operator">=</span> <span class="import">URI</span>.<span class="function">parse</span>(<span class="str">'https://bytepicks.com/api/request'</span>)
 <span class="var">params</span> <span class="operator">=</span> {
    <span class="str">'time'</span> => '<span class="str">daily</span>',
    <span class="str">'lang'</span> => '<span class="str">EN</span>',
@@ -182,7 +182,7 @@
 {
    <span class="keyword">static</span> <span class="keyword">async</span> <span class="class">Task</span> <span class="function">Main</span>()
    {
-      <span class="keyword">var</span> <span class="var">url</span> <span class="operator">=</span> "<span class="str">https://bytepicks.com/api-request</span>";
+      <span class="keyword">var</span> <span class="var">url</span> <span class="operator">=</span> "<span class="str">https://bytepicks.com/api/request</span>";
       <span class="keyword">var</span> <span class="var">parameters</span> <span class="operator">=</span> $<span class="str">"time=daily&lang=EN&top=30"</span>;
 
       <span class="keyword">using</span> (<span class="keyword">var</span> <span class="var">client</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="function">HttpClient</span>())
@@ -214,22 +214,19 @@
 <span class="keyword">{</span>
    <span class="var">"Request"</span>: <span class="str">"The top 30 daily videos in EN"</span>,
    <span class="var">"Date"</span>: <span class="str">"21/01/2024 17:59:04"</span>,
-   <span class="var">"Result"</span>: <span class="keyword">{</span>
-
-      <span class="var">"513.932"</span>: <span class="keyword">{</span>
+   <span class="var">"Results"</span>: <span class="keyword">[</span>
+      <span class="keyword">{</span>
          <span class="var">"ChannelName"</span>: <span class="str">"TechLinked"</span>,
          <span class="var">"ChannelId"</span>: <span class="str">"UCeeFfhMcJa1kjtfZAGskOCA"</span>,
          <span class="comment">// (Additional Details About This Video)</span>
       <span class="keyword">}</span>,
-
-      <span class="var">"491.149"</span>: <span class="keyword">{</span>
+      <span class="keyword">{</span>
          <span class="var">"ChannelName"</span>: <span class="str">"Logically Answered"</span>,
          <span class="var">"ChannelId"</span>: <span class="str">"UCZRoNJu1OszFqABP8AuJIuw"</span>,
          <span class="comment">// (Additional Details About This Video)</span>
       <span class="keyword">}</span>,
-
      <span class="comment">// (Remaining Videos)</span>
-   <span class="keyword">}</span>
+   <span class="keyword">]</span>
 <span class="keyword">}</span>
 </code></pre>
    </div>

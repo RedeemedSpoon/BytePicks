@@ -12,7 +12,7 @@
    <div class="popup-content">
       <h3 style="margin-top: 2rem">Subscribe to our Newsletter</h3>
       <img src="{{ url_for('static', filename='assets/subscribe.png') }}" alt="mail image" />
-      <form action="{% if request.path == '/edit' %}{{ url_for('edit', token=request.args.get('token'), user=request.args.get('user')) }}{% else %}{{ url_for('newsletter') }}{% endif %}" method="post">
+      <form action="{% if request.path == '/newsletter/edit' %}{{ url_for('modify_newsletter', instruction='edit', token=request.args.get('token'), user=request.args.get('user')) }}{% else %}{{ url_for('newsletter') }}{% endif %}" method="post">
          <div>
             <label>Email Address :</label>
             <input name="email" type="email" required value="{{ email }}"/>

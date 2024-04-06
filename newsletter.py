@@ -79,8 +79,8 @@ for user in session.query(User).all():
           <center>
             <p>Hello there!</p>
             <p>Welcome to Byte Picks, your go-to source for the latest and greatest tech videos scattered across YouTube.</p>
-            <p>To change your preferences, please click <a href="https://bytepicks.com/edit?user={user.email}&token={user.token}">Here</a> and choose your preferred time and language, it's that simple!</p>
-            <p>If you wish to unsubscribe, click <a href="https://bytepicks.com/drop?user={user.email}&token={user.token}">Here</a>. (Proceed with caution!)</p>
+            <p>To change your preferences, please click <a href="https://bytepicks.com/newsletter/edit?user={user.email}&token={user.token}">Here</a> and choose your preferred time and language, it's that simple!</p>
+            <p>If you wish to unsubscribe, click <a href="https://bytepicks.com/newsletter/delete?user={user.email}&token={user.token}">Here</a>. (Proceed with caution!)</p>
             <p>Without further ado, here's your {user.time} tech video in {user.language}. Enjoy!</p>
             <br>{videos}<br>
             <p>Thanks for choosing Byte Picks!</p>

@@ -49,7 +49,7 @@ $(document).ready(function () {
          $(".programming-language").removeClass("selected") && $(this).addClass("selected");
          $(".api-call-example").css("display", "none") && $(".api-call-example").filter("." + $(this).attr("id")).css("display", "block");
     });
-   } else if (["/newsletter", "/drop", "/edit", "/submit", "/contact"].includes(window.location.pathname)) {
+   } else if (window.location.pathname.includes("newsletter") || window.location.pathname.includes("contact")) {
       $(".subscribe").click(() => $("body").css("overflow", "hidden") && $(".popup").show() && $(".alt-popup").hide());
       $("#cancel").click(() => $("body").css("overflow", "auto") && $(".popup").hide());
       $(".popup").click((e) => {if (!$(e.target).closest("#sub .popup-content").length) $("body").css("overflow", "auto") && $(".popup").hide()});

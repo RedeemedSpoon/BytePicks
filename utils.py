@@ -33,12 +33,14 @@ class PendingUser(Base):
     time = Column(String)
     language = Column(String)
 
-def get_videos(time: str, language: str) -> dict:
+def get_videos(time: str, language: str, top: str = None) -> dict:
     with open(f"{time}.json", "r") as file:
         raw_videos = json.load(file)
         all_videos = raw_videos[language].items()
-
-    return OrderedDict(list(all_videos)[:AMOUNT[time]])
+        if top:
+            return OrderedDict(list(all_videos)[:top])
+        else:
+            return OrderedDict(list(all_videos)[:AMOUNT[time]])
 
 def format_view_count(number: int) -> str:
     if number / 1_000_000_000 > 1:
@@ -84,8 +86,7 @@ def get_message(email: str, time: str, language: str, token: str) -> str:
 	  <style>
 		 body {{
 		   font-family: 'Verdana', sans-serif;
-		   margin: 20px;
-		   padding: 20px;
+           margin: 40px;
 		 }}
 		 p {{
 		   font-size: 18px;
@@ -105,16 +106,14 @@ def get_message(email: str, time: str, language: str, token: str) -> str:
 		   color: #f9f9f9;
 		   border-radius: 5px;
 		   transition: 0.5s ease;
-		   font-size: 20px;
-		   padding: 8px 13px;
+		   font-size: 25px;
+		   padding: 13px 18px;
 		   margin: 10px 100px;
 		   border: none;
 		 }}
 		 button:hover {{
-		   cursor: pointer;
-		   background-color: #157a94;
 		   color: #f0f0f0;
-		   scale: 1.075;
+		   background-color: #157a94;
 		   transition: 0.5s ease;
 		 }}
 	  </style>
@@ -125,8 +124,8 @@ def get_message(email: str, time: str, language: str, token: str) -> str:
 		 <p>We spotted you peeking into the exciting world of Byte Picks, and guess what? We're thrilled to have you join!</p>
 		 <p>One final step before you embark on your Byte Picks journey: confirm your email address by clicking the button below. It's very simple.</p>
 		 <p>if you haven't signed up. This email might have found its way to you by mistake. Just disregard it and continue your day with the wind in your sails (or Wi-Fi signal, whichever you prefer).</p>
-		 <a href='https://bytepicks.com/submit?user={email}&token={token}'><button>Confirm My Email!</button></a>
-		 <br><p>We can't wait to have you on board!</p>
+		 <a href='https://bytepicks.com/newsletter/submit?user={email}&token={token}'><button>Confirm My Email!</button></a>
+         <br><p style='margin-bottom: 10px'>We can't wait to have you on board!</p>
 	  </center>
 	</body>
 	</html>

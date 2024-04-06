@@ -36,7 +36,7 @@ def dashboard():
 def api_docs():
     return render_template("api-docs.html", year=copyright_year)
 
-@app.route("/api-request")
+@app.route("/api/request")
 def api_request():
     time = request.args.get("time", default="daily")
     language = request.args.get("lang", default="EN")
@@ -45,29 +45,27 @@ def api_request():
         response = {
             "Request": f"The top {top} {time} videos in {language}",
             "Date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
-            "Result": get_videos(time, language),
+            "Results": list(get_videos(time, language, top).values()),
         }
     else:
-        response = {"Result": "You send an invalid request."}
+        response = {"Error": "You send an invalid request."}
 
     return jsonify(response)
 
 @app.route("/newsletter", methods=["GET", "POST"])
 def newsletter():
-    message = None
+    message = None; email = ""
     if request.method == "POST":
         email = request.form["email"]
-        user = session.query(User).filter_by(email=email).first()
-        if user:
+        if session.query(User).filter_by(email=email).first():
             message = "This Email is Already Registered."
         else:
-            user = session.query(PendingUser).filter_by(email=email).first()
-            if user:
+            if session.query(PendingUser).filter_by(email=email).first():
                 message = "This Email is on the Pending List."
             else:
                 try:
-                    time = request.form["time"]
                     language = request.form["language"]
+                    time = request.form["time"]
                     token = "".join(secrets.choice(string.ascii_letters + string.digits) for _ in range(20))
                     message = get_message(email, time, language, token)
                     send_email(message, "Byte Picks : Please Confirm Your Email", email, "newsletter@bytepicks.com")
@@ -78,59 +76,46 @@ def newsletter():
                     session.add(PendingUser(email=email, time=time, language=language, token=token))
                     session.commit()
 
-    return render_template("newsletter.html", year=copyright_year, message=message, email="")
+    return render_template("newsletter.html", year=copyright_year, message=message, email=email)
 
-@app.route("/submit", methods=["GET", "POST"])
-def submit():
-    token = request.args.get("token", default=None)
+@app.route("/newsletter/<instruction>", methods=['GET', 'POST'])
+def modify_newsletter(instruction):
     email = request.args.get("user", default="")
-    message = None
+    token = request.args.get("token", default=None)
+    message = None; valid = False
+
+    if instruction not in ["submit", "edit", "delete"]:
+        return render_template("error.html", year=copyright_year), 404
+
     if token is None or email == "":
         message = "Missing Token or Email."
     else:
-        user = session.query(User).filter_by(token=token, email=email).first()
+        user = session.query(User).filter_by(email=email, token=token).first()
+        pending_user = session.query(PendingUser).filter_by(email=email).first()
+        valid = True
+
+    if instruction == "submit" and valid:
         if user:
             message = "Email Already Registered!"
         else:
-            user = session.query(PendingUser).filter_by(email=email).first()
-            if user:
-                session.add(User(email=user.email, time=user.time, language=user.language, token=user.token))
-                session.delete(user)
+            if pending_user:
+                session.add(User(email=pending_user.email, time=pending_user.time, language=pending_user.language, token=pending_user.token))
+                session.delete(pending_user)
                 session.commit()
                 message = "Thank You for Subscribing!"
             else:
                 message = "This Email Does not Exist."
 
-    return render_template("newsletter.html", year=copyright_year, message=message, email="")
-
-@app.route("/edit", methods=["GET", "POST"])
-def edit():
-    token = request.args.get("token", default=None)
-    email = request.args.get("user", default="")
-    message = None
-    if request.method == "POST":
-        if token is None or email == "":
-            message = "Missing Token or Email."
+    elif instruction == "edit" and request.method == "POST" and valid:
+        if user:
+            user.time = request.form["time"]
+            user.language = request.form["language"]
+            session.commit()
+            message = "Preference Updated!"
         else:
-            user = session.query(User).filter_by(token=token, email=email).first()
-            if user:
-               user.time = request.form["time"]
-               user.language = request.form["language"]
-               message = "Preference Updated!"
-            else:
-               message = "Incorrect Token or Email."
+            message = "Incorrect Token or Email."
 
-    return render_template("newsletter.html", year=copyright_year, message=message, email=email)
-
-@app.route("/drop", methods=["GET", "POST"])
-def drop():
-    token = request.args.get("token", default=None)
-    email = request.args.get("user", default="")
-    message = None
-    if token is None or email == "":
-        message = "Missing Token or Email."
-    else:
-        user = session.query(User).filter_by(token=token, email=email).first()
+    elif instruction == "delete" and valid:
         if user:
             session.delete(user)
             session.commit()
@@ -138,7 +123,7 @@ def drop():
         else:
             message = "Incorrect Token or Email."
 
-    return render_template("newsletter.html", year=copyright_year, message=message, email="")
+    return render_template("newsletter.html", year=copyright_year, message=message, email=email)
 
 @app.route("/download")
 def download():
