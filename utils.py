@@ -2,12 +2,10 @@ from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from googleapiclient.errors import HttpError
 from googleapiclient.discovery import build
-from datetime import datetime, timezone
 from sqlalchemy.orm import sessionmaker
 from collections import OrderedDict
-import json, base64, os, requests
+import json, base64
 
 AMOUNT = {"daily": 50, "weekly": 75, "monthly": 100, "yearly": 150}
 SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
@@ -17,6 +15,7 @@ Session = sessionmaker(bind=engine)
 Base = declarative_base()
 session = Session()
 
+
 class User(Base):
     __tablename__ = "User"
     id = Column(Integer, primary_key=True)
@@ -24,6 +23,7 @@ class User(Base):
     token = Column(String, nullable=False)
     time = Column(String)
     language = Column(String)
+
 
 class PendingUser(Base):
     __tablename__ = "PendingUser"
@@ -33,14 +33,16 @@ class PendingUser(Base):
     time = Column(String)
     language = Column(String)
 
-def get_videos(time: str, language: str, top: str = None) -> dict:
+
+def get_videos(time: str, language: str, top: int = 0) -> dict:
     with open(f"{time}.json", "r") as file:
         raw_videos = json.load(file)
         all_videos = raw_videos[language].items()
         if top:
             return OrderedDict(list(all_videos)[:top])
         else:
-            return OrderedDict(list(all_videos)[:AMOUNT[time]])
+            return OrderedDict(list(all_videos)[: AMOUNT[time]])
+
 
 def format_view_count(number: int) -> str:
     if number / 1_000_000_000 > 1:
@@ -52,6 +54,7 @@ def format_view_count(number: int) -> str:
     else:
         return str(number)
 
+
 def format_duration(duration: str) -> str:
     hours, minutes, seconds = map(int, duration.split(":"))
     if hours == 0 and minutes < 10:
@@ -60,6 +63,7 @@ def format_duration(duration: str) -> str:
         return f"{minutes:02d}:{seconds:02d}"
     else:
         return duration
+
 
 def send_email(body: str, subject: str, receiver: str, sender: str):
     creds = Credentials.from_authorized_user_file("token.json", scopes=SCOPES)
@@ -71,15 +75,17 @@ def send_email(body: str, subject: str, receiver: str, sender: str):
     service.users().messages().send(userId="me", body={"raw": encoded_message}).execute()
     service.close()
 
-def update_token(creds_data: json):
+
+def update_token(creds_data: dict):
     creds = Credentials.from_authorized_user_info(creds_data)
     if creds.expired and creds.refresh_token:
         creds.refresh(Request())
-        with open('token.json', 'w') as token:
+        with open("token.json", "w") as token:
             token.write(creds.to_json())
 
-def get_message(email: str, time: str, language: str, token: str) -> str:
-   return f"""
+
+def get_message(email: str, token: str) -> str:
+    return f"""
 	<!DOCTYPE html>
 	<html lang="en-US">
 	<head>

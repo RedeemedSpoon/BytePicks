@@ -2,52 +2,65 @@
 <title>BytePicks - Newsletter</title>
 {% endblock %} {% block content %} {% if message %}
 <div class="popup alt-popup" style="display: block">
-   <div class="popup-content">
-      <h3 style="margin: 2rem; text-align: center">{{ message }}</h3>
-      <button class="primary-btn" id="close-btn" style="margin-bottom: 2rem; scale: 1.25">Close</button>
-   </div>
+  <div class="popup-content">
+    <h3 style="margin: 2rem; text-align: center">{{ message }}</h3>
+    <button class="primary-btn" id="close-btn" style="margin-bottom: 2rem; scale: 1.25">Close</button>
+  </div>
 </div>
 {% endif %}
 <div id="sub" class="popup">
-   <div class="popup-content">
-      <h3 style="margin-top: 2rem">Subscribe to our Newsletter</h3>
-      <img src="{{ url_for('static', filename='assets/subscribe.png') }}" alt="mail image" />
-      <form action="{% if request.path == '/newsletter/edit' %}{{ url_for('modify_newsletter', instruction='edit', token=request.args.get('token'), user=request.args.get('user')) }}{% else %}{{ url_for('newsletter') }}{% endif %}" method="post">
-         <div>
-            <label>Email Address :</label>
-            <input name="email" type="email" required value="{{ email }}"/>
-         </div>
-         <div>
-            <label>Choose The Time :</label>
-            <select id="time" name="time">
-               {% for optionValue, optionLabel in [('daily', 'Day'), ('weekly', 'Week'), ('monthly', 'Month'), ('yearly', 'Year')] %}
-               <option value="{{ optionValue }}">{{ optionLabel }}</option>
-               {% endfor %}
-            </select>
-         </div>
-         <div>
-            <label>Choose The Language :</label>
-            <select id="language" name="language">
-               {% for optionValue, optionLabel in [('EN', '🇬🇧 English'), ('FR', '🇫🇷 French'), ('ES', '🇪🇸 Spanish'), ('RU', '🇷🇺 Russian'), ('HI', '🇮🇳 Hindi')] %}
-               <option value="{{ optionValue }}">{{ optionLabel }}</option>
-               {% endfor %}
-            </select>
-         </div>
-         <div class="news-btn">
-            <button type="submit" class="primary-btn" style="margin-right: 2rem">Subscribe</button>
-            <button type="button" id="cancel">Cancel</button>
-         </div>
-      </form>
-   </div>
+  <div class="popup-content">
+    <h3 style="margin-top: 2rem">Subscribe to our Newsletter</h3>
+    <img src="{{ url_for('static', filename='assets/subscribe.png') }}" alt="mail image" />
+    <form
+      action="{% if request.path == '/newsletter/edit' %}{{ url_for('modify_newsletter', instruction='edit', token=request.args.get('token'), user=request.args.get('user')) }}{% else %}{{ url_for('newsletter') }}{% endif %}"
+      method="post">
+      <div>
+        <label>Email Address :</label>
+        <input name="email" type="email" required value="{{ email }}" />
+      </div>
+      <div>
+        <label>Choose The Time :</label>
+        <select id="time" name="time">
+          {% for optionValue, optionLabel in [('daily', 'Day'), ('weekly', 'Week'), ('monthly', 'Month'), ('yearly',
+          'Year')] %}
+          <option value="{{ optionValue }}">{{ optionLabel }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label>Choose The Language :</label>
+        <select id="language" name="language">
+          {% for optionValue, optionLabel in [('EN', 'English'), ('FR', 'French'), ('ES', 'Spanish'), ('RU', 'Russian'),
+          ('HI', 'Hindi')] %}
+          <option value="{{ optionValue }}">{{ optionLabel }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="news-btn">
+        <button type="submit" class="primary-btn" style="margin-right: 2rem">Subscribe</button>
+        <button type="button" id="cancel">Cancel</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <img class="decoration left" src="{{ url_for('static', filename='assets/deco1.svg') }}" alt="email" />
 <img class="decoration right" src="{{ url_for('static', filename='assets/deco2.svg') }}" alt="open email" />
 <main class="communication">
-   <h2>Get the Best Tech Updates Delivered Straight to Your Inbox</h2>
-   <h6>Stay ahead of the curve with BytePicks' curated tech content sent directly to your email. Receive the latest trends and must-watch YouTube videos related to technology, for free.</h6>
-   <button class="subscribe">Join Our Newsletter</button>
-   <h5>Alternatively, you can opt for <a href="{{ url_for('api_docs') }}">Api requests</a> or just visit our <a href="{{ url_for('dashboard') }}">dashboard.</a></h5>
-   <h6>Experience convenience with BytePicks Newsletter. Get timely updates without having to search for the best content. It's all delivered right to your inbox!</h6>
+  <h2>Get the Best Tech Updates Delivered Straight to Your Inbox</h2>
+  <h6>
+    Stay ahead of the curve with BytePicks' curated tech content sent directly to your email. Receive the latest trends
+    and must-watch YouTube videos related to technology, for free.
+  </h6>
+  <button class="subscribe">Join Our Newsletter</button>
+  <h5>
+    Alternatively, you can opt for <a href="{{ url_for('api_docs') }}">Api requests</a> or just visit our
+    <a href="{{ url_for('dashboard') }}">dashboard.</a>
+  </h5>
+  <h6>
+    Experience convenience with BytePicks Newsletter. Get timely updates without having to search for the best content.
+    It's all delivered right to your inbox!
+  </h6>
 </main>
 {% endblock %}

@@ -2,38 +2,38 @@
 <title>BytePicks - DashBoard</title>
 {% endblock %} {% block content %}
 <main id="video-list">
-   <div id="selecters">
-      <div>
-         <label>Sort Time :</label>
-         <select id="time">
-            {% for optionValue, optionLabel in [('daily', 'Day'), ('weekly', 'Week'), ('monthly', 'Month'), ('yearly', 'Year')] %}
-            <option value="{{ optionValue }}" {% if time == optionValue %}selected{% endif %}>{{ optionLabel }}</option>
-            {% endfor %}
-         </select>
-      </div>
-      <div>
-         <label>Language :</label>
-         <select id="language">
-            {% for optionValue, optionLabel in [('EN', '🇬🇧 English'), ('FR', '🇫🇷 French'), ('ES', '🇪🇸 Spanish'), ('RU', '🇷🇺 Russian'), ('HI', '🇮🇳 Hindi')] %}
-            <option value="{{ optionValue }}" {% if language == optionValue %}selected{% endif %}>{{ optionLabel }}</option>
-            {% endfor %}
-         </select>
-      </div>
-   </div>
+  <div id="selecters">
+    <div>
+      <label>Sort Time :</label>
+      <select id="time">
+        {% for optionValue, optionLabel in [('daily', 'Day'), ('weekly', 'Week'), ('monthly', 'Month'), ('yearly','Year')] %}
+          <option value="{{ optionValue }}" {% if time == optionValue %}selected{% endif %}>{{ optionLabel }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label>Language :</label>
+      <select id="language">
+        {% for optionValue, optionLabel in [('EN', 'English'), ('FR', 'French'), ('ES', 'Spanish'), ('RU', 'Russian'), ('HI', 'Hindi')] %}
+          <option value="{{ optionValue }}" {% if language == optionValue %}selected{% endif %}>{{ optionLabel }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
 
-   <div id="all-videos">
-      {% for id, video in videos.items() %}
-      <a href="{{ video.VideoUrl }}" class="video">
-         <img class="youtube-thumbnail" alt="YT Thumbnail" src="{{ video.Thumbnail }}" />
-         <img class="youtube-channel" alt="YT Channel" src="{{ video.ChannelIcon }}" />
-         <p class="video-duration">{{ format_duration(video.Duration) }}</p>
-         <div class="youtube-info">
-            <p style="font-size: 1.15rem">{{ video.VideoTitle }}</p>
-            <p style="font-weight: bold">{{ video.ChannelName }}</p>
-            <p style="font-size: 1rem">{{ format_view_count(video.ViewCount) }} Views</p>
-         </div>
-      </a>
-      {% endfor %}
-   </div>
+  <div id="all-videos">
+    {% for id, video in videos.items() %}
+    <a href="{{ video.VideoUrl }}" class="video">
+      <img class="youtube-thumbnail" alt="YT Thumbnail" src="{{ video.Thumbnail }}" />
+      <img class="youtube-channel" alt="YT Channel" src="{{ video.ChannelIcon }}" />
+      <p class="video-duration">{{ format_duration(video.Duration) }}</p>
+      <div class="youtube-info">
+        <p style="font-size: 1.15rem">{{ video.VideoTitle }}</p>
+        <p style="font-weight: bold">{{ video.ChannelName }}</p>
+        <p style="font-size: 1rem">{{ format_view_count(video.ViewCount) }} Views</p>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
 </main>
 {% endblock %}

@@ -2,106 +2,117 @@
 <title>BytePicks - Api Docs</title>
 {% endblock %} {% block content %}
 <div id="partition">
-   <h3>Sections :</h3>
-   <a href="#overview">Overview</a>
-   <a href="#details">Details</a>
-   <a href="#key">API Key</a>
-   <a href="#route">EndPoints & Parameters</a>
-   <a href="#example">Code Example</a>
-   <a href="#output">Output Example</a>
-   <a href="#notice">Notice</a>
+  <h3>Sections :</h3>
+  <a href="#overview">Overview</a>
+  <a href="#details">Details</a>
+  <a href="#key">API Key</a>
+  <a href="#route">EndPoints & Parameters</a>
+  <a href="#example">Code Example</a>
+  <a href="#output">Output Example</a>
+  <a href="#notice">Notice</a>
 </div>
 
 <main id="api">
-   <h2>BytePicks API Documentation</h2>
+  <h2>BytePicks API Documentation</h2>
 
-   <h5 id="overview">What Do The Api Provide ?</h5>
-   <p>
-      We offers a comprehensive set of functionalities to enhance your tech video discovery experience. By leveraging our API, you can access precisely curated content based on your preferences and needs just like our dashboard. The response includes many detailed information for each video that might be very helpful in your program, webservice, project. We try to make it as open and easy as possible for you, for free.
-   </p>
+  <h5 id="overview">What Do The Api Provide ?</h5>
+  <p>
+    We offers a comprehensive set of functionalities to enhance your tech video discovery experience. By leveraging our
+    API, you can access precisely curated content based on your preferences and needs just like our dashboard. The
+    response includes many detailed information for each video that might be very helpful in your program, webservice,
+    project. We try to make it as open and easy as possible for you, for free.
+  </p>
 
-   <h5 id="details">What to Expect?</h5>
-   <p>The response includes the following information for each video:</p>
-   <ul>
-      <li>Channel Name <span style="color: #129247">(str)</span></li>
-      <li>Channel ID <span style="color: #129247">(str)</span></li>
-      <li>Channel Icon <span style="color: #129247">(str)</span></li>
-      <li>Channel URL <span style="color: #129247">(str)</span></li>
-      <li>Video URL <span style="color: #129247">(str)</span></li>
-      <li>Video Title <span style="color: #129247">(str)</span></li>
-      <li>Video ID <span style="color: #129247">(str)</span></li>
-      <li>Video Publish Date <span style="color: #129247">(str)</span></li>
-      <li>Video Thumbnail <span style="color: #129247">(str)</span></li>
-      <li>Video Duration <span style="color: #129247">(str)</span></li>
-      <li>Video Definition <span style="color: #129247">(str)</span></li>
-      <li>Video Language <span style="color: #129247">(str)</span></li>
-      <li>Video Caption <span style="color: #1865a0">(bool)</span></li>
-      <li>Video Content Rating <span style="color: #1865a0">(bool)</span></li>
-      <li>Video View Count <span style="color: #bd9c17">(int)</span></li>
-      <li>Video Like Count <span style="color: #bd9c17">(int)</span></li>
-      <li>Video Comment Count <span style="color: #bd9c17">(int)</span></li>
-      <li>Video Category ID <span style="color: #bd9c17">(int)</span></li>
-   </ul>
-   <p>The Videos will be sorted automatically by relevance & quality using our <a href="{{ url_for('behind_the_scene')}}">Algorithms</a> and displayed in descending order.</p>
+  <h5 id="details">What to Expect?</h5>
+  <p>The response includes the following information for each video:</p>
+  <ul>
+    <li>Channel Name <span style="color: #129247">(str)</span></li>
+    <li>Channel ID <span style="color: #129247">(str)</span></li>
+    <li>Channel Icon <span style="color: #129247">(str)</span></li>
+    <li>Channel URL <span style="color: #129247">(str)</span></li>
+    <li>Video URL <span style="color: #129247">(str)</span></li>
+    <li>Video Title <span style="color: #129247">(str)</span></li>
+    <li>Video ID <span style="color: #129247">(str)</span></li>
+    <li>Video Publish Date <span style="color: #129247">(str)</span></li>
+    <li>Video Thumbnail <span style="color: #129247">(str)</span></li>
+    <li>Video Duration <span style="color: #129247">(str)</span></li>
+    <li>Video Definition <span style="color: #129247">(str)</span></li>
+    <li>Video Language <span style="color: #129247">(str)</span></li>
+    <li>Video Caption <span style="color: #1865a0">(bool)</span></li>
+    <li>Video Content Rating <span style="color: #1865a0">(bool)</span></li>
+    <li>Video View Count <span style="color: #bd9c17">(int)</span></li>
+    <li>Video Like Count <span style="color: #bd9c17">(int)</span></li>
+    <li>Video Comment Count <span style="color: #bd9c17">(int)</span></li>
+    <li>Video Category ID <span style="color: #bd9c17">(int)</span></li>
+  </ul>
+  <p>
+    The Videos will be sorted automatically by relevance & quality using our
+    <a href="{{ url_for('behind_the_scene')}}">Algorithms</a> and displayed in descending order.
+  </p>
 
-   <h5 id="key">What About the API Key ?</h5>
-   <p>
-      No API key is required to access the BytePicks API. We believe in providing an open and free service without the need for user accounts or monetary transactions. This makes it easier for developers to integrate and explore our API without any barriers or paywalls.
-   </p>
+  <h5 id="key">What About the API Key ?</h5>
+  <p>
+    No API key is required to access the BytePicks API. We believe in providing an open and free service without the
+    need for user accounts or monetary transactions. This makes it easier for developers to integrate and explore our
+    API without any barriers or paywalls.
+  </p>
 
-   <h5 id="route">What Are the EndPoints & Parameters ?</h5>
-   <h6>EndPoints :</h6>
-   <div class="code" style="padding: 15px">
-      <code>https://bytepicks.com/api/request</code>
-   </div>
-   <h6 style="margin-bottom: -25px">Parameters :</h6>
-   <ul>
-      <li>
-         <h6>time :</h6>
-         <p>Specifies the time range for video selection between the following values :</p>
-         <ul>
-            <li>daily</li>
-            <li>weekly</li>
-            <li>monthly</li>
-            <li>yearly</li>
-         </ul>
-         <p>-> If the value is not provided, it will default to 'daily'</p>
-      </li>
-      <li>
-         <h6>lang :</h6>
-         <p>Specifies the language for video selection between the following ISO 639-1 standard values :</p>
-         <ul>
-            <li>EN (🇬🇧 English)</li>
-            <li>FR (🇫🇷 French)</li>
-            <li>ES (🇪🇸 Spanish)</li>
-            <li>RU (🇷🇺 Russian)</li>
-            <li>HI (🇮🇳 Hindi)</li>
-         </ul>
-         <p>-> If the value is not provided, it will default to 'EN'</p>
-      </li>
-      <li>
-         <h6>top :</h6>
-         <p>Specifies the number of videos to retrieve starting from the top. The value should be an int greater than 0</p>
-         <p>-> If the value is not provided, it will default to 25</p>
-         <p><strong>Note :</strong> If the value is bigger then the number of videos it will just retrieve all of them</p>
-         <p style="margin-left: 2.5rem"><strong>Ex :</strong> If top is 45 but there are only 21 videos it will retrieve all the 21 in said language in that time</p>
-      </li>
-   </ul>
-   <h6 style="margin-bottom: -15px">Very Importent:</h6>
-   <p>
-      All parameters are case sensitive and they should be written like in the example above. <br />
-      If any error is detected it will return an error message.
-   </p>
+  <h5 id="route">What Are the EndPoints & Parameters ?</h5>
+  <h6>EndPoints :</h6>
+  <div class="code" style="padding: 15px">
+    <code>https://bytepicks.com/api/request</code>
+  </div>
+  <h6 style="margin-bottom: -25px">Parameters :</h6>
+  <ul>
+    <li>
+      <h6>time :</h6>
+      <p>Specifies the time range for video selection between the following values :</p>
+      <ul>
+        <li>daily</li>
+        <li>weekly</li>
+        <li>monthly</li>
+        <li>yearly</li>
+      </ul>
+      <p>-> If the value is not provided, it will default to 'daily'</p>
+    </li>
+    <li>
+      <h6>lang :</h6>
+      <p>Specifies the language for video selection between the following ISO 639-1 standard values :</p>
+      <ul id="languages">
+        <li>EN (English)</li>
+        <li>FR (French)</li>
+        <li>ES (Spanish)</li>
+        <li>RU (Russian)</li>
+        <li>HI (Hindi)</li>
+      </ul>
+      <p>-> If the value is not provided, it will default to 'EN'</p>
+    </li>
+    <li>
+      <h6>top :</h6>
+      <p>Specifies the number of videos to retrieve starting from the top. The value should be an int greater than 0</p>
+      <p>-> If the value is not provided, it will default to 25</p>
+      <p><strong>Note :</strong> If the value is bigger then the number of videos it will just retrieve all of them</p>
+      <p style="margin-left: 2.5rem">
+        <strong>Ex :</strong> If top is 45 but there are only 21 videos it will retrieve all the 21 in said language in
+        that time
+      </p>
+    </li>
+  </ul>
+  <h6 style="margin-bottom: -15px">Very Important:</h6>
+  <p>
+    All parameters are case sensitive and they should be written like in the example above. <br />
+    If any error is detected it will return an error message.
+  </p>
 
-   <h5 id="example">Code Example</h5>
-   <div id="buttons">
-      <button class="programming-language selected" id="python">Python</button>
-      <button class="programming-language" id="javascript">JavaScript</button>
-      <button class="programming-language" id="ruby">Ruby</button>
-      <button class="programming-language" id="c-sharp">C#</button>
-   </div>
-   <div class="python api-call-example" style="display: block">
-      <pre class="code"><code>
+  <h5 id="example">Code Example</h5>
+  <div id="buttons">
+    <button class="programming-language selected" id="python">Python</button>
+    <button class="programming-language" id="javascript">JavaScript</button>
+    <button class="programming-language" id="ruby">Ruby</button>
+    <button class="programming-language" id="c-sharp">C#</button>
+  </div>
+  <div class="python api-call-example" style="display: block">
+    <pre class="code"><code>
 <span class="keyword">import</span> <span class="import">requests</span>
 
 <span class="var">url</span><span class="operator"> = </span>"<span class="str">https://bytepicks.com/api/request</span>"
@@ -121,10 +132,10 @@
    <span class="function">print</span>(<span class="keyword">f</span><span class="str">"Error: </span>{<span class="var">response</span>.<span class="var">status_code</span>}<span class="str">"</span>)
 
 </code></pre>
-   </div>
+  </div>
 
-   <div class="javascript api-call-example">
-      <pre class="code"><code>
+  <div class="javascript api-call-example">
+    <pre class="code"><code>
 <span class="keyword">const</span> <span class="var">axios</span> <span class="operator">=</span> <span class="function">require</span>('<span class="str">axios</span>');
 
 <span class="keyword">const</span> <span class="const">url</span> <span class="operator">=</span> <span class="str">'https://bytepicks.com/api/request'</span>;
@@ -144,10 +155,10 @@
    });
 
 </code></pre>
-   </div>
+  </div>
 
-   <div class="ruby api-call-example">
-      <pre class="code"><code>
+  <div class="ruby api-call-example">
+    <pre class="code"><code>
 <span class="keyword">require</span> <span class="str">'net/http'</span>
 <span class="keyword">require</span> <span class="str">'json'</span>
 
@@ -170,10 +181,10 @@
 <span class="keyword">end</span>
 
 </code></pre>
-   </div>
+  </div>
 
-   <div class="c-sharp api-call-example">
-      <pre class="code"><code>
+  <div class="c-sharp api-call-example">
+    <pre class="code"><code>
 <span class="keyword">using</span> <span class="import">System</span>;
 <span class="keyword">using</span> <span class="import">System</span>.<span class="import">Net</span>.<span class="import">Http</span>;
 <span class="keyword">using</span> <span class="import">System</span>.<span class="import">Threading</span>.<span class="import">Tasks</span>;
@@ -204,13 +215,13 @@
 }
 
 </code></pre>
-   </div>
-   <div class="small-screen-message">
-      <p>Your screen is too small to display the code.</p>
-   </div>
-   <h5 id="output">Output Example</h5>
-   <div>
-      <pre class="code"><code>
+  </div>
+  <div class="small-screen-message">
+    <p>Your screen is too small to display the code.</p>
+  </div>
+  <h5 id="output">Output Example</h5>
+  <div>
+    <pre class="code"><code>
 <span class="keyword">{</span>
    <span class="var">"Request"</span>: <span class="str">"The top 30 daily videos in EN"</span>,
    <span class="var">"Date"</span>: <span class="str">"21/01/2024 17:59:04"</span>,
@@ -229,15 +240,21 @@
    <span class="keyword">]</span>
 <span class="keyword">}</span>
 </code></pre>
-   </div>
-   <div class="small-screen-message">
-      <p>Your screen is too small to display the code.</p>
-   </div>
-   <h5 id="notice">Notice</h5>
-   <p>
-      BytePicks is a small project with limited resources. As such, we kindly ask you not to abuse our API or send an excessive number of requests in a short time. We aim to keep our API open and accessible, and we appreciate your cooperation in helping us maintain its availability.
-   </p>
+  </div>
+  <div class="small-screen-message">
+    <p>Your screen is too small to display the code.</p>
+  </div>
+  <h5 id="notice">Notice</h5>
+  <p>
+    BytePicks is a small project with limited resources. As such, we kindly ask you not to abuse our API or send an
+    excessive number of requests in a short time. We aim to keep our API open and accessible, and we appreciate your
+    cooperation in helping us maintain its availability.
+  </p>
 
-   <p>Feel free to explore the BytePicks API and discover the best in tech content. If you have any questions or need assistance, please refer to our <a href="{{ url_for('contact') }}">contact page</a>. Happy coding!</p>
+  <p>
+    Feel free to explore the BytePicks API and discover the best in tech content. If you have any questions or need
+    assistance, please refer to our
+    <a href="{{ url_for('contact') }}">contact page</a>. Happy coding!
+  </p>
 </main>
 {% endblock %}

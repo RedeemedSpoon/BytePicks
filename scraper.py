@@ -7,7 +7,9 @@ from time import sleep
 import os, json
 
 channels_ids = []
-addon_path = os.path.expanduser("~/.mozilla/firefox/qz5c3f97.default-release/extensions/uBlock0@raymondhill.net.xpi")
+addon_path = os.path.expanduser(
+    "~/.mozilla/firefox/qz5c3f97.default-release/extensions/uBlock0@raymondhill.net.xpi"
+)
 with open("topics.json", "r") as file:
     search_terms = json.load(file)["EN"]
 
@@ -21,7 +23,8 @@ for _ in range(50):
     try:
         chosen_topic = choice(search_terms)
         search_terms.remove(chosen_topic)
-        driver.get(f"https://www.youtube.com/results?search_query={chosen_topic}"); sleep(2)
+        driver.get(f"https://www.youtube.com/results?search_query={chosen_topic}")
+        sleep(2)
 
         recommended_channels = driver.find_elements(By.ID, "channel-thumbnail")
         channels = [channel.get_attribute("href").split("@")[1] for channel in recommended_channels]
@@ -30,7 +33,10 @@ for _ in range(50):
         choice(video_links[5:]).click()
 
         for __ in range(7):
-            sleep(3); recommended_channel = driver.find_element(By.CSS_SELECTOR, "a.ytd-video-owner-renderer").get_attribute("href")
+            sleep(3)
+            recommended_channel = driver.find_element(
+                By.CSS_SELECTOR, "a.ytd-video-owner-renderer"
+            ).get_attribute("href")
             recommended_video = driver.find_elements(By.TAG_NAME, "ytd-compact-video-renderer")
             choice(recommended_video[:5]).click()
             channels.append(recommended_channel.split("@")[1])
@@ -41,7 +47,8 @@ for _ in range(50):
 
         for channel in channels:
             form.clear()
-            form.send_keys(channel + Keys.RETURN); sleep(1)
+            form.send_keys(channel + Keys.RETURN)
+            sleep(1)
             channels_ids.append(result.text)
 
         with open("channels.csv", "a") as f:

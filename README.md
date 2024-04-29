@@ -20,7 +20,7 @@ Calling all developers! Boost your applications by easily integrating our API. E
 
 ### Newsletter
 
-Don't miss out on the latest tech insights. Subscribe to our newsletter [here](https://bytepicks.com/newsletter) to get awsome videos sent straight to your inbox regularly. Stay connected and stay informed about the tech trends that matter.
+Don't miss out on the latest tech insights. Subscribe to our newsletter [here](https://bytepicks.com/newsletter) to get awesome videos sent straight to your inbox regularly. Stay connected and stay informed about the tech trends that matter.
 
 ## Our Highs & Lows
 
@@ -32,7 +32,7 @@ Discover an issue and have the time and skill to fix it? Why not lend a hand in 
 
 ## License
 
-BytePicks is an open-source project, All content on the website is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Meanwhile the code is lienced under the [GNU GENERAL PUBLIC LICENSE](./LICENSE). That means you're moslty free to use, modify, and share the code – just give a little credit. We're all about openness and collaboration, creating a community that thrives on shared knowledge and innovation.
+BytePicks is an open-source project, All content on the website is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Meanwhile the code is lienced under the [GNU GENERAL PUBLIC LICENSE](./LICENSE). That means you're mostly free to use, modify, and share the code – just give a little credit. We're all about openness and collaboration, creating a community that thrives on shared knowledge and innovation.
 
 ## Contact
 

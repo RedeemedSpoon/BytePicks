@@ -1,23 +1,24 @@
+from datetime import datetime
 from utils import *
 
-with open('token.json', 'r') as token:
+with open("token.json", "r") as token:
     creds_data = json.load(token)
     date = datetime.now()
     update_token(creds_data)
 
 for user in session.query(User).all():
     if (
-        user.time == "daily" or
-        (user.time == "weekly" and date.weekday() == 0) or
-        (user.time == "monthly" and date.day == 1) or
-        (user.time == "yearly" and (date.day == 1 and date.month == 1))
+        user.time == "daily"
+        or (user.time == "weekly" and date.weekday() == 0)
+        or (user.time == "monthly" and date.day == 1)
+        or (user.time == "yearly" and (date.day == 1 and date.month == 1))
     ):
         video_list = []
         all_videos = get_videos(user.time, user.language)
         for rating, video in all_videos.items():
             video_title = video["VideoTitle"]
             video_link = video["VideoUrl"]
-            video_thumbnail = video['Thumbnail']
+            video_thumbnail = video["Thumbnail"]
             channel_name = video["ChannelName"]
             channel_link = video["ChannelUrl"]
             video_duration = format_duration(video["Duration"])
@@ -36,7 +37,7 @@ for user in session.query(User).all():
             """
 
             video_list.append(video_template)
-        videos = ''.join(video_list)
+        videos = "".join(video_list)
         body = f"""
         <html>
         <head>
@@ -54,7 +55,7 @@ for user in session.query(User).all():
               margin: 50px;
             }}
             .details {{
-              diplay: flex;
+              display: flex;
               flex-direction: column;
               max-width: 450px;
             }}
