@@ -27,12 +27,12 @@ for user in session.query(User).all():
             video_template = f"""
             <div class='video'>
               <img class='thumbnail' src='{video_thumbnail}'>
-              <div class='details'>
-                <p><b>Video :</b><a href='{video_link}'> {video_title}</a><p>
-                <p><b>Channel :</b><a href='{channel_link}'> {channel_name}</a><p>
-                <p><b>Duration :</b> {video_duration}</p>
-                <p><b>Views :</b> {view_count}</p>
-              </div>
+              <ul>
+                <li><b>Video :</b><a href='{video_link}'> {video_title}</a><li>
+                <li><b>Channel :</b><a href='{channel_link}'> {channel_name}</a><li>
+                <li><b>Duration :</b> {video_duration}</li>
+                <li><b>Views :</b> {view_count}</li>
+              </ul>
             </div>
             """
 
@@ -54,10 +54,10 @@ for user in session.query(User).all():
               font-size: 16px;
               margin: 50px;
             }}
-            .details {{
-              display: flex;
-              flex-direction: column;
-              max-width: 450px;
+            ul {{
+              list-style-type: none;
+              max-width: 400px;
+              text-align: left;
             }}
             .thumbnail {{
               height : 200px;

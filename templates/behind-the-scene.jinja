@@ -1,8 +1,6 @@
-{% extends "base.html" %} {% block title %}
+{% extends "base.jinja" %} {% block title %}
 <title>BytePicks - Behind the Scene</title>
 {% endblock %} {% block content %}
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <main id="behind-the-scene">
   <h1 style="margin-bottom: -20px">Behind The Scene</h1>
   <h4>How do we differ from the competition ?</h4>
@@ -232,7 +230,7 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
 <span class="var">"Definition"</span>: <span class="str">"HD"</span>,
 <span class="var">"Language"</span>: <span class="str">"EN"</span>,
 <span class="var">"Caption"</span>: <span class="bool">false</span>,
-<span class="var">"ContentRating"</span>: <span class="bool">false</span> ,
+<span class="var">"ContentRating"</span>: <span class="bool">false</span>,
 <span class="var">"ViewCount"</span>: <span class="int"> 4091018</span>,
 <span class="var">"LikeCount"</span>: <span class="int">156078</span>,
 <span class="var">"CommentCount"</span>: <span class="int">5052</span>,
@@ -255,10 +253,7 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
     whereas those with less than 100K receive a slight boost. With these adjustments, we now have a float variable
     between 1.3 and 0.7, representing the video's quality, which will be used in our algorithm. Here's the equation:
   </p>
-  <p class="math">
-    \( \text{QualityMultiplier} = \text{SubscriberBalance} \times \text{DefinitionQuality} \times \text{CaptionQuality}
-    \times \text{RatingQuality} \times \text{DurationQuality} \)
-  </p>
+  <p class="math">QualityMultiplier = SubscriberBalance × DefinitionQuality × CaptionQuality × RatingQuality × DurationQuality</p>
   <div class="small-screen-message">
     <p>Your screen is too small to display the formula.</p>
   </div>
@@ -270,18 +265,14 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
     combined, multiplied by the QualityMultiplier, and scaled by 100 for readability. The final rating formula looks
     like this:
   </p>
-  <p class="math">
-    \( \text{Rating} = (\text{ViewRate} + \text{LikeRate} + \text{CommentRate}) \times \text{QualityMultiplier} \times
-    100 \)
-  </p>
+  <p class="math">Rating = (ViewRate + LikeRate + CommentRate) × QualityMultiplier</p>
   <div class="small-screen-message">
     <p>Your screen is too small to display the formula.</p>
   </div>
   <p>
     With the rating now complete, the final step is to sort and store the videos. We accomplish this using Python and
     the JSON format, employing dictionary methods, slicing, along with the `open("file.json") as file` and `json.dump()`
-    methods. Now, it's just a matter of selecting the right number of videos for different timeframes: all gotten videos
-    for the day, 350 max videos each week, 1000 max videos each month, and 4500 max videos each year. Below is the code
+    methods. After, it's just a matter of selecting the right number of videos for different timeframes. Below is the code
     snippet illustrating this:
   </p>
   <pre class="code"><code>

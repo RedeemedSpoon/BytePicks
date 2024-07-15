@@ -1,10 +1,7 @@
 /__pycache__/
-channels.csv
-daily.json
-weekly.json
-monthly.json
-yearly.json
+/data/
 token.json
 credentials.json
 newsletter.db
-youtube.log
+channels.csv
+app.log

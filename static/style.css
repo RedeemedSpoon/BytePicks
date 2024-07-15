@@ -388,7 +388,7 @@ section.activated {
 #video-list {
   display: flex;
   flex-direction: column;
-  margin: 7.5rem 10rem;
+  padding: 7.5rem 10rem;
   gap: 3rem;
 }
 
@@ -480,7 +480,7 @@ select {
   position: fixed;
   display: flex;
   flex-direction: column;
-  margin: 2rem 15% 0 7.5%;
+  margin: 10rem 15% 0 7.5%;
   color: #303030;
   gap: 1rem;
 }
@@ -488,7 +488,7 @@ select {
 #api {
   display: flex;
   flex-direction: column;
-  margin: 7.5rem 15% 7.5rem 25%;
+  padding: 7.5rem 10rem 7.5rem 30rem;
   gap: 2rem;
 }
 
@@ -605,7 +605,7 @@ ul * {
   justify-content: center;
   text-align: center;
   flex-direction: column;
-  margin: 8.5rem 22.5rem;
+  padding: 8.5rem 22.5rem;
   scale: 0.95;
   gap: 4rem;
 }
@@ -723,7 +723,7 @@ input[name='email'] {
   justify-content: center;
   text-align: center;
   flex-direction: column;
-  margin: 6rem 20rem;
+  padding: 6rem 20rem;
   scale: 0.95;
   gap: 3rem;
 }
@@ -811,7 +811,7 @@ textarea {
   justify-content: center;
   text-align: center;
   flex-direction: column;
-  margin: 7.5rem 15rem;
+  padding: 7.5rem 15rem;
   gap: 5rem;
 }
 
@@ -829,13 +829,18 @@ textarea {
   border-radius: 15px;
 }
 
+.math {
+  font-weight: 1000;
+  font-size: 140%
+}
+
 /* ----- About Me & Privacy Policy Page ----- */
 
 .plain-text {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: 7.5rem 25rem;
+  padding: 7.5rem 25rem;
   gap: 25px;
 }
 
@@ -856,7 +861,7 @@ textarea {
   align-items: center;
   justify-content: center;
   text-align: center;
-  margin: 10rem 37.5rem 5rem 37.5rem;
+  padding: 10rem 37.5rem 5rem 37.5rem;
   row-gap: 2rem;
 }
 
@@ -980,7 +985,7 @@ textarea {
   }
 
   #api {
-    margin: 6.5rem 3rem;
+    padding: 6.5rem 3rem;
     gap: 1rem;
   }
 
@@ -1007,7 +1012,7 @@ textarea {
   }
 
   #video-list {
-    margin: 6.5rem 3rem;
+    padding: 6.5rem 3rem;
     gap: 0.5rem;
   }
 
@@ -1031,7 +1036,7 @@ textarea {
   }
 
   .communication {
-    margin: 6.5rem 3rem;
+    padding: 6.5rem 3rem;
     scale: 1;
     gap: 2.5rem;
   }
@@ -1085,12 +1090,12 @@ textarea {
   }
 
   .plain-text {
-    margin: 6.5rem 3rem;
+    padding: 6.5rem 3rem;
     gap: 20px;
   }
 
   #behind-the-scene {
-    margin: 6.5rem 3rem;
+    padding: 6.5rem 3rem;
     gap: 3rem;
   }
 
@@ -1109,7 +1114,7 @@ textarea {
   }
 
   .contact {
-    margin: 5rem 3rem;
+    padding: 5rem 3rem;
     gap: 2rem;
   }
 
@@ -1144,7 +1149,7 @@ textarea {
   }
 
   #error-page {
-    margin: 7.5rem 5rem 5rem 5rem;
+    padding: 7.5rem 5rem 5rem 5rem;
   }
 
   #error-page img {
@@ -1254,7 +1259,7 @@ textarea {
   }
 
   #api {
-    margin: 6.5rem 4rem;
+    padding: 6.5rem 4rem;
     gap: 1rem;
   }
 
@@ -1281,7 +1286,7 @@ textarea {
   }
 
   #video-list {
-    margin: 6.5rem 2rem;
+    padding: 6.5rem 2rem;
     gap: 0.5rem;
   }
 
@@ -1329,7 +1334,7 @@ textarea {
   }
 
   .communication {
-    margin: 6.5rem 4rem;
+    padding: 6.5rem 4rem;
     scale: 1;
     gap: 3rem;
   }
@@ -1383,12 +1388,12 @@ textarea {
   }
 
   .plain-text {
-    margin: 6.5rem 4rem;
+    padding: 6.5rem 4rem;
     gap: 20px;
   }
 
   #behind-the-scene {
-    margin: 6.5rem 4rem;
+    padding: 6.5rem 4rem;
     gap: 3rem;
   }
 
@@ -1405,7 +1410,7 @@ textarea {
   }
 
   .contact {
-    margin: 5rem 3rem;
+    padding: 5rem 3rem;
     gap: 2rem;
   }
 
@@ -1430,7 +1435,7 @@ textarea {
   }
 
   #error-page {
-    margin: 7.5rem 7.5rem 5rem 7.5rem;
+    padding: 7.5rem 7.5rem 5rem 7.5rem;
   }
 
   #error-page img {
@@ -1510,7 +1515,7 @@ textarea {
   }
 
   #api {
-    margin: 7.5rem 5rem;
+    padding: 7.5rem 5rem;
     gap: 1rem;
   }
 
@@ -1530,7 +1535,7 @@ textarea {
   }
 
   #video-list {
-    margin: 6.5rem 3rem;
+    padding: 6.5rem 3rem;
     gap: 0.5rem;
   }
 
@@ -1541,7 +1546,7 @@ textarea {
   }
 
   .communication {
-    margin: 7.5rem 5rem;
+    padding: 7.5rem 5rem;
     scale: 1;
   }
 
@@ -1589,17 +1594,17 @@ textarea {
   }
 
   .plain-text {
-    margin: 7.5rem;
+    padding: 7.5rem;
     gap: 20px;
   }
 
   #behind-the-scene {
-    margin: 7.5rem 5rem;
+    padding: 7.5rem 5rem;
     gap: 3rem;
   }
 
   .contact {
-    margin: 5rem;
+    padding: 5rem;
     gap: 2.5rem;
   }
 
@@ -1614,7 +1619,7 @@ textarea {
   }
 
   #error-page {
-    margin: 7.5rem 15rem 5rem 15rem;
+    padding: 7.5rem 15rem 5rem 15rem;
   }
 
   #error-page img {
@@ -1683,7 +1688,7 @@ textarea {
   }
 
   #api {
-    margin: 7.5rem 10rem;
+    padding: 7.5rem 10rem;
   }
 
   #buttons {
@@ -1699,7 +1704,7 @@ textarea {
   }
 
   #video-list {
-    margin: 6.5rem 3rem;
+    padding: 6.5rem 3rem;
     gap: 0.5rem;
   }
 
@@ -1710,7 +1715,7 @@ textarea {
   }
 
   .communication {
-    margin: 7.5rem 7.5rem;
+    padding: 7.5rem 7.5rem;
     scale: 1;
   }
 
@@ -1746,15 +1751,15 @@ textarea {
   }
 
   .plain-text {
-    margin: 10rem 15rem;
+    padding: 10rem 15rem;
   }
 
   #behind-the-scene {
-    margin: 7.5rem;
+    padding: 7.5rem;
   }
 
   .contact {
-    margin: 6.5rem 10rem;
+    padding: 6.5rem 10rem;
   }
 
   .form-group {
@@ -1763,7 +1768,7 @@ textarea {
   }
 
   #error-page {
-    margin: 7.5rem 20rem 5rem 20rem;
+    padding: 7.5rem 20rem 5rem 20rem;
   }
 }
 
@@ -1780,7 +1785,7 @@ textarea {
   }
 
   .communication {
-    margin: 7.5rem 15rem;
+    padding: 7.5rem 15rem;
   }
 
   .decoration {
@@ -1788,6 +1793,6 @@ textarea {
   }
 
   #error-page {
-    margin: 10rem 30rem 5rem 30rem;
+    padding: 10rem 30rem 5rem 30rem;
   }
 }

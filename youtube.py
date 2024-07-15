@@ -5,6 +5,7 @@ from langdetect import detect
 from math import log
 import pandas as pd
 
+API_KEY = os.environ.get("YT_API_KEY")
 MIN_DUR = isodate.parse_duration("PT1M5S")
 LANGUAGE = ["EN", "FR", "ES", "RU", "HI"]
 THRESHOLD = {"weekly": 7, "monthly": 30, "yearly": 365}
@@ -68,27 +69,26 @@ def update_channels():
     global quota_usage
     channels = []
     for channel in channel_df["ChannelID"]:
-        request = service.channels().list(
-            part=["snippet", "statistics", "brandingSettings"], id=channel
-        )
+        request = service.channels().list(part=["snippet", "statistics", "brandingSettings"], id=channel)
         response = request.execute()
         quota_usage -= 1
 
         try:
+            response = response["items"][0]
             channel_info = {
-                "ChannelID": response["items"][0]["id"],
-                "ChannelName": response["items"][0]["snippet"]["title"],
-                "ChannelIcon": response["items"][0]["snippet"]["thumbnails"]["medium"]["url"],
-                "ChannelUrl": f'https://www.youtube.com/{response["items"][0]["snippet"].get("customUrl", "None")}',
-                "ExistedSince": response["items"][0]["snippet"]["publishedAt"].split("T")[0],
-                "SubscriberCount": int(response["items"][0]["statistics"]["subscriberCount"]),
-                "VideoCount": int(response["items"][0]["statistics"]["videoCount"]),
-                "ViewCount": int(response["items"][0]["statistics"]["viewCount"]),
-                "Country": response["items"][0]["snippet"].get("country", "Unknown"),
-                "Language": response["items"][0]["snippet"].get("defaultLanguage", "Unknown"),
+                "ChannelID": response["id"],
+                "ChannelName": response["snippet"]["title"],
+                "ChannelIcon": response["snippet"]["thumbnails"]["medium"]["url"],
+                "ChannelUrl": f'https://www.youtube.com/{response["snippet"].get("customUrl", "None")}',
+                "ExistedSince": response["snippet"]["publishedAt"].split("T")[0],
+                "SubscriberCount": int(response["statistics"]["subscriberCount"]),
+                "VideoCount": int(response["statistics"]["videoCount"]),
+                "ViewCount": int(response["statistics"]["viewCount"]),
+                "Country": response["snippet"].get("country", "Unknown"),
+                "Language": response["snippet"].get("defaultLanguage", "Unknown"),
             }
 
-            if channel_info["SubscriberCount"] > 7500:
+            if channel_info["SubscriberCount"] > 10_000:
                 channels.append(channel_info)
         except:
             pass
@@ -97,9 +97,7 @@ def update_channels():
     df.to_csv("channels.csv", index=False)
 
 
-def all_mighty_algorithm(
-    video: dict, video_duration: isodate.Duration, subscriber_count: int
-) -> float:
+def all_mighty_algorithm(video: dict, video_duration: isodate.Duration, subscriber_count: int) -> float:
     view_count = log(video["ViewCount"] + 1)
     like_count = log(video["LikeCount"] + 1)
     comment_count = log(video["CommentCount"] + 1)
@@ -111,24 +109,17 @@ def all_mighty_algorithm(
     def_quality = DEFINITION_MAPPING.get(video["Definition"], 1)
     cap_quality = CAPTION_MAPPING.get(video["Caption"], 1)
     rat_quality = RATING_MAPPING.get(video["ContentRating"], 0.95)
-    dur_quality = next(
-        (quality for duration, quality in DURATIONS_MAPPING if duration > video_duration), 0.9125
-    )
-    subscriber_balance = next(
-        (balance for channel, balance in SUBSCRIBER_MAPPING.items() if subscriber_count < channel),
-        0.9375,
-    )
+    dur_quality = next((quality for duration, quality in DURATIONS_MAPPING if duration > video_duration), 0.9125)
+    subscriber_balance = next((balance for channel, balance in SUBSCRIBER_MAPPING.items() if subscriber_count < channel), 0.9375)
 
-    quality_multiplier = float(
-        subscriber_balance * def_quality * cap_quality * rat_quality * dur_quality
-    )
+    quality_multiplier = float(subscriber_balance * def_quality * cap_quality * rat_quality * dur_quality)
     rating = round((view_rate + like_rate + comment_rate) * quality_multiplier * 100, 3)
     return rating
 
 
 def fetch_new_videos():
     global quota_usage
-    for channel in channel_df["ChannelID"].head(50):
+    for channel in channel_df["ChannelID"]:
         subscriber_count = channel_df[channel_df["ChannelID"] == channel]["SubscriberCount"].values[0]
         request = service.activities().list(
             part=["snippet", "id", "contentDetails"],
@@ -149,59 +140,36 @@ def fetch_new_videos():
                 published_at = item["snippet"]["publishedAt"][:16].replace("T", " ")
                 thumbnail_url = item["snippet"]["thumbnails"]["medium"]["url"]
 
-                request = service.videos().list(
-                    id=video_id, part=["statistics", "snippet", "contentDetails"]
-                )
+                request = service.videos().list(id=video_id, part=["statistics", "snippet", "contentDetails"])
                 response = request.execute()
+                response = response['items'][0]
                 quota_usage -= 1
 
-                view_count = int(response["items"][0]["statistics"]["viewCount"])
-                like_count = int(response["items"][0]["statistics"]["likeCount"])
-                comment_count = int(response["items"][0]["statistics"].get("commentCount", 0))
-                category_id = int(response["items"][0]["snippet"]["categoryId"])
-                content_rating = response["items"][0]["contentDetails"]["contentRating"]
-                definition = response["items"][0]["contentDetails"]["definition"]
-                duration = isodate.parse_duration(
-                    response["items"][0]["contentDetails"]["duration"]
-                )
-                caption = response["items"][0]["contentDetails"]["caption"]
-                language = str(
-                    response["items"][0]["snippet"].get(
-                        "defaultLanguage",
-                        response["items"][0]["snippet"].get("defaultAudioLanguage", "NONE"),
-                    )
-                ).upper()
+                view_count = int(response["statistics"]["viewCount"])
+                like_count = int(response["statistics"]["likeCount"])
+                comment_count = int(response["statistics"].get("commentCount", 0))
+                category_id = int(response["snippet"]["categoryId"])
+                content_rating = response["contentDetails"]["contentRating"]
+                definition = response["contentDetails"]["definition"]
+                duration = isodate.parse_duration(response["contentDetails"]["duration"])
+                caption = response["contentDetails"]["caption"]
+                language = str(response["snippet"].get("defaultLanguage", response["snippet"].get("defaultAudioLanguage", "NONE"))).upper()
                 language = "HI" if "HI" in language else language[:2]
-                language = (
-                    "HI"
-                    if channel_df[channel_df["ChannelID"] == channel]["Language"].values[0] == "HI"
-                    else language
-                )
+                language = "HI" if channel_df[channel_df["ChannelID"] == channel]["Country"].values[0] == "IN" else language
                 language = detect(video_title).upper() if language in ["NONE", "ZXX"] else language
 
-                if (
-                    video_id not in viewed_videos
-                    and view_count > 500
-                    and MIN_DUR < duration
-                    and language in LANGUAGE
-                ):
-                    fill_video_details = {
+                if (video_id not in viewed_videos and view_count > 400 and MIN_DUR < duration and language in LANGUAGE):
+                    full_video_details = {
                         "ChannelName": channel_name,
                         "ChannelId": channel_id,
-                        "ChannelIcon": channel_df[channel_df["ChannelID"] == channel][
-                            "ChannelIcon"
-                        ].values[0],
-                        "ChannelUrl": channel_df[channel_df["ChannelID"] == channel][
-                            "ChannelUrl"
-                        ].values[0],
+                        "ChannelIcon": channel_df[channel_df["ChannelID"] == channel]["ChannelIcon"].values[0],
+                        "ChannelUrl": channel_df[channel_df["ChannelID"] == channel]["ChannelUrl"].values[0],
                         "VideoUrl": f"https://www.youtube.com/watch?v={video_id}",
                         "VideoTitle": video_title,
                         "VideoId": video_id,
                         "PublishedDate": published_at,
                         "Thumbnail": thumbnail_url,
-                        "Duration": (
-                            str(duration).split(", ")[1] if ", " in str(duration) else str(duration)
-                        ),
+                        "Duration": str(duration).split(", ")[1] if ", " in str(duration) else str(duration),
                         "Definition": str(definition).upper(),
                         "Language": language,
                         "Caption": False if caption == "false" else True,
@@ -212,10 +180,8 @@ def fetch_new_videos():
                         "CategoryId": int(category_id),
                     }
 
-                    video_rating = all_mighty_algorithm(
-                        fill_video_details, duration, subscriber_count
-                    )
-                    videos[language][video_rating] = fill_video_details
+                    video_rating = all_mighty_algorithm(full_video_details, duration, subscriber_count)
+                    videos[language][video_rating] = full_video_details
                     viewed_videos.append(video_id)
             except:
                 pass
@@ -224,39 +190,36 @@ def fetch_new_videos():
 def renew_video(video: dict) -> tuple[dict, isodate.duration]:
     global quota_usage
     try:
-        request = service.videos().list(
-            id=video["VideoId"], part=["statistics", "snippet", "contentDetails"]
-        )
+        request = service.videos().list(id=video["VideoId"], part=["statistics", "snippet", "contentDetails"])
         response = request.execute()
+        response = response['items'][0]
         quota_usage -= 1
-        fill_video_details = {
+
+        full_video_details = {
             "ChannelName": video["ChannelName"],
             "ChannelId": video["ChannelId"],
             "ChannelIcon": video["ChannelIcon"],
             "ChannelUrl": video["ChannelUrl"],
             "VideoUrl": video["VideoUrl"],
-            "VideoTitle": response["items"][0]["snippet"]["title"],
+            "VideoTitle": response["snippet"]["title"],
             "VideoId": video["VideoId"],
             "PublishedDate": video["PublishedDate"],
-            "Thumbnail": response["items"][0]["snippet"]["thumbnails"]["medium"]["url"],
+            "Thumbnail": response["snippet"]["thumbnails"]["medium"]["url"],
             "Duration": video["Duration"],
             "Definition": video["Definition"],
             "Language": video["Language"],
-            "Caption": (
-                False if response["items"][0]["contentDetails"]["caption"] == "false" else True
-            ),
-            "ContentRating": (
-                False if not response["items"][0]["contentDetails"]["contentRating"] else True
-            ),
-            "ViewCount": int(response["items"][0]["statistics"]["viewCount"]),
-            "LikeCount": int(response["items"][0]["statistics"]["likeCount"]),
-            "CommentCount": int(response["items"][0]["statistics"].get("commentCount", 0)),
+            "Caption":  False if response["contentDetails"]["caption"] == "false" else True,
+            "ContentRating": False if not response["contentDetails"]["contentRating"] else True,
+            "ViewCount": int(response["statistics"]["viewCount"]),
+            "LikeCount": int(response["statistics"]["likeCount"]),
+            "CommentCount": int(response["statistics"].get("commentCount", 0)),
             "CategoryId": int(video["CategoryId"]),
         }
-        duration = isodate.parse_duration(response["items"][0]["contentDetails"]["duration"])
-        return fill_video_details, duration
+
+        duration = isodate.parse_duration(response["contentDetails"]["duration"])
+        return full_video_details, duration
     except:
-        pass
+        return video, None
 
 
 def check_old_video(time: str, date: datetime.datetime) -> bool:
@@ -268,26 +231,24 @@ def check_old_video(time: str, date: datetime.datetime) -> bool:
 def update_videos(all_videos: dict, time: str) -> dict:
     result = {}
     for video in all_videos.items():
-        if (
-            check_old_video(time, video[1]["PublishedDate"])
-            and video[1]["VideoId"] not in viewed_videos
-        ):
+        if (check_old_video(time, video[1]["PublishedDate"]) and video[1]["VideoId"] not in viewed_videos):
             video, duration = renew_video(video[1])
+            if video is None or duration is None:
+                continue
+
             viewed_videos.append(video["VideoId"])
-            subscriber_count = channel_df[channel_df["ChannelID"] == video["ChannelId"]][
-                "SubscriberCount"
-            ].values[0]
+            subscriber_count = channel_df[channel_df["ChannelID"] == video["ChannelId"]]["SubscriberCount"].values[0]
             video_rating = all_mighty_algorithm(video, duration, subscriber_count)
             result[video_rating] = video
+
     return result
 
 
 def sort_videos(all_videos: dict) -> dict:
-    monopolizing_channels = []
     sorted_videos = {}
-    all_videos = OrderedDict(
-        sorted(all_videos.items(), key=lambda item: float(item[0]), reverse=True)
-    )
+    monopolizing_channels = []
+    all_videos = OrderedDict(sorted(all_videos.items(), key=lambda item: float(item[0]), reverse=True))
+
     for video in all_videos.items():
         if video[1]["ChannelId"] in monopolizing_channels:
             rating = float(video[0]) * 0.75
@@ -303,13 +264,11 @@ def store_videos():
     top_day, top_week, top_month = {}, {}, {}
     for lang, specific_videos in videos.items():
         for time in ["daily", "weekly", "monthly", "yearly"]:
-            with open(f"{time}.json", "r") as f:
+            with open(f"data/{time}.json", "r") as f:
                 data = json.load(f)
 
             if time == "daily":
-                top_day = OrderedDict(
-                    sorted(specific_videos.items(), key=lambda item: float(item[0]), reverse=True)
-                )
+                top_day = OrderedDict(sorted(specific_videos.items(), key=lambda item: float(item[0]), reverse=True))
                 data[lang] = OrderedDict(list(top_day.items()))
 
             elif time == "weekly":
@@ -321,35 +280,31 @@ def store_videos():
             elif time == "monthly":
                 if today.weekday() == 0:
                     top_month = update_videos(data[lang], time)
-                    top_month.update(OrderedDict(list(top_week.items())[:250]))
+                    top_month.update(OrderedDict(list(top_week.items())[:200]))
                     top_month = sort_videos(top_month)
                     data[lang] = top_month
 
             elif time == "yearly":
                 if today.day == 1:
                     if today.weekday() != 0:
-                        with open("monthly.json", "r") as f:
+                        with open("data/monthly.json", "r") as f:
                             new_data = json.load(f)
                             top_month = new_data[lang]
 
                     top_year = update_videos(data[lang], time)
-                    top_year.update(OrderedDict(list(top_month.items())[:375]))
+                    top_year.update(OrderedDict(list(top_month.items())[:300]))
                     data[lang] = sort_videos(top_year)
 
-            with open(f"{time}.json", "w") as f:
+            with open(f"data/{time}.json", "w") as f:
                 json.dump(data, f, indent=4)
 
 
 if __name__ == "__main__":
     global quota_usage, channel_df, service, today, videos, viewed_videos
-    logging.basicConfig(
-        filename="youtube.log",
-        level=logging.WARN,
-        format="%(asctime)s - %(levelname)s - %(message)s",
-    )
-    channel_df = pd.read_csv("channels.csv")
-    API_KEY = os.environ.get("YT_API_KEY")
+    logging.basicConfig(filename="app.log", level=logging.WARN, format="%(asctime)s - %(message)s")
+
     service = build("youtube", "v3", developerKey=API_KEY)
+    channel_df = pd.read_csv("channels.csv")
     today = datetime.date.today()
     videos = defaultdict(dict)
     quota_usage = 10_000
@@ -364,10 +319,15 @@ if __name__ == "__main__":
         exit(0)
 
     try:
-        update_channels()
+        print("Fetching New Videos...")
         fetch_new_videos()
+        print("Storing And Ranking Videos...")
         store_videos()
+        print("Updating Channel...")
+        update_channels()
+
     except Exception as e:
         logging.error(f"An error occurred: {e}")
+
     else:
         logging.warning(f"Remaining quota for this day : {quota_usage}")

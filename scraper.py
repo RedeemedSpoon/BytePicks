@@ -7,9 +7,7 @@ from time import sleep
 import os, json
 
 channels_ids = []
-addon_path = os.path.expanduser(
-    "~/.mozilla/firefox/qz5c3f97.default-release/extensions/uBlock0@raymondhill.net.xpi"
-)
+addon_path = os.path.expanduser("~/.mozilla/firefox/qz5c3f97.default-release/extensions/uBlock0@raymondhill.net.xpi")
 with open("topics.json", "r") as file:
     search_terms = json.load(file)["EN"]
 
@@ -34,12 +32,10 @@ for _ in range(50):
 
         for __ in range(7):
             sleep(3)
-            recommended_channel = driver.find_element(
-                By.CSS_SELECTOR, "a.ytd-video-owner-renderer"
-            ).get_attribute("href")
+            recommended_channel = driver.find_element(By.CSS_SELECTOR, "a.ytd-video-owner-renderer")
             recommended_video = driver.find_elements(By.TAG_NAME, "ytd-compact-video-renderer")
             choice(recommended_video[:5]).click()
-            channels.append(recommended_channel.split("@")[1])
+            channels.append(recommended_channel.get_attribute("href").split("@")[1])
 
         driver.get("https://www.streamweasels.com/tools/youtube-channel-id-and-user-id-convertor/")
         form = driver.find_element(By.CLASS_NAME, "cp-youtube-to-id__target")

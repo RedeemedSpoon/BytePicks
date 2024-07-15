@@ -35,7 +35,7 @@ class PendingUser(Base):
 
 
 def get_videos(time: str, language: str, top: int = 0) -> dict:
-    with open(f"{time}.json", "r") as file:
+    with open(f"data/{time}.json", "r") as file:
         raw_videos = json.load(file)
         all_videos = raw_videos[language].items()
         if top:

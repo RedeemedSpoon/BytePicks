@@ -1,7 +1,6 @@
 import os
 from google.api_core import exceptions as google_exceptions
 from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']

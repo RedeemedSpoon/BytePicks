@@ -15,7 +15,7 @@ for index, row in df[num:].iterrows():
     if validation.strip().lower()[:1] == "d":
         print("Row deleted.")
         df.drop(index, inplace=True)
-    elif validation.strip().lower() == "q":
+    elif validation.strip().lower()[:1] == "q":
         df.to_csv("channels.csv", index=False)
         exit(0)
     else:

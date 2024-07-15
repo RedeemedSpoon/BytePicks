@@ -17,9 +17,10 @@ def teardown_request(exception=None):
 
 @app.route("/")
 def home():
-    with open("daily.json", "r") as file:
+    with open("data/daily.json", "r") as file:
         home_thumbnails = json.load(file)["EN"]
-    return render_template("home.html", year=copyright_year, videos=home_thumbnails)
+
+    return render_template("home.jinja", year=copyright_year, videos=home_thumbnails)
 
 
 @app.route("/dashboard")
@@ -27,11 +28,11 @@ def dashboard():
     time = request.args.get("time", default="daily")
     language = request.args.get("lang", default="EN")
     if time not in TIME or language not in LANGUAGE:
-        return render_template("error.html", year=copyright_year), 404
+        return render_template("error.jinja", year=copyright_year), 404
 
     videos = get_videos(time, language)
     return render_template(
-        "dashboard.html",
+        "dashboard.jinja",
         year=copyright_year,
         videos=videos,
         time=time,
@@ -43,7 +44,7 @@ def dashboard():
 
 @app.route("/api-docs")
 def api_docs():
-    return render_template("api-docs.html", year=copyright_year)
+    return render_template("api-docs.jinja", year=copyright_year)
 
 
 @app.route("/api/request")
@@ -51,6 +52,7 @@ def api_request():
     time = request.args.get("time", default="daily")
     language = request.args.get("lang", default="EN")
     top = request.args.get("top", default=25, type=int)
+
     if time in TIME and language in LANGUAGE and top > 0:
         response = {
             "Request": f"The top {top} {time} videos in {language}",
@@ -67,6 +69,7 @@ def api_request():
 def newsletter():
     message = None
     email = ""
+
     if request.method == "POST":
         email = request.form["email"]
         if session.query(User).filter_by(email=email).first():
@@ -78,16 +81,9 @@ def newsletter():
                 try:
                     language = request.form["language"]
                     time = request.form["time"]
-                    token = "".join(
-                        secrets.choice(string.ascii_letters + string.digits) for _ in range(20)
-                    )
+                    token = "".join(secrets.choice(string.ascii_letters + string.digits) for _ in range(20))
                     message = get_message(email, token)
-                    send_email(
-                        message,
-                        "Byte Picks : Please Confirm Your Email",
-                        email,
-                        "newsletter@bytepicks.com",
-                    )
+                    send_email(message, "Byte Picks : Please Confirm Your Email", email, "newsletter@bytepicks.com")
                 except:
                     message = "You Gave An Invalid Email."
                 else:
@@ -95,19 +91,20 @@ def newsletter():
                     session.add(PendingUser(email=email, time=time, language=language, token=token))
                     session.commit()
 
-    return render_template("newsletter.html", year=copyright_year, message=message, email=email)
+    return render_template("newsletter.jinja", year=copyright_year, message=message, email=email)
 
 
 @app.route("/newsletter/<instruction>", methods=["GET", "POST"])
 def modify_newsletter(instruction):
     email = request.args.get("user", default="")
     token = request.args.get("token", default=None)
+
     user = None
     pending_user = None
     message = None
 
     if instruction not in ["submit", "edit", "delete"]:
-        return render_template("error.html", year=copyright_year), 404
+        return render_template("error.jinja", year=copyright_year), 404
 
     if token is None or email == "":
         message = "Missing Token or Email."
@@ -151,7 +148,7 @@ def modify_newsletter(instruction):
         else:
             message = "Incorrect Token or Email."
 
-    return render_template("newsletter.html", year=copyright_year, message=message, email=email)
+    return render_template("newsletter.jinja", year=copyright_year, message=message, email=email)
 
 
 @app.route("/download")
@@ -161,17 +158,17 @@ def download():
 
 @app.route("/behind-the-scene")
 def behind_the_scene():
-    return render_template("behind-the-scene.html", year=copyright_year)
+    return render_template("behind-the-scene.jinja", year=copyright_year)
 
 
 @app.route("/privacy-policy")
 def privacy_policy():
-    return render_template("privacy-policy.html", year=copyright_year)
+    return render_template("privacy-policy.jinja", year=copyright_year)
 
 
 @app.route("/about-us")
 def about_us():
-    return render_template("about-us.html", year=copyright_year)
+    return render_template("about-us.jinja", year=copyright_year)
 
 
 @app.route("/contact", methods=["GET", "POST"])
@@ -179,20 +176,18 @@ def contact():
     message = None
     if request.method == "POST":
         subject = request.form["subject"]
-        sender = (
-            "Anonymous Person" if request.form["opt-email"] == "" else request.form["opt-email"]
-        )
+        sender = "Anonymous Person" if request.form["opt-email"] == "" else request.form["opt-email"]
         message = f"{request.form['message']}<br><br>This message was sent by : {sender}"
 
         send_email(message, subject, "contact@bytepicks.com", "contact@bytepicks.com")
         message = "Thank you for contacting us!"
 
-    return render_template("contact.html", year=copyright_year, message=message)
+    return render_template("contact.jinja", year=copyright_year, message=message)
 
 
 @app.errorhandler(404)
 def bad_request(e):
-    return render_template("error.html", year=copyright_year), 404
+    return render_template("error.jinja", year=copyright_year), 404
 
 
 if __name__ == "__main__":
