@@ -253,7 +253,9 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
     whereas those with less than 100K receive a slight boost. With these adjustments, we now have a float variable
     between 1.3 and 0.7, representing the video's quality, which will be used in our algorithm. Here's the equation:
   </p>
-  <p class="math">QualityMultiplier = SubscriberBalance × DefinitionQuality × CaptionQuality × RatingQuality × DurationQuality</p>
+  <p class="math">
+    QualityMultiplier = SubscriberBalance × DefinitionQuality × CaptionQuality × RatingQuality × DurationQuality
+  </p>
   <div class="small-screen-message">
     <p>Your screen is too small to display the formula.</p>
   </div>
@@ -272,8 +274,8 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
   <p>
     With the rating now complete, the final step is to sort and store the videos. We accomplish this using Python and
     the JSON format, employing dictionary methods, slicing, along with the `open("file.json") as file` and `json.dump()`
-    methods. After, it's just a matter of selecting the right number of videos for different timeframes. Below is the code
-    snippet illustrating this:
+    methods. After, it's just a matter of selecting the right number of videos for different timeframes. Below is the
+    code snippet illustrating this:
   </p>
   <pre class="code"><code>
 <span class="keyword">for</span> <span class="var">lang</span>, <span class="var">all_videos</span> <span class="keyword">in</span> <span class="var">videos</span>.<span class="function">items</span>():
@@ -301,20 +303,20 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
   </div>
   <h4>How we automate both our newsletter and this ?</h4>
   <p>
-    Using cron jobs, simple right? Render has such functionality in their service, so we took advantage of it. If you
-    don't know what cron is, well, you should. The cron command-line utility is a job scheduler on Unix OSes. It is
-    often used to set up and maintain software environments because of how simple it is to schedule jobs like running
-    commands or sending emails. And this is exactly what we did. Every day at 11 PM 50 Min, it runs a bash file that,
-    collect the active database of our newsletter, run two Python files, one of them fetching YouTube Data and
-    manipulating it and the other following it by sending the newsletter, afterward, if no errors where met, it copy the
-    new json data to the production server. Lovely Unix never ceases to impress.
+    Using cron jobs, simple right? If you don't know what cron is, well, you should. The cron command-line utility is a
+    job scheduler on Unix OSes. It is often used to set up and maintain software environments because of how simple it
+    is to schedule jobs like running commands or sending emails. And this is exactly what we did. Every day at 11 PM 50
+    Min, it runs a bash file that, collect the active database of our newsletter, run two Python files, one of them
+    fetching YouTube Data and manipulating it and the other following it by sending the newsletter, afterward, if no
+    errors where met, it copy the new json data to the production server. Lovely Unix never ceases to impress.
   </p>
   <pre class="code"><code>
 <span class="comment">#!/bin/bash</span>
 
-<span class="var">file_list</span>=<span class="str">"daily.json weekly.json monthly.json yearly.json token.json channels.csv newsletter.db"</span>
+<span class="var">file_list</span>=<span class="str">"credentials.json token.json channels.csv newsletter.db"</span>
 <span class="var">remote_dir</span>=<span class="str">"/opt/render/project/src"</span>
 
+<span class="function">cd</span> <span class="str">~/Code/BytePicks</span>
 <span class="function">scp</span> <span class="var">$SERVER_NAME</span>@<span class="str">ssh.oregon.render.com:</span><span class="var">$remote_dir</span><span class="str">/newsletter.db</span> <span class="operator">.</span> <span class="operator">>></span> <span class="str">/dev/null</span>
 
 <span class="keyword">if</span> [[ <span class="var">$?</span> <span class="operator">-eq</span> <span class="int">0</span> ]]; <span class="keyword">then</span>
@@ -323,6 +325,7 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
     <span class="function">python</span> <span class="str">newsletter.py</span> <span class="operator">>></span> <span class="str">/dev/null</span>
     <span class="keyword">if</span> [[ <span class="var">$?</span> <span class="operator">-eq</span> <span class="int">0</span> ]]; <span class="keyword">then</span>
       <span class="function">scp</span> <span class="var">$file_list</span> <span class="var">$SERVER_NAME</span>@<span class="str">ssh.oregon.render.com:</span><span class="var">$remote_dir</span>
+      <span class="function">scp</span> <span class="var">data/*</span> <span class="var">$SERVER_NAME</span>@<span class="str">ssh.oregon.render.com:</span><span class="var">$remote_dir</span><span class='str'>/data</span>
     <span class="keyword">fi</span>
   <span class="keyword">fi</span>
 <span class="keyword">fi</span>

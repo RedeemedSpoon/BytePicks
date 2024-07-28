@@ -273,14 +273,14 @@ def store_videos():
 
             elif time == "weekly":
                 top_week = update_videos(data[lang], time)
-                top_week.update(OrderedDict(list(top_day.items())[:50]))
+                top_week.update(OrderedDict(list(top_day.items())[:35]))
                 top_week = sort_videos(top_week)
                 data[lang] = top_week
 
             elif time == "monthly":
                 if today.weekday() == 0:
                     top_month = update_videos(data[lang], time)
-                    top_month.update(OrderedDict(list(top_week.items())[:200]))
+                    top_month.update(OrderedDict(list(top_week.items())[:125]))
                     top_month = sort_videos(top_month)
                     data[lang] = top_month
 
@@ -292,7 +292,7 @@ def store_videos():
                             top_month = new_data[lang]
 
                     top_year = update_videos(data[lang], time)
-                    top_year.update(OrderedDict(list(top_month.items())[:300]))
+                    top_year.update(OrderedDict(list(top_month.items())[:65]))
                     data[lang] = sort_videos(top_year)
 
             with open(f"data/{time}.json", "w") as f:

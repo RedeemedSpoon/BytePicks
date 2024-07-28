@@ -3,9 +3,9 @@ from utils import *
 
 with open("token.json", "r") as token:
     creds_data = json.load(token)
-    date = datetime.now()
     update_token(creds_data)
 
+date = datetime.now()
 for user in session.query(User).all():
     if (
         user.time == "daily"

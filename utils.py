@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from collections import OrderedDict
 import json, base64
 
-AMOUNT = {"daily": 50, "weekly": 75, "monthly": 100, "yearly": 150}
+AMOUNT = {"daily": 50, "weekly": 100, "monthly": 150, "yearly": 250}
 SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
 engine = create_engine("sqlite:///newsletter.db", echo=True)
@@ -41,7 +41,7 @@ def get_videos(time: str, language: str, top: int = 0) -> dict:
         if top:
             return OrderedDict(list(all_videos)[:top])
         else:
-            return OrderedDict(list(all_videos)[: AMOUNT[time]])
+            return OrderedDict(list(all_videos)[:AMOUNT[time]])
 
 
 def format_view_count(number: int) -> str:
@@ -72,7 +72,9 @@ def send_email(body: str, subject: str, receiver: str, sender: str):
     raw_message = f"Content-Type: text/html; charset=utf-8\nFrom: {sender}\nTo: {receiver}\nSubject: {subject}\n\n{body}"
     encoded_message = base64.urlsafe_b64encode(raw_message.encode()).decode("utf-8")
 
-    service.users().messages().send(userId="me", body={"raw": encoded_message}).execute()
+    service.users().messages().send(
+        userId="me", body={"raw": encoded_message}
+    ).execute()
     service.close()
 
 
