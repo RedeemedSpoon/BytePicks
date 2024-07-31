@@ -10,16 +10,11 @@ MIN_DUR = isodate.parse_duration("PT1M5S")
 LANGUAGE = ["EN", "FR", "ES", "RU", "HI"]
 THRESHOLD = {"weekly": 7, "monthly": 30, "yearly": 365}
 FIELDS = "items(snippet(title,publishedAt,channelTitle,channelId,thumbnails/medium/url), contentDetails(upload/videoId))"
-CAPTION_MAPPING = {None: 0.975}
+
 RATING_MAPPING = {None: 1}
+CAPTION_MAPPING = {None: 0.975}
 DEFINITION_MAPPING = {"sd": 0.90, "fhd": 1.0125, "uhd": 1.025}
-SUBSCRIBER_MAPPING = {
-    10_000: 1.05,
-    100_000: 1.025,
-    500_000: 1,
-    1_000_000: 0.975,
-    5_000_000: 0.95,
-}
+SUBSCRIBER_MAPPING = {10_000: 1.05, 100_000: 1.025, 500_000: 1, 1_000_000: 0.975, 5_000_000: 0.95}
 DURATIONS_MAPPING = [
     (isodate.parse_duration("PT2M"), 0.950),
     (isodate.parse_duration("PT7M"), 0.975),
@@ -33,6 +28,7 @@ DURATIONS_MAPPING = [
 def search(cur_page_token=None, first_time=True):
     global quota_usage
     searched_channels = []
+
     while cur_page_token or first_time:
         request = service.search().list(
             q="Programming | Tech | Computer Science",
@@ -58,16 +54,10 @@ def search(cur_page_token=None, first_time=True):
     return searched_channels
 
 
-def sort_and_filter(df):
-    df.drop_duplicates(subset=["ChannelID"], inplace=True)
-    df.dropna(inplace=True)
-    df.sort_values(by=["SubscriberCount"], ascending=False, inplace=True)
-    return df
-
-
 def update_channels():
     global quota_usage
     channels = []
+
     for channel in channel_df["ChannelID"]:
         request = service.channels().list(part=["snippet", "statistics", "brandingSettings"], id=channel)
         response = request.execute()
@@ -97,14 +87,26 @@ def update_channels():
     df.to_csv("channels.csv", index=False)
 
 
-def all_mighty_algorithm(video: dict, video_duration: isodate.Duration, subscriber_count: int) -> float:
-    view_count = log(video["ViewCount"] + 1)
-    like_count = log(video["LikeCount"] + 1)
-    comment_count = log(video["CommentCount"] + 1)
+def sort_and_filter(df : pd.DataFrame) -> pd.DataFrame:
+    df.drop_duplicates(subset=["ChannelID"], inplace=True)
+    df.dropna(inplace=True)
+    df.sort_values(by=["SubscriberCount"], ascending=False, inplace=True)
+    return df
 
-    view_rate = view_count * 0.675
-    like_rate = (like_count / view_count) * 1.125
-    comment_rate = (comment_count / view_count) * 1.375
+
+def sort(dictionary : dict) -> dict:
+    results = sorted(dictionary.items(), key=lambda item: float(item[0]), reverse=True)
+    return OrderedDict(results)
+
+
+def mighty_algorithm(video: dict, video_duration: isodate.Duration, subscriber_count: int) -> float:
+    normalized_views = log(video["ViewCount"] + 1)
+    normalized_likes = log(video["LikeCount"] + 1)
+    normalized_comments = log(video["CommentCount"] + 1)
+
+    view_rate = normalized_views * 0.675
+    like_rate = (normalized_likes / normalized_views) * 1.125
+    comment_rate = (normalized_comments / normalized_views) * 1.375
 
     def_quality = DEFINITION_MAPPING.get(video["Definition"], 1)
     cap_quality = CAPTION_MAPPING.get(video["Caption"], 1)
@@ -114,6 +116,7 @@ def all_mighty_algorithm(video: dict, video_duration: isodate.Duration, subscrib
 
     quality_multiplier = float(subscriber_balance * def_quality * cap_quality * rat_quality * dur_quality)
     rating = round((view_rate + like_rate + comment_rate) * quality_multiplier * 100, 3)
+
     return rating
 
 
@@ -180,7 +183,7 @@ def fetch_new_videos():
                         "CategoryId": int(category_id),
                     }
 
-                    video_rating = all_mighty_algorithm(full_video_details, duration, subscriber_count)
+                    video_rating = mighty_algorithm(full_video_details, duration, subscriber_count)
                     videos[language][video_rating] = full_video_details
                     viewed_videos.append(video_id)
             except:
@@ -230,6 +233,7 @@ def check_old_video(time: str, date: datetime.datetime) -> bool:
 
 def update_videos(all_videos: dict, time: str) -> dict:
     result = {}
+
     for video in all_videos.items():
         if (check_old_video(time, video[1]["PublishedDate"]) and video[1]["VideoId"] not in viewed_videos):
             video, duration = renew_video(video[1])
@@ -238,7 +242,7 @@ def update_videos(all_videos: dict, time: str) -> dict:
 
             viewed_videos.append(video["VideoId"])
             subscriber_count = channel_df[channel_df["ChannelID"] == video["ChannelId"]]["SubscriberCount"].values[0]
-            video_rating = all_mighty_algorithm(video, duration, subscriber_count)
+            video_rating = mighty_algorithm(video, duration, subscriber_count)
             result[video_rating] = video
 
     return result
@@ -247,7 +251,7 @@ def update_videos(all_videos: dict, time: str) -> dict:
 def sort_videos(all_videos: dict) -> dict:
     sorted_videos = {}
     monopolizing_channels = []
-    all_videos = OrderedDict(sorted(all_videos.items(), key=lambda item: float(item[0]), reverse=True))
+    all_videos = sort(all_videos) 
 
     for video in all_videos.items():
         if video[1]["ChannelId"] in monopolizing_channels:
@@ -257,7 +261,8 @@ def sort_videos(all_videos: dict) -> dict:
             rating = video[0]
 
         sorted_videos[rating] = video[1]
-    return OrderedDict(sorted(sorted_videos.items(), key=lambda item: float(item[0]), reverse=True))
+
+    return sort(sorted_videos)
 
 
 def store_videos():
@@ -268,7 +273,7 @@ def store_videos():
                 data = json.load(f)
 
             if time == "daily":
-                top_day = OrderedDict(sorted(specific_videos.items(), key=lambda item: float(item[0]), reverse=True))
+                top_day = sort(specific_videos)
                 data[lang] = OrderedDict(list(top_day.items()))
 
             elif time == "weekly":
@@ -300,7 +305,6 @@ def store_videos():
 
 
 if __name__ == "__main__":
-    global quota_usage, channel_df, service, today, videos, viewed_videos
     logging.basicConfig(filename="app.log", level=logging.WARN, format="%(asctime)s - %(message)s")
 
     service = build("youtube", "v3", developerKey=API_KEY)
@@ -323,11 +327,11 @@ if __name__ == "__main__":
         fetch_new_videos()
         print("Storing And Ranking Videos...")
         store_videos()
-        print("Updating Channel...")
+        print("Updating Channels...")
         update_channels()
 
-    except Exception as e:
-        logging.error(f"An error occurred: {e}")
+    except Exception as error:
+        logging.error(f"An error occurred : {error}")
 
     else:
-        logging.warning(f"Remaining quota for this day : {quota_usage}")
+        logging.warning(f"Remaining quota : {quota_usage}")

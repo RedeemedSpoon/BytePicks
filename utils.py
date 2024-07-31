@@ -38,6 +38,7 @@ def get_videos(time: str, language: str, top: int = 0) -> dict:
     with open(f"data/{time}.json", "r") as file:
         raw_videos = json.load(file)
         all_videos = raw_videos[language].items()
+
         if top:
             return OrderedDict(list(all_videos)[:top])
         else:
@@ -72,9 +73,7 @@ def send_email(body: str, subject: str, receiver: str, sender: str):
     raw_message = f"Content-Type: text/html; charset=utf-8\nFrom: {sender}\nTo: {receiver}\nSubject: {subject}\n\n{body}"
     encoded_message = base64.urlsafe_b64encode(raw_message.encode()).decode("utf-8")
 
-    service.users().messages().send(
-        userId="me", body={"raw": encoded_message}
-    ).execute()
+    service.users().messages().send(userId="me", body={"raw": encoded_message}).execute()
     service.close()
 
 

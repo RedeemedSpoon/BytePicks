@@ -3,15 +3,14 @@
 file_list="credentials.json token.json channels.csv newsletter.db"
 remote_dir="/opt/render/project/src"
 
-cd ~/Code/BytePicks
-scp $SERVER_NAME@ssh.oregon.render.com:$remote_dir/newsletter.db . >> /dev/null
+scp $SERVER_NAME@ssh.oregon.render.com:$remote_dir/newsletter.db .
 if [[ $? -eq 0 ]]; then
-	python youtube.py && tail -n 1 app.log
-	if [[ $? -eq 0 ]]; then
-		python newsletter.py >>/dev/null
-		if [[ $? -eq 0 ]]; then
-			scp $file_list $SERVER_NAME@ssh.oregon.render.com:$remote_dir
+  python youtube.py && tail -n 1 app.log
+  if [[ $? -eq 0 ]]; then
+    python newsletter.py
+    if [[ $? -eq 0 ]]; then
+      scp $file_list $SERVER_NAME@ssh.oregon.render.com:$remote_dir
       scp data/* $SERVER_NAME@ssh.oregon.render.com:$remote_dir/data
-		fi
-	fi
+    fi
+  fi
 fi
