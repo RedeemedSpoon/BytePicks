@@ -1,11 +1,11 @@
-from datetime import datetime
+import datetime
 from utils import *
 
 with open("token.json", "r") as token:
     creds_data = json.load(token)
     update_token(creds_data)
 
-date = datetime.now()
+date = datetime.datetime.now() - datetime.timedelta(days=1)
 for user in session.query(User).all():
     if (
         user.time == "daily"
@@ -90,5 +90,5 @@ for user in session.query(User).all():
         </html>
         """
 
-        subject = f"{str(user.time).title()} Tech Highlights: {datetime.now().date()}"
+        subject = f"{str(user.time).title()} Tech Highlights: {datetime.datetime.now().date() - datetime.timedelta(days=1)}"
         send_email(body, subject, user.email, "newsletter@bytepicks.com")

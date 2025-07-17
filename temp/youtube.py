@@ -127,7 +127,7 @@ def fetch_new_videos():
         request = service.activities().list(
             part=["snippet", "id", "contentDetails"],
             channelId=channel,
-            publishedAfter=today.isoformat() + "T00:00:00Z",
+            publishedAfter=yesterday.isoformat() + "T00:00:00Z",
             maxResults=5,
             fields=FIELDS,
         )
@@ -283,15 +283,15 @@ def store_videos():
                 data[lang] = top_week
 
             elif time == "monthly":
-                if today.weekday() == 0:
+                if yesterday.weekday() == 0:
                     top_month = update_videos(data[lang], time)
                     top_month.update(OrderedDict(list(top_week.items())[:125]))
                     top_month = sort_videos(top_month)
                     data[lang] = top_month
 
             elif time == "yearly":
-                if today.day == 1:
-                    if today.weekday() != 0:
+                if yesterday.day == 1:
+                    if yesterday.weekday() != 0:
                         with open("data/monthly.json", "r") as f:
                             new_data = json.load(f)
                             top_month = new_data[lang]
@@ -309,7 +309,7 @@ if __name__ == "__main__":
 
     service = build("youtube", "v3", developerKey=API_KEY)
     channel_df = pd.read_csv("channels.csv")
-    today = datetime.date.today()
+    yesterday = datetime.date.today() - datetime.timedelta(days=1)
     videos = defaultdict(dict)
     quota_usage = 10_000
     viewed_videos = []
