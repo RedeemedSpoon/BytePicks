@@ -1,7 +1,8 @@
+from server.utils import get_message, send_email, session, User, PendingUser
+from server.utils import get_videos, format_duration, format_view_count
 from flask import Flask, render_template, jsonify, request, send_file
 from datetime import datetime
 import json, secrets, string
-from utils import *
 
 TIME = ["daily", "weekly", "monthly", "yearly"]
 LANGUAGE = ["EN", "FR", "ES", "RU", "HI"]
@@ -17,7 +18,7 @@ def teardown_request(exception=None):
 
 @app.route("/")
 def home():
-    with open("data/daily.json", "r") as file:
+    with open("server/data/daily.json", "r") as file:
         home_thumbnails = json.load(file)["EN"]
 
     return render_template("home.jinja", year=copyright_year, videos=home_thumbnails)
@@ -82,6 +83,7 @@ def newsletter():
                     language = request.form["language"]
                     time = request.form["time"]
                     token = "".join(secrets.choice(string.ascii_letters + string.digits) for _ in range(20))
+
                     message = get_message(email, token)
                     send_email(message, "Byte Picks : Please Confirm Your Email", email, "newsletter@bytepicks.com")
                 except:
@@ -153,7 +155,7 @@ def modify_newsletter(instruction):
 
 @app.route("/download")
 def download():
-    return send_file("channels.csv", as_attachment=True)
+    return send_file("server/data/channels.csv", as_attachment=True)
 
 
 @app.route("/behind-the-scene")

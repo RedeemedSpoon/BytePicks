@@ -84,12 +84,12 @@ def update_channels():
             pass
 
     df = sort_and_filter(pd.DataFrame(channels))
-    df.to_csv("channels.csv", index=False)
+    df.to_csv("data/channels.csv", index=False)
 
 
 def sort_and_filter(df : pd.DataFrame) -> pd.DataFrame:
-    df.drop_duplicates(subset=["ChannelID"], inplace=True)
     df.dropna(inplace=True)
+    df.drop_duplicates(subset=["ChannelID"], inplace=True)
     df.sort_values(by=["SubscriberCount"], ascending=False, inplace=True)
     return df
 
@@ -308,7 +308,7 @@ if __name__ == "__main__":
     logging.basicConfig(filename="app.log", level=logging.WARN, format="%(asctime)s - %(message)s")
 
     service = build("youtube", "v3", developerKey=API_KEY)
-    channel_df = pd.read_csv("channels.csv")
+    channel_df = pd.read_csv("data/channels.csv")
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
     videos = defaultdict(dict)
     quota_usage = 10_000
@@ -316,7 +316,7 @@ if __name__ == "__main__":
 
     if len(sys.argv) > 1 and sys.argv[1] == "search":
         new_channels = search()
-        with open("channels.csv", "a") as f:
+        with open("data/channels.csv", "a") as f:
             f.writelines(f"{channel_id}\n" for channel_id in new_channels)
 
         logging.warning(f"Remaining quota after the search : {quota_usage}")

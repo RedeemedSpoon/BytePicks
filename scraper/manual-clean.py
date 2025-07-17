@@ -2,7 +2,7 @@ from selenium import webdriver
 import pandas as pd
 import sys
 
-df = pd.read_csv("channels.csv")
+df = pd.read_csv("../server/data/channels.csv")
 num = int(sys.argv[1]) if len(sys.argv) > 1 else 0
 driver = webdriver.Firefox()
 
@@ -25,4 +25,4 @@ for index, row in df[num:].iterrows():
     driver.switch_to.window(driver.window_handles[0])
 
 driver.quit()
-df.to_csv("channels.csv", index=False)
+df.to_csv("../server/data/channels.csv", index=False)

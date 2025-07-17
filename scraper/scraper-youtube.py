@@ -45,9 +45,10 @@ for _ in range(50):
             form.clear()
             form.send_keys(channel + Keys.RETURN)
             sleep(1)
+
             channels_ids.append(result.text)
 
-        with open("channels.csv", "a") as f:
+        with open("../server/data/channels.csv", "a") as f:
             f.writelines(channel_id + "\n" for channel_id in channels_ids)
     except:
         pass

@@ -1,5 +1,4 @@
 google_api_python_client
-google-auth-oauthlib
 SQLAlchemy
 langdetect
 protobuf
