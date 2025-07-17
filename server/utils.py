@@ -37,14 +37,13 @@ class PendingUser(Base):
 
 
 def get_videos(time: str, language: str, top: int = 0) -> dict:
-    with open(f"data/{time}.json", "r") as file:
-        raw_videos = json.load(file)
-        all_videos = raw_videos[language].items()
+    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', f'{time}.json')
+    
+    with open(file_path, "r", encoding="utf-8") as file:
+        all_videos = json.load(file).get(language, {}).items()
 
-        if top:
-            return OrderedDict(list(all_videos)[:top])
-        else:
-            return OrderedDict(list(all_videos)[:AMOUNT[time]])
+    slice_amount = top if top else AMOUNT[time]
+    return OrderedDict(list(all_videos)[:slice_amount])
 
 
 def format_view_count(number: int) -> str:

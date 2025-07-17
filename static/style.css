@@ -808,10 +808,10 @@ textarea {
 #behind-the-scene {
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
+  justify-content: left;
+  text-align: left;
   flex-direction: column;
-  padding: 7.5rem 15rem;
+  padding: 7.5rem 17.5%;
   gap: 5rem;
 }
 

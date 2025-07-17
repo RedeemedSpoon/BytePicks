@@ -3,54 +3,20 @@
 {% endblock %} {% block content %}
 <main id="behind-the-scene">
   <h1 style="margin-bottom: -20px">Behind The Scene</h1>
-  <h4>How do we differ from the competition ?</h4>
+  <h4>How we operate under the hood.</h4>
   <p>
-    We, at BytePicks, do things a bit differently than the usual platforms. Our approach to content selection and
-    filtering is unique, backed by advanced algorithms that always showcase our content in the best light for our users.
-    We employ cutting-edge tools and techniques to keep things modern.
+    Our code is open-source and available on <a href="https://github.com">GitHub</a> because we believe in being transparent. For hosting, we use a simple cloud server from <a href="https://www.vultr.com">Vultr</a> which runs our website, backend, and all the automated scripts. Our domain is from <a href="https://epik.com">Epik</a>. These are our only expenses, and they come out to less than $6 a month. The power of the cloud, I guess...
   </p>
   <p>
-    But hey, we're not keeping these secrets to ourselves, we believe in transparency and continuous improvement, just
-    like any good community does. So, here's the lowdown on our all-mighty algorithm and genius engineering to make such
-    a thing happen. Check out our open-source <a href="https://github.com/RedeemedSpoon/BytePicks">code</a>, contribute
-    if you fancy, and remember, we're all ears for your ideas!
+    The whole service is built with <a href="https://www.python.org">Python</a>. We use the <a href="https://Flask.palletsprojects.com/">Flask</a> framework to handle all the web-related tasks: routing URLs, managing forms, and providing a simple API. We also use <a href="https://Jinja.palletsprojects.com/">Jinja</a> for templating our pages. For data, we use <a href="https://pandas.pydata.org">Pandas</a> to manage our list of channels (stored in a CSV file) and JSON for storing the video data we collect. Never thought I'd like anything that reminded me of JavaScript, but here we are.
+  </p>
+  <p>
+    For sensitive information like user emails and preferences, we use <a href="https://SQLite.org">SQLite</a>. A few other libraries like <a href="https://jquery.com/">jQuery</a>, python-isodate, and googleapiclient help out with smaller tasks. Honestly, none of this is particularly complicated by today's web development standards, but it gets the job done effectively.
   </p>
 
-  <h4>How we operate under the hood ?</h4>
+  <h4>How do we collect YouTube data?</h4>
   <p>
-    Beneath the surface, our web service's codebase is openly available on <a href="https://github.com">GitHub</a>, a
-    testament to our commitment to transparency and collaboration. Simplifying our hosting needs, we leverage
-    <a href="https://render.com">Render</a> to power our website, manage the backend, take care of the boring admin
-    tasks and automate recurring tasks. The essential components of our digital identity, including the URL and
-    communication email, are derived from <a href="https://Namecheap.com">Namecheap</a>. There are our only expenses,
-    which is impressively low, under $20 a month, and everything is taken care of. Power of the cloud I guess...
-  </p>
-  <p>
-    Transitioning to the heart of our operation, <a href="https://www.python.org">Python</a> emerges as a pivotal
-    player. <a href="https://Flask.palletsprojects.com/">Flask</a>, a powerful web framework, orchestrates URL handling,
-    redirects, flashes, form data collection, and the creation of a RESTful API through the magic, with some help of
-    <a href="https://Jinja.palletsprojects.com/">Jinja</a> templating. At a deeper level, we employ
-    <a href="https://pandas.pydata.org">Pandas</a> for storing, analyzing, and manipulating channel data in a covert CSV
-    format. The unsung hero, JSON, becomes the linchpin for simple yet effective data storage and retrieval within the
-    market context. Never thought in my life I would love anything remotely close to JavaScript.
-  </p>
-  <p>
-    Notably, <a href="https://SQLite.org">SQLite</a> steps in as the guardian of sensitive information, safeguarding
-    user email, channels Information and preferences. A sprinkle of additional libraries, such as
-    <a href="https://jquery.com/">jQuery</a> and python isodate, datetime, googleapiclient join the ensemble to enhance
-    functionality and interactivity. And all of this isn't even remotely complicated or impressive for today's standards
-    for web development, which will make some sure pee their pants.
-  </p>
-
-  <h4>How we collect YouTube data ?</h4>
-  <p>
-    Thanks to the robust infrastructure provided by Google (obviously they are Google), we tap into the
-    <a href="https://developers.google.com/youtube/v3">YouTube API</a> with finesse, wielding nothing more than an API
-    key and a few lines of code. Simplifying this process even further is the Google API client library for Python,
-    aptly named <a href="https://pypi.org/project/google-api-python-client/">googleapiclient</a> offering us simple
-    functions to call and some parameters. We just need to have an api key that we got in the
-    <a href="https://console.cloud.google.com">google cloud console</a> . It comes with over 10,000 quota points which
-    is more then enough for us. Here is a code snippet example:
+    We get our data directly from the <a href="https://developers.google.com/youtube/v3">YouTube API</a>. Google provides a Python client library called <a href="https://pypi.org/project/google-api-python-client/">googleapiclient</a> that makes this process pretty straightforward. All we need is an API key from the <a href="https://console.cloud.google.com">Google Cloud Console</a>. The free tier gives us 10,000 quota points a day, which is more than enough for what we need. Here’s how simple it is to get started:
   </p>
   <pre class="code"><code>
 <span class="keyword">from</span> <span class="import">googleapiclient</span>.<span class="import">discovery</span> <span class="keyword">import</span> <span class="function">build</span>
@@ -63,14 +29,9 @@
     <p>Your screen is too small to display the code.</p>
   </div>
 
-  <h4>How we discover & find new channels ?</h4>
+  <h4>How do we find new channels?</h4>
   <p>
-    We use the search().list() methods provided by the YouTube API to search for content all over the platform with a
-    few keywords like "Tech", "Programming", "Computer Science" using the OR operator. We sort by relevance and only
-    search for channels with any specified language or region, as each page has 50 results. We use a for loop to go get
-    the next one and extract the information we need, which is the channel ID only. Then, to create a profile for each
-    channel, we use the channels().list() method for EACH of the channels to extract the data that we need. This is an
-    example with the Fireship channel in the csv format :
+    We use the YouTube API's `search().list()` method with keywords like "Tech", "Programming", and "Computer Science". We tell the API to only search for channels, sort them by relevance, and bring back 50 results at a time. From these results, we only need the channel ID. After we have a list of IDs, we loop through them and use the `channels().list()` method on each one to get detailed information like the channel's name, URL, icon, and statistics. Here’s what an entry looks like in our CSV file for Fireship:
   </p>
 
   <pre class="code"><code>
@@ -82,10 +43,7 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
     <p>Your screen is too small to display the code.</p>
   </div>
   <p>
-    We make a list, concatenate it with the existing data, and store it in a CSV with pandas, making sure to drop
-    duplicates and NaN. Obviously, we also put some channels we ourselves like, such as Sumsub or Rossmann, to ensure we
-    get the best content. We also remove any dead channels or bad ones. This sums up the process, and if you are
-    curious, here is some part of it :
+    We add this new data to our existing list, then use pandas to remove any duplicates or rows with missing data before saving it back to the CSV. We also manually add channels we like (like Louis Rossmann) and periodically remove any channels that are inactive or low-quality. The process looks something like this:
   </p>
   <pre class="code"><code>
 <span class="var">request</span> <span class="operator">=</span> <span class="var">service</span>.<span class="function">search</span>().<span class="function">list</span>(
@@ -126,17 +84,7 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
     <p>Your screen is too small to display the code.</p>
   </div>
   <p>
-    In our latest update, we sought to refine and enhance our channel selection process, including discovering some
-    previously overlooked ones. To achieve this, we developed a web scraper using
-    <a href="https://www.selenium.dev/documentation/webdriver/">Selenium WebDriver</a>. Essentially, it performs a
-    search for a random tech topic on YouTube, collects the channel URLs from the top results, clicks on random videos,
-    and gathers the creators' information. This process is repeated at least 7 times or more. Subsequently, we utilize
-    the
-    <a href="https://www.streamweasels.com/tools/youtube-channel-id-and-user-id-convertor/"
-      >YouTube Channel ID Finder</a
-    >
-    to obtain the IDs associated with these channels. With the IDs, in hand, we use then a slightly modified version of
-    our update_channels() function to process the data. While the code is lengthy, here's a snippet:
+    To find channels the API might miss, we also built a simple web scraper using <a href="https://www.selenium.dev/documentation/webdriver/">Selenium WebDriver</a>. It just searches a random tech topic on YouTube, grabs the channel URLs from the results, then clicks a few recommended videos and grabs those channel URLs too. After it runs, we manually use an online tool like <a href="https://www.streamweasels.com/tools/youtube-channel-id-and-user-id-convertor/">YouTube Channel ID Finder</a> to convert the URLs to IDs, and then feed those IDs into our main script. Here’s a piece of the scraper:
   </p>
   <pre class="code"><code>
 <span class="var">driver</span> <span class="operator">=</span> <span class="import">webdriver</span>.<span class="function">Firefox</span>(<span class="var">options</span><span class="operator">=</span><span class="var">options</span>)
@@ -161,25 +109,15 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
     <p>Your screen is too small to display the code.</p>
   </div>
   <p>
-    You can download our database of YouTube channels using the button at the bottom of this text. It provides all
-    channels information and many other details that make this service possible. Note that some cells may contain
-    "Unknown" as the value because YouTube does not have information about them. You can also redownload this database
-    at any time to update the list. If you want to add or delete channels, feel free to
-    <a href="{{ url_for('contact')}}">contact us</a>. You are welcome to use this database anywhere. We believe that
-    transparency and openness will only but bring more opportunities and trust :)
+    You can download our full database of YouTube channels below. It contains all the channel info we use. Note that some fields might say "Unknown" if the API didn't provide the data. Feel free to use this database for your own projects. If you have channels you'd like to see added or removed, just <a href="{{ url_for('contact')}}">contact us</a>. We believe being open about our data builds trust.
   </p>
   <a href="{{url_for('download')}}" target="_self"
     ><button class="primary-btn" style="scale: 1.1; padding: 15px 20px">Download CSV</button></a
   >
 
-  <h4>How we get the videos ?</h4>
+  <h4>How do we get the videos?</h4>
   <p>
-    Remember our CSV with every tech channel in it? Using a simple for loop, we extract the channel ID to use in the
-    Google API function `activities().list()`. This function showcases the recent activities of the channel, including
-    uploaded videos, which is what we are looking for. We extract information for every video such as thumbnails, ID,
-    title, who posted the video, and when it was posted. To dive deeper, we need another method, `videos().list()`. By
-    specifying the video ID we obtained previously, we get the final missing part of the puzzle – statistics and content
-    rating. Here is a code snippet of it :
+    We loop through our channel list CSV and use the `activities().list()` function for each channel ID. This shows us recent uploads. From there, we grab basic info like the video ID, title, and thumbnail. To get more detail, we take that video ID and use the `videos().list()` method. This gives us the important stats like view counts, likes, and duration. Here’s a snippet:
   </p>
   <pre class="code"><code>
 <span class="keyword">for</span> <span class="var">channel</span> <span class="keyword">in</span> <span class="var">channel_df</span>[<span class="str">"ChannelID"</span>]:
@@ -200,7 +138,7 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
          <span class="var">response</span> <span class="operator">=</span> <span class="var">request</span>.<span class="function">execute</span>()
          
          <span class="var">view_count</span> <span class="operator">=</span> <span class="int">int</span>(<span class="var">response</span>[<span class="str">"items"</span>][<span class="int">0</span>][<span class="str">"statistics"</span>][<span class="str">"viewCount"</span>])
-         <span class="var">like_count</span> <span class="operator">=</span> <span class="int">int</span>(<span class="var">response</span>[<span class="str">"items"</span>][<span class="int">0</span>][<span class="str">"statistics"</span>][<span class="str">"likeCount"</span>])
+         <span class="var">like_count</span> <span class="operator">=</span> <span class="int">int</span>(<span class="var">response</span>[<str>"items"</span>][<span class="int">0</span>][<span class="str">"statistics"</span>][<span class="str">"likeCount"</span>])
          <span class="var">content_rating</span> <span class="operator">=</span> <span class="var">response</span>[<span class="str">"items"</span>][<span class="int">0</span>][<span class="str">"contentDetails"</span>][<span class="str">"contentRating"</span>]
          <span class="var">video_duration</span> <span class="operator">=</span> <span class="import">isodate</span>.<span class="function">parse_duration</span>(<span class="var">response</span>[<span class="str">"items"</span>][<span class="int">0</span>][<span class="str">"contentDetails"</span>][<span class="str">"duration"</span>])
          <span class="comment"># Again, remaining additional information...</span>
@@ -209,11 +147,7 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
     <p>Your screen is too small to display the code.</p>
   </div>
   <p>
-    Now that we have everything we need, we can process the data and loop through the next ones. But before everything,
-    we need to filter out unworthy content with an if statement, such as videos less than 30 seconds, those with less
-    than 500 views, those not in our set languages, or don't have a category ID either of 27 or 28, which is the
-    category for technological and educational videos. After handling all of this, we finally get the desired result in
-    a JSON format. Again an example of a Fireship video here to demonstrate :
+    Once we have all the data, we apply a few filters. We ignore videos that are less than 30 seconds long, have fewer than 500 views, or aren't in English. We also make sure they are in YouTube's "Science & Technology" or "Education" categories. After filtering, we have a clean list of videos ready for ranking, stored in a JSON file. Here is what one video's data looks like:
   </p>
   <pre class="code"><code>
 <span class="var">"ChannelName"</span>: <span class="str">"Fireship"</span>,
@@ -239,18 +173,9 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
     <p>Your screen is too small to display the code.</p>
   </div>
 
-  <h4>How We Sort, Rank & Store These Videos?</h4>
+  <h4>How do we sort and rank these videos?</h4>
   <p>
-    Now comes the part you've been waiting for. Sorting, ranking, and storing data is a complex and meticulous process,
-    setting apart good work from the not-so-good, especially when it involves algorithms. Speaking of which, we have a
-    simple yet robust algorithm built on the data we've collected earlier. Like any algorithm, it requires dealing with
-    numbers, not strings and booleans. Therefore, our first step is to convert strings into numbers, specifically into a
-    quality measure. For instance, videos with captions deserve a higher rating than those without. So, we assign a
-    value of 1 to "CaptionQuality" if true and 0.975 if false. The same principle applies to "DefinitionQuality" and
-    "ContentRating." We also introduce a bias, favoring longer videos (30-60 minutes) while slightly disadvantaging
-    those shorter than 10 minutes. Popularity-wise, larger channels with millions of subscribers are disadvantaged,
-    whereas those with less than 100K receive a slight boost. With these adjustments, we now have a float variable
-    between 1.3 and 0.7, representing the video's quality, which will be used in our algorithm. Here's the equation:
+    This is the core of our system. We use a custom algorithm to give each video a score. It’s based on two main parts: a "Quality Multiplier" and the video's stats. First, we calculate the Quality Multiplier by converting non-numeric data into scores. For example, a video gets a higher score if it has captions or is in HD. We also give a small boost to longer videos and smaller channels, while slightly penalizing massive channels to help surface new content. This gives us a single multiplier for each video.
   </p>
   <p class="math">
     QualityMultiplier = SubscriberBalance × DefinitionQuality × CaptionQuality × RatingQuality × DurationQuality
@@ -259,22 +184,14 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
     <p>Your screen is too small to display the formula.</p>
   </div>
   <p>
-    The first part is done. Moving on to the second part, we utilize video statistics, a crucial aspect that truly
-    reflects the video's quality. We consider three values: like-rate, comment-rate, and view-rate. To maintain balance,
-    we normalize them using a logarithmic function. After normalization, we adjust the importance of each factor,
-    multiplying the view-rate by 0.675, like-rate by 1.125 and the comment-rate by 1.375. These adjusted values are then
-    combined, multiplied by the QualityMultiplier, and scaled by 100 for readability. The final rating formula looks
-    like this:
+    Next, we look at the actual stats: views, likes, and comments. To prevent massive numbers from skewing the results, we normalize them with a log function. We then give more weight to comments and likes than to views, since they are better indicators of engagement. We add these weighted stats together, multiply them by the Quality Multiplier from the first step, and scale the result by 100 to get a clean final number. The formula is simple:
   </p>
   <p class="math">Rating = (ViewRate + LikeRate + CommentRate) × QualityMultiplier</p>
   <div class="small-screen-message">
     <p>Your screen is too small to display the formula.</p>
   </div>
   <p>
-    With the rating now complete, the final step is to sort and store the videos. We accomplish this using Python and
-    the JSON format, employing dictionary methods, slicing, along with the `open("file.json") as file` and `json.dump()`
-    methods. After, it's just a matter of selecting the right number of videos for different timeframes. Below is the
-    code snippet illustrating this:
+    Once every video has a rating, we can sort them. We use a simple Python script to handle this. For the weekly and monthly lists, we just combine the new daily videos with the existing ones, re-sort everything, and keep the top N. Finally, we save the sorted lists back into our JSON files, ready to be sent out in the newsletter.
   </p>
   <pre class="code"><code>
 <span class="keyword">for</span> <span class="var">lang</span>, <span class="var">all_videos</span> <span class="keyword">in</span> <span class="var">videos</span>.<span class="function">items</span>():
@@ -296,38 +213,6 @@ CsBjURrPoezykLs9EqgamOA,<span class="keyword">Fireship</span>,<span class="funct
 
          <span class="keyword">with</span> <span class="function">open</span>(<span class="keyword">f</span><span class="str">"{time}.json"</span>, <span class="str">"w"</span>) <span class="keyword">as</span> <span class="var">f</span>:
             <span class="var">json</span>.<span class="function">dump</span>(<span class="var">data</span>, <span class="var">f</span>, <span class="var">indent</span><span class="operator">=</span><span class="int">4</span>)
-</code></pre>
-  <div class="small-screen-message">
-    <p>Your screen is too small to display the code.</p>
-  </div>
-  <h4>How we automate both our newsletter and this ?</h4>
-  <p>
-    Using cron jobs, simple right? If you don't know what cron is, well, you should. The cron command-line utility is a
-    job scheduler on Unix OSes. It is often used to set up and maintain software environments because of how simple it
-    is to schedule jobs like running commands or sending emails. And this is exactly what we did. Every day at 11 PM 50
-    Min, it runs a bash file that, collect the active database of our newsletter, run two Python files, one of them
-    fetching YouTube Data and manipulating it and the other following it by sending the newsletter, afterward, if no
-    errors where met, it copy the new json data to the production server. Lovely Unix never ceases to impress.
-  </p>
-  <pre class="code"><code>
-<span class="comment">#!/bin/bash</span>
-
-<span class="var">file_list</span>=<span class="str">"credentials.json token.json channels.csv newsletter.db"</span>
-<span class="var">remote_dir</span>=<span class="str">"/opt/render/project/src"</span>
-
-<span class="function">cd</span> <span class="str">~/Code/BytePicks</span>
-<span class="function">scp</span> <span class="var">$SERVER_NAME</span>@<span class="str">ssh.oregon.render.com:</span><span class="var">$remote_dir</span><span class="str">/newsletter.db</span> <span class="operator">.</span> <span class="operator">>></span> <span class="str">/dev/null</span>
-
-<span class="keyword">if</span> [[ <span class="var">$?</span> <span class="operator">-eq</span> <span class="int">0</span> ]]; <span class="keyword">then</span>
-  <span class="function">python</span> <span class="str">youtube.py</span> <span class="operator">&&</span> <span class="function">tail -n</span> <span class="int">1</span> <span class="str">youtube.log</span>
-  <span class="keyword">if</span> [[ <span class="var">$?</span> <span class="operator">-eq</span> <span class="int">0</span> ]]; <span class="keyword">then</span>
-    <span class="function">python</span> <span class="str">newsletter.py</span> <span class="operator">>></span> <span class="str">/dev/null</span>
-    <span class="keyword">if</span> [[ <span class="var">$?</span> <span class="operator">-eq</span> <span class="int">0</span> ]]; <span class="keyword">then</span>
-      <span class="function">scp</span> <span class="var">$file_list</span> <span class="var">$SERVER_NAME</span>@<span class="str">ssh.oregon.render.com:</span><span class="var">$remote_dir</span>
-      <span class="function">scp</span> <span class="var">data/*</span> <span class="var">$SERVER_NAME</span>@<span class="str">ssh.oregon.render.com:</span><span class="var">$remote_dir</span><span class='str'>/data</span>
-    <span class="keyword">fi</span>
-  <span class="keyword">fi</span>
-<span class="keyword">fi</span>
 </code></pre>
   <div class="small-screen-message">
     <p>Your screen is too small to display the code.</p>
