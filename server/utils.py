@@ -7,8 +7,8 @@ from collections import OrderedDict
 import json, smtplib, ssl, os
 
 AMOUNT = {"daily": 50, "weekly": 100, "monthly": 150, "yearly": 250}
-SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD")
-SMTP_USERNAME = os.environ.get("SMTP_USERNAME")
+NEWSLETTER_PASSWORD = os.environ.get("NEWSLETTER_PASSWORD")
+CONTACT_PASSWORD = os.environ.get("CONTACT_PASSWORD")
 SMTP_SERVER = "mail.bytepicks.com"
 SMTP_PORT = 587
 
@@ -75,9 +75,10 @@ def send_email(body: str, subject: str, receiver: str, sender: str):
     message.attach(MIMEText(body, "html"))
 
     context = ssl.create_default_context()
+    password = NEWSLETTER_PASSWORD if sender == "newsletter@bytepicks.com" else CONTACT_PASSWORD
     with smtplib.SMTP(SMTP_SERVER, int(SMTP_PORT)) as server:
         server.starttls(context=context)
-        server.login(SMTP_USERNAME, SMTP_PASSWORD)
+        server.login(sender, password)
         server.sendmail(sender, receiver, message.as_string())
 
 
