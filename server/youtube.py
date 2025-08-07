@@ -1,9 +1,14 @@
 import os, datetime, isodate, json, sys, logging
 from collections import defaultdict, OrderedDict
 from googleapiclient.discovery import build
+from dotenv import load_dotenv
 from langdetect import detect
+from pathlib import Path
 from math import log
 import pandas as pd
+
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path=env_path)
 
 API_KEY = os.environ.get("YT_API_KEY")
 MIN_DUR = isodate.parse_duration("PT1M5S")
@@ -84,7 +89,7 @@ def update_channels():
             pass
 
     df = sort_and_filter(pd.DataFrame(channels))
-    df.to_csv("data/channels.csv", index=False)
+    df.to_csv("server/data/channels.csv", index=False)
 
 
 def sort_and_filter(df : pd.DataFrame) -> pd.DataFrame:
@@ -269,7 +274,7 @@ def store_videos():
     top_day, top_week, top_month = {}, {}, {}
     for lang, specific_videos in videos.items():
         for time in ["daily", "weekly", "monthly", "yearly"]:
-            with open(f"data/{time}.json", "r") as f:
+            with open(f"server/data/{time}.json", "r") as f:
                 data = json.load(f)
 
             if time == "daily":
@@ -292,7 +297,7 @@ def store_videos():
             elif time == "yearly":
                 if yesterday.day == 1:
                     if yesterday.weekday() != 0:
-                        with open("data/monthly.json", "r") as f:
+                        with open("server/data/monthly.json", "r") as f:
                             new_data = json.load(f)
                             top_month = new_data[lang]
 
@@ -300,7 +305,7 @@ def store_videos():
                     top_year.update(OrderedDict(list(top_month.items())[:65]))
                     data[lang] = sort_videos(top_year)
 
-            with open(f"data/{time}.json", "w") as f:
+            with open(f"server/data/{time}.json", "w") as f:
                 json.dump(data, f, indent=4)
 
 
@@ -308,7 +313,7 @@ if __name__ == "__main__":
     logging.basicConfig(filename="app.log", level=logging.WARN, format="%(asctime)s - %(message)s")
 
     service = build("youtube", "v3", developerKey=API_KEY)
-    channel_df = pd.read_csv("data/channels.csv")
+    channel_df = pd.read_csv("server/data/channels.csv")
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
     videos = defaultdict(dict)
     quota_usage = 10_000
@@ -316,7 +321,7 @@ if __name__ == "__main__":
 
     if len(sys.argv) > 1 and sys.argv[1] == "search":
         new_channels = search()
-        with open("data/channels.csv", "a") as f:
+        with open("server/data/channels.csv", "a") as f:
             f.writelines(f"{channel_id}\n" for channel_id in new_channels)
 
         logging.warning(f"Remaining quota after the search : {quota_usage}")

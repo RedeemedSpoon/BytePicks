@@ -188,7 +188,7 @@ def contact():
 
 
 @app.errorhandler(404)
-def bad_request(e):
+def bad_request(_):
     return render_template("error.jinja", year=copyright_year), 404
 
 

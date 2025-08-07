@@ -4,7 +4,12 @@ from email.mime.multipart import MIMEMultipart
 from sqlalchemy.orm import sessionmaker
 from email.mime.text import MIMEText
 from collections import OrderedDict
-import json, smtplib, ssl, os
+from dotenv import load_dotenv
+import os, json, smtplib, ssl
+from pathlib import Path
+
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path=env_path)
 
 AMOUNT = {"daily": 50, "weekly": 100, "monthly": 150, "yearly": 250}
 NEWSLETTER_PASSWORD = os.environ.get("NEWSLETTER_PASSWORD")
@@ -12,7 +17,7 @@ CONTACT_PASSWORD = os.environ.get("CONTACT_PASSWORD")
 SMTP_SERVER = "mail.bytepicks.com"
 SMTP_PORT = 587
 
-engine = create_engine("sqlite:///data/newsletter.db", echo=True)
+engine = create_engine("sqlite:///server/data/newsletter.db", echo=True)
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
 session = Session()
