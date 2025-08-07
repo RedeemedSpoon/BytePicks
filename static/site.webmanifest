@@ -1,0 +1,19 @@
+{
+  "name": "BytePicks",
+  "short_name": "BytePicks",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#0b89a8",
+  "background_color": "#f1f5f9",
+  "display": "standalone"
+}
